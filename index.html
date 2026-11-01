@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Science Slop Index · v2</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="SciSlop v1.1 working draft: what counts as scientific slop. Seventeen defects in three planes, each with a definition, an illustrative example, how it is judged, what is not a defect, and what counts as a fix.">
+<meta name="theme-color" content="#fbfaf8">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Science Slop Index">
+<meta property="og:title" content="What counts as slop · SciSlop v1.1 registry">
+<meta property="og:description" content="Seventeen defects in a paper's scientific reasoning, judged the same way whoever wrote the paper.">
+<meta property="og:image" content="https://scientific-slop-demo.onrender.com/static/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="v11.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,600..900&family=Instrument+Serif:ital@0;1&family=Caveat:wght@500;700&display=swap">
+<link rel="stylesheet" href="site.css">
+<script>
+  // same theme key as the main app, applied before paint
+  try { const t = localStorage.getItem('ssi-theme'); if (t) document.documentElement.dataset.theme = JSON.parse(t); } catch (e) { try { const t = localStorage.getItem('ssi-theme'); if (t) document.documentElement.dataset.theme = t.replace(/"/g, ''); } catch (_) {} }
+</script>
+</head>
+<body>
+<header class="wrap top">
+  <a class="brand" href="https://scientific-slop-demo.onrender.com/"><span class="mark"><svg class="mark-svg" viewBox="0 0 64 64" aria-hidden="true" focusable="false"> <defs><clipPath id="lens-clip-rb-a"><circle cx="40" cy="42" r="10.4"/></clipPath><radialGradient id="lrb-structure-a"><stop offset="0" stop-color="#b98aa3" stop-opacity=".95"/><stop offset=".55" stop-color="#b98aa3" stop-opacity=".7"/><stop offset="1" stop-color="#b98aa3" stop-opacity="0"/></radialGradient><radialGradient id="lrb-argument-a"><stop offset="0" stop-color="#e8a1a9" stop-opacity=".95"/><stop offset=".55" stop-color="#e8a1a9" stop-opacity=".7"/><stop offset="1" stop-color="#e8a1a9" stop-opacity="0"/></radialGradient><radialGradient id="lrb-artifacts-a"><stop offset="0" stop-color="#90aebb" stop-opacity=".95"/><stop offset=".55" stop-color="#90aebb" stop-opacity=".7"/><stop offset="1" stop-color="#90aebb" stop-opacity="0"/></radialGradient></defs> <path d="M20 6 H38 L48 16 V54 Q48 58 44 58 H20 Q16 58 16 54 V10 Q16 6 20 6 Z" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/> <path d="M38 6 V16 H48" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/> <path d="M24 20 H40" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/> <path d="M24 27 H40" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/> <path d="M24 34 H28" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/> <g clip-path="url(#lens-clip-rb-a)"> <circle cx="36" cy="39.5" r="9" fill="url(#lrb-structure-a)"/> <circle cx="44.5" cy="45.5" r="10" fill="url(#lrb-argument-a)"/> <circle cx="36.5" cy="48.5" r="8" fill="url(#lrb-artifacts-a)"/> <circle cx="36" cy="39.5" r="2.4" fill="#a3728c"/> <circle cx="44.5" cy="45.5" r="2.8" fill="#de6b77"/> <circle cx="36.5" cy="48.5" r="2" fill="#6f96a6"/> </g> <path d="M40.00 31.00 A11 11 0 0 1 49.53 47.50" fill="none" stroke="#a3728c" stroke-width="3.6" stroke-linecap="butt"/> <path d="M49.53 47.50 A11 11 0 0 1 30.47 47.50" fill="none" stroke="#de6b77" stroke-width="3.6" stroke-linecap="butt"/> <path d="M30.47 47.50 A11 11 0 0 1 40.00 31.00" fill="none" stroke="#6f96a6" stroke-width="3.6" stroke-linecap="butt"/> <path d="M48 50 L57 59" fill="none" stroke="currentColor" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/> </svg></span><span class="name">Science Slop Index</span></a>
+  <nav>
+    <a href="https://scientific-slop-demo.onrender.com/leaderboard">Leaderboard</a>
+    <a href="https://scientific-slop-demo.onrender.com/gallery">Gallery</a>
+    <a href="https://scientific-slop-demo.onrender.com/how">How it works</a>
+    <a href="./" class="active">Registry <span class="nav-v">v1.1</span></a>
+    <a href="https://scientific-slop-demo.onrender.com/propose">Propose</a>
+    <button class="icon-btn" id="theme" type="button" aria-label="Switch color theme" title="Switch theme">◐</button>
+  </nav>
+</header>
+
+<main id="main">
+  <nav class="sidx" id="sidx" aria-label="On this page"><div class="sidx-in"><span class="sidx-t">Slop registry <i>v1.1</i></span><div class="sidx-l"><a href="#top" data-s="top">Check a paper</a><a href="#questions" data-s="questions">Four questions</a><a href="#studio" data-s="studio">Seventeen slops</a></div></div><span class="sidx-prog" aria-hidden="true"><i id="sidx-fill"></i></span></nav>
+  <section class="hk" id="top" data-sec="Check a paper">
+    <div class="wrap hk-in">
+      <div class="hk-links"><a href="https://arxiv.org/abs/2610.00531" target="_blank" rel="noopener">Paper</a><a href="https://github.com/yerimoh/ScientificSlop" target="_blank" rel="noopener">Code</a><a href="https://huggingface.co/datasets/yerim0210/Scientific_Slop" target="_blank" rel="noopener">Benchmark</a></div>
+      <h1 class="hk-h">What's your paper's<br><span class="tri">Science Slop</span> Index?</h1>
+      <p class="hk-sub">AI detectors read your sentences.<br><b>We read your scientific reasoning.</b></p>
+      <figure class="rv2" id="rv2" aria-label="The same page read two ways: token by token, and by its structure">
+        <span class="rv2-tag l">AI detectors · <b id="rv2-p">p(AI) –</b></span><span class="rv2-tag r">Science Slop Index · <b id="rv2-n">0 breaks</b></span>
+        <div class="rv2-stage" id="rv2-stage">
+          <div class="rv2-layer tok" id="rv2-tok"></div>
+          <div class="rv2-layer str" id="rv2-str"></div>
+          
+          <div class="rv2-line" id="rv2-line" role="slider" tabindex="0" aria-label="Compare the two readings" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><span>⟷</span></div>
+        </div>
+      </figure>
+      <div class="cx" id="console">
+        <form class="cx-pane hk-ask" data-pane="paper" id="cx-paper" autocomplete="off">
+          <input id="cx-url" type="text" placeholder="Paste an arXiv, OpenReview or PDF link" aria-label="Paper link">
+          <a class="cx-go" id="cx-go" href="https://scientific-slop-demo.onrender.com/" target="_blank" rel="noopener">Analyze <span aria-hidden="true">→</span></a>
+        </form>
+        <p class="cx-hint" id="cx-paper-hint">arXiv, OpenReview or PDF link, or <a href="https://scientific-slop-demo.onrender.com/" target="_blank" rel="noopener">upload a file</a>. Reports stay private.</p>
+        <div class="cx-tabs" role="tablist" aria-label="Other ways in" hidden>
+          <button type="button" role="tab" class="on" data-mode="paper" id="seg-paper">Check a paper</button>
+          <button type="button" role="tab" data-mode="tag" id="seg-tag">Tag a sentence</button>
+        </div>
+        <form class="cx-pane" data-pane="tag" id="cx-tag" hidden autocomplete="off">
+          <textarea id="cx-quote" rows="3" placeholder="Paste the sentence, exactly as the paper writes it" aria-label="The sentence"></textarea>
+          <div class="cx-pick" id="cx-pick" role="radiogroup" aria-label="Which slop is it?"></div>
+          <input id="cx-why" type="text" placeholder="What can the reader not check? (one line)" aria-label="Why">
+          <div class="cx-row">
+            <input id="cx-where" type="text" placeholder="Where: arXiv id, venue, page" aria-label="Where">
+            <input id="cx-by" type="text" placeholder="Your name (optional)" aria-label="Your name">
+            <button class="cx-go" type="submit">Add case</button>
+          </div>
+          <p class="cx-hint" id="cx-tag-msg">Pick the slop above. Cases stay pending until we check them.</p>
+        </form>
+      </div>
+      <div class="hk-foot"><p class="hk-count"><i class="live" aria-hidden="true"></i><b id="hk-n">1,557</b><span>papers checked so far</span></p><a class="hk-up" href="https://scientific-slop-demo.onrender.com/" target="_blank" rel="noopener">or upload a PDF ↗</a></div>
+    </div>
+  </section>
+
+  <section class="wrap qv" id="questions" data-sec="Four questions">
+    <h2 class="qv-h">Four questions about slop and science.</h2>
+    <ol class="qv-grid" id="qtiles"></ol>
+  </section>
+
+  <section class="wrap sm" id="studio" data-sec="17 slops">
+    <div class="sm-head">
+      <h2 class="sm-h">Six measures became <em>seventeen slops</em>.</h2>
+    </div>
+    <div class="sm-body">
+      <div class="tree" id="tree">
+        <div class="tree-h"><span>v1 · 6 measures</span><span>v1.1 · 17 slops</span></div>
+        <div class="tree-rows" id="tree-rows"></div>
+        <svg class="tree-ln" id="tree-ln" aria-hidden="true"></svg>
+      </div>
+      <div class="sm-right">
+        <div class="st-stage" id="specimen">
+          <div class="cam" id="cam">
+          <div class="spec-page-wrap" id="spec-wrap">
+            <div class="spec-page" id="spec-page"></div>
+            <div class="spec-page reveal" id="spec-reveal" aria-hidden="true"></div>
+            <div class="lens" id="lens" aria-hidden="true"></div>
+          </div>
+        </div>
+        </div>
+        <div class="cap st-panel" id="st-panel"><div id="sp-body" aria-live="polite"></div></div>
+        <article class="rg-page" id="rg-entry" aria-live="polite"></article>
+      </div>
+    </div>
+    <div hidden>
+      <div id="st-strip"></div><div id="st-sort"></div><button type="button" id="st-reveal"></button><button type="button" id="st-prev"></button><button type="button" id="st-next"></button>
+      <button type="button" class="mm" id="mm" aria-label="Whole page: click to move there"><span class="mm-page" id="mm-page" aria-hidden="true"></span><span class="mm-view" id="mm-view" aria-hidden="true"></span></button>
+      <p id="hub-status"></p>
+    </div>
+  </section>
+
+  <div class="tabs-bar" id="tabs">
+    <div class="wrap v-tabs">
+      <button type="button" class="v-tab on" data-tab="defs">Definitions</button>
+      <button type="button" class="v-tab" data-tab="found">The analyses</button>
+      <button type="button" class="v-tab" data-tab="cues">Cues</button>
+    </div>
+  </div>
+
+  <!-- tab: definitions -->
+  <section id="tab-defs" class="tabp" data-sec="Registry">
+    <div class="wrap rg">
+      <div class="rg-head">
+        <h2 class="rg-h">The registry</h2>
+        <p class="rg-sub">One slop per page: what it is, what it looks like in a real paper, and how to tell it apart.</p>
+      </div>
+      <div class="rg-body">
+        <nav class="rg-idx" id="rg-idx" aria-label="The seventeen slops"></nav>
+      </div>
+      <div hidden><div id="areas"></div><div id="principles-grid"></div><span id="rg-pos"></span><button type="button" id="rg-prev"></button><button type="button" id="rg-next"></button><div id="area-tiles"></div><div id="area-chips"></div><button type="button" id="expand"></button><ul id="map-list"></ul></div>
+    </div>
+  </section>
+
+  <!-- tab: findings -->
+  <section id="tab-found" class="tabp" hidden>
+    <div class="wrap">
+      <h2 class="sec-h left">The analyses</h2>
+      <div id="findings"></div>
+    </div>
+  </section>
+
+  <!-- tab: cues -->
+  <section id="tab-cues" class="tabp" hidden>
+    <div class="wrap">
+      <h2 class="sec-h left">Cues, not verdicts</h2>
+      <div class="cue-grid" id="cue-grid"></div>
+    </div>
+  </section>
+
+  <div class="wrap reg-sec reg-cta">
+    <h2 class="sec-h left">Seen a slop this registry misses?</h2>
+    <div class="reg-actions">
+      <a class="btn" href="#tag" data-xref="tag">Tag a sentence</a>
+      <a class="btn ghost" href="https://scientific-slop-demo.onrender.com/propose">Propose a pattern</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span><a href="https://arxiv.org/abs/2610.00531" target="_blank" rel="noopener"><i>Science or Slop?: Benchmarking and Mitigating Scientific Slop in AI-Generated Papers</i></a> · arXiv:2610.00531 · <a href="https://github.com/yerimoh/ScientificSlop" target="_blank" rel="noopener">Code</a> · <a href="https://huggingface.co/datasets/yerim0210/Scientific_Slop" target="_blank" rel="noopener">Benchmark</a></span>
+    <span>Questions or requests: <a href="mailto:yerim.oh@vision.snu.ac.kr">yerim.oh@vision.snu.ac.kr</a></span>
+  </div>
+</footer>
+<script type="module" src="registry.js"></script>
+</body>
+</html>
