@@ -1218,3 +1218,11 @@ body::after { display: none; }
 @media (max-width: 600px) { .qa-br { grid-template-columns: 112px minmax(0, 1fr) 44px; font-size: 12.5px; } .qa-yrs { gap: 4px; } .qa-yv { font-size: 10.5px; } }
 .qa-y5 { position: absolute; left: -3px; right: -3px; bottom: 28.6%; border-top: 1px dashed var(--ink-3); }
 @media (max-width: 900px) { #questions .qx { grid-template-columns: minmax(0, 1fr); } }
+.qa-b .qa-sub { margin: 20px 0 8px; font-size: 14px; font-weight: 600; color: var(--ink); }
+.qa-ul { margin: 0 0 14px; padding-left: 20px; font-size: 16px; line-height: 1.65; color: var(--ink-2); }
+.qa-ul li { margin-bottom: 4px; }
+.qa-tbl { width: 100%; border-collapse: collapse; margin: 14px 0 18px; font-size: 14px; line-height: 1.5; }
+.qa-tbl th { text-align: left; font-weight: 600; color: var(--ink); padding: 0 12px 8px 0; border-bottom: 1px solid var(--line); }
+.qa-tbl td { vertical-align: top; color: var(--ink-2); padding: 9px 12px 9px 0; border-bottom: 1px solid var(--line); }
+.qa-tbl td:first-child { color: var(--ink); font-weight: 600; white-space: nowrap; }
+@media (max-width: 600px) { .qa-tbl { font-size: 13px; } .qa-tbl td:first-child { white-space: normal; } }
