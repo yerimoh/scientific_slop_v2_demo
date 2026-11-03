@@ -1225,7 +1225,7 @@ const QSHORT = { f1: 'Is AI slop just bad writing?', f2: 'Does slop cost review 
 let qCur = 0;
 const qStage = h('div', { class: 'qx-stage' });
 const qList = h('ol', { class: 'qx-list' }, ...FINDINGS.map((f, i) => h('li', {},
-  h('button', { type: 'button', class: 'qx-q', 'data-i': i, onmouseenter: () => qShow(i), onfocus: () => qShow(i), onclick: () => qShow(i) },
+  h('button', { type: 'button', class: 'qx-q', 'data-i': i, onmouseenter: () => qShow(i), onfocus: () => qShow(i), onclick: () => { location.href = 'q.html#' + (i + 1); } },
     h('span', { class: 'qx-n', text: String(i + 1) }), h('span', { class: 'qx-t', text: QSHORT[f.id] || f.q })))));
 function qShow(i) {
   if (i === qCur && qStage.firstChild) return; qCur = i; const f = FINDINGS[i];
