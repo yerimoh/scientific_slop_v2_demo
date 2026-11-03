@@ -1161,3 +1161,32 @@ body::after { display: none; }
 #questions { padding-block: 48px 52px; }
 #questions .qv-h { margin-bottom: 18px; font-size: clamp(22px, 2.2vw, 28px); }
 .qx { grid-template-columns: minmax(0, 1fr) minmax(0, 440px); } .qx-art svg { max-height: 200px; }
+/* measurement steps as a player */
+.rs-top { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.rs-play { flex: none; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.rs-play:hover { border-color: var(--ink-3); }
+.rs-row { cursor: pointer; transition: opacity .4s; }
+.rs-row:not(.last)::before { content: ""; position: absolute; left: 13px; top: 46px; bottom: -14px; width: 2px; border-radius: 2px; background: var(--line); }
+.rs-row:not(.last)::after { content: ""; position: absolute; left: 13px; top: 46px; bottom: -14px; width: 2px; border-radius: 2px; background: linear-gradient(var(--structure), var(--argument), var(--artifacts)); transform: scaleY(0); transform-origin: top; transition: transform 2s linear; }
+.rs-row.done::after { transform: scaleY(1); transition-duration: .3s; }
+.rs-row.cur:not(.last)::after { transform: scaleY(1); }
+.rs-row.todo { opacity: .38; }
+.rs-n > b { transition: background .3s, border-color .3s, color .3s, box-shadow .3s; position: relative; z-index: 1; }
+.rs-row.done .rs-n > b { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.rs-row.cur .rs-n > b { border-color: var(--ink); box-shadow: 0 0 0 5px color-mix(in srgb, var(--ink) 12%, transparent); }
+.rs-row.last .rs-n > b, .rs-row.last.cur .rs-n > b, .rs-row.last.done .rs-n > b { background: linear-gradient(135deg, var(--structure), var(--argument), var(--artifacts)); border-color: transparent; color: #fff; }
+/* the example card: theme colours, and it arrives when its step is reached */
+.rs-ex { background: var(--surface); color: var(--ink); border: 1px solid var(--line); transition: opacity .45s, transform .45s, border-color .3s, box-shadow .3s; }
+.rs-ex small { color: var(--ink-3); } .rs-ex .mw-q { color: var(--ink); } .rs-ex .mw-ids code { background: var(--soft); color: var(--ink); } .rs-wait { color: var(--ink-4); }
+.rs-row.todo .rs-ex { opacity: 0; transform: translateY(8px); }
+.rs-row.cur .rs-ex { border-color: var(--ink-3); box-shadow: 0 12px 28px -20px rgba(0,0,0,.5); }
+.rs-ex .mw-none { color: var(--argument-deep) !important; }
+/* the verdict: three runs drop in, then the final vote */
+.rs-row.cur .mw-r, .rs-row.cur .mw-to, .rs-row.cur .mw-final { animation: vote .35s both; }
+.rs-row.cur .mw-r:nth-child(1) { animation-delay: .3s; } .rs-row.cur .mw-r:nth-child(2) { animation-delay: .7s; } .rs-row.cur .mw-r:nth-child(3) { animation-delay: 1.1s; }
+.rs-row.cur .mw-to { animation-delay: 1.5s; } .rs-row.cur .mw-final { animation: verdict .45s 1.7s both; }
+@keyframes vote { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+@keyframes verdict { 0% { opacity: 0; transform: scale(.6); } 70% { transform: scale(1.12); } 100% { opacity: 1; transform: none; } }
+.mw-score { opacity: .35; transition: opacity .5s; } .mw-score.shown { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .rs-row::after { transition: none; } .rs-row.cur .mw-r, .rs-row.cur .mw-to, .rs-row.cur .mw-final { animation: none; } }
+.mw-r, .mw-final, .mw-to { display: inline-block; }

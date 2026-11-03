@@ -1261,7 +1261,21 @@ function measureSteps(it) {
   const pick = h('select', { class: 'rs-pick', 'aria-label': 'Which unit the example column follows' });
   const head = h('div', { class: 'rs-head' }, h('span', { class: 'rs-hl', text: 'Step' }), h('span', { class: 'rs-hl', text: 'What happens' }), h('span', { class: 'rs-hl' }, 'On a real paper: ', pick));
   const score = h('p', { class: 'mw-score' });
-  const box = h('div', { class: 'rs-wrap' }, h('p', { class: 'rs-line', text: m.line }), head, h('ol', { class: 'rs' }, ...rows), score);
+  // a player: the steps run one after another on the chosen unit, each example appears when its step is reached
+  const play = h('button', { type: 'button', class: 'rs-play', text: '▶ Play the steps' });
+  const box = h('div', { class: 'rs-wrap' }, h('div', { class: 'rs-top' }, h('p', { class: 'rs-line', text: m.line }), play), head, h('ol', { class: 'rs' }, ...rows), score);
+  const seq = { s: -1, t: 0 };
+  const setStep = k => { seq.s = k; rows.forEach((r, j) => { r.classList.toggle('done', j < k); r.classList.toggle('cur', j === k); r.classList.toggle('todo', j > k); });
+    score.classList.toggle('shown', k >= rows.length - 1); };
+  const stop = () => { clearTimeout(seq.t); seq.t = 0; play.textContent = '↻ Replay'; };
+  const run = () => { clearTimeout(seq.t); play.textContent = '❚❚ Playing'; setStep(-1);
+    const next = k => { setStep(k); if (k < rows.length - 1) seq.t = setTimeout(() => next(k + 1), reduce ? 0 : 2300); else stop(); };
+    seq.t = setTimeout(() => next(0), 350); };
+  play.addEventListener('click', () => seq.t ? stop() : run());
+  rows.forEach((r, k) => r.addEventListener('click', () => { stop(); setStep(k); }));
+  setStep(rows.length - 1);
+  const seen = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { seen.disconnect(); run(); } }, { threshold: .25 });
+  requestAnimationFrame(() => seen.observe(box));
   fetch('measure/' + it.id + '.json').then(r => r.json()).then(data => {
     const U = data.units, pre = data.meta.pre || {}; if (!U.length) { ex.forEach(e => e.replaceChildren(h('span', { class: 'rs-wait', text: 'no unit on this paper' }))); return; }
     const VW = { FAIL: 'slop', PASS: 'fine', UNRESOLVED: 'open', NOT_APPLICABLE: 'n/a' };
@@ -1273,7 +1287,7 @@ function measureSteps(it) {
       h('div', {}, u.found.length ? h('span', { class: 'mw-ids' }, ...u.found.map(x => h('code', { text: x }))) : h('span', { class: 'mw-none', text: 'nothing' }), u.found_note ? h('small', { text: u.found_note }) : null, u.judge_line ? h('small', { text: u.judge_line }) : null),
       h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: u.final_reason }) : null)];
       ex.forEach((e, j) => e.replaceChildren(vals[j] || h('span', { text: '—' }))); };
-    pick.addEventListener('change', () => fill(+pick.value));
+    pick.addEventListener('change', () => { fill(+pick.value); run(); });
     const k0 = Math.max(0, U.findIndex(u => u.final === 'FAIL')); pick.value = k0; fill(k0);
     const c = { FAIL: 0, PASS: 0, UNRESOLVED: 0 }; U.forEach(u => { if (u.final in c) c[u.final]++; });
     const F = c.FAIL + (pre.FAIL || 0), P = c.PASS + (pre.PASS || 0), UU = c.UNRESOLVED + (pre.UNRESOLVED || 0), D = F + P;
