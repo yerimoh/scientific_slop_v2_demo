@@ -517,148 +517,148 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL';
 const MEASURE = {
   '1-1': { unit: 'claim', units: 'claims',
-    stages: [['Claim', 'the paper says', 'paper'], ['Needs', 'what would prove it?', Q], ['Found', 'is it in the paper?', QC], ['Verdict', '3 runs vote', CD]],
+    stages: [['Claim', 'stated as fact', 'paper'], ['Needs', 'what would prove it?', Q], ['Found', 'in the paper?', QC], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['How the claims are found', [[CD, 'The paper is cut into numbered sentences (A04, S2.066) and each table into rows (T1).'], [Q, 'Reads the whole paper and lists every sentence that states a result or a property as fact.'], [Q, 'Tags each one: own result · method property · fact about prior work.'], [CD, 'The same claim repeated in the abstract, intro and conclusion counts once.'], [CD, 'Procedures (“we compute…”), hypotheses and common knowledge are not claims → NA.']]],
-      ['How the needed evidence is named', [[Q, 'For each claim, writes in one sentence what a careful reader would require: an experiment, a measurement, a proof, the method description, or a citation.'], [Q, 'Is never asked “is this sentence bad?”. It only says what would prove the claim.']]],
-      ['How the paper is searched', [[Q, 'Points at ids that bear on the claim: tables, figures, result sentences, method text, citations.'], [CD, 'Drops what cannot count: the sentence itself, restatements in abstract / intro / conclusion, ids that do not exist.'], [CD, 'Adds any table that contains the claim’s own numbers.'], [Q, 'A second call (the judge) sees the surviving material verbatim and answers supported / partially / unsupported / ambiguous / common knowledge, plus what is missing.']]],
-      ['How the verdict is decided', [[CD, 'Fixed rules, top to bottom: prior-work fact with a citation → PASS · procedure or definition → NA · supported or partially → PASS · unsupported with nothing valid → FAIL.'], [CD, 'Unsupported but the claim’s numbers are in a table, or the only evidence is a figure → U, for a human.'], [CD, 'All of this runs 3 times (1 greedy + 2 sampled). FAIL only if 2+ runs say FAIL and none says PASS. Found in fewer than 2 runs, or runs disagree → U.'], [CD, 'score = FAIL / (FAIL + PASS). U is reported as coverage, NA is not counted.']]]],
-    line: 'Qwen2.5-32B does the reading. Code checks every id it names, applies the rules, and counts. Three runs vote; when they disagree the claim stays open (U).' },
+      ['Find the claims', [[CD, 'Split the paper into numbered sentences (A04, S2.066) and table rows (T1).'], [Q, 'List every sentence that states a result or property as fact.'], [Q, 'Tag each: own result · method property · prior-work fact.'], [CD, 'A claim repeated in abstract, intro and conclusion counts once.'], [CD, 'Procedures (“we compute…”), hypotheses, common knowledge → NA.']]],
+      ['Name the evidence needed', [[Q, 'One sentence: what a careful reader would require (experiment, measurement, proof, method description, citation).'], [Q, 'No quality judgment here, only what would prove the claim.']]],
+      ['Search the paper', [[Q, 'Point to ids that bear on the claim: tables, figures, result sentences, method text, citations.'], [CD, 'Discard the claim itself, its restatements in abstract / intro / conclusion, and ids that do not exist.'], [CD, 'Add any table containing the claim’s numbers.'], [Q, 'Judge (second call) reads the remaining material verbatim: supported · partial · unsupported · ambiguous · common knowledge, plus what is missing.']]],
+      ['Decide PASS / FAIL / U', [[CD, 'Rules, in order: cited prior-work fact → PASS · procedure or definition → NA · supported or partial → PASS · unsupported, no valid evidence → FAIL.'], [CD, 'Unsupported, but its numbers appear in a table or only a figure supports it → human review (U).'], [CD, 'Three runs (1 greedy, 2 sampled). FAIL needs ≥2 FAIL votes and no PASS. Found in <2 runs or split → U.'], [CD, 'score = FAIL / (FAIL + PASS). U reported as coverage; NA excluded.']]]],
+    line: 'Qwen2.5-32B reads; code checks every id, applies the rules and counts. Three runs vote; split votes stay U.' },
   '1-2': { unit: 'claim', units: 'supported claims',
     stages: [['Claim', 'passed 1-1: evidence exists', 'paper'], ['Covers', 'what the evidence reaches', Q], ['Asserts', 'what the claim reaches', Q], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['Which claims are checked', [[CD, 'Only claims that passed 1-1: the evidence is there. The question is whether the words go further than it.'], [CD, 'Claims with no evidence at all stay in 1-1; they are not double-counted here.']]],
-      ['How the covered range is read', [[Q, 'Lists what the material actually covers: which datasets, tasks, models, conditions (the covered items).'], [Q, 'Reads the claim on four axes: scope, conditions, effect size and direction, certainty (“significantly”, “causes”, “guarantees”).']]],
-      ['How the asserted words are pinned down', [[Q, 'Quotes the words that reach past the evidence, verbatim, and the classes the claim speaks for (“adaptive attackers”, “across domains”).'], [CD, 'Checks the quoted words really occur in the claim sentence. Phrases longer than 8 words and proper names (RULER, CIFAR-10) do not count.']]],
-      ['How the verdict is decided', [[CD, 'FAIL if the quoted words are in the sentence, or if a generic class + qualifier is covered by at most 2 items.'], [CD, '“significantly” alone never fails a claim; it is counted separately as sig_without_test.'], [CD, 'A limitation sentence cancels the overreach only if it limits the same claim.'], [CD, '3 runs vote as in 1-1. score = FAIL / (FAIL + PASS).']]]],
-    line: 'Qwen2.5-32B reads the evidence and the claim side by side and quotes the overreaching words. Code verifies the quote and the class count. Three runs vote.' },
+      ['Select the claims', [[CD, 'Input: claims that passed 1-1. Test: does the wording exceed the evidence?'], [CD, 'Claims with no evidence stay in 1-1 (no double counting).']]],
+      ['Read the covered range', [[Q, 'List what the evidence covers: datasets, tasks, models, conditions.'], [Q, 'Read the claim on four axes: scope, conditions, effect size and direction, certainty (“significantly”, “causes”, “guarantees”).']]],
+      ['Quote the overreach', [[Q, 'Quote verbatim the words that exceed the evidence, and the classes the claim speaks for (“adaptive attackers”, “across domains”).'], [CD, 'Verify the quote occurs in the claim. Exclude phrases over 8 words and proper names (RULER, CIFAR-10).']]],
+      ['Decide PASS / FAIL', [[CD, 'FAIL: quote found in the sentence, or a generic class + qualifier covered by ≤2 items.'], [CD, '“significantly” alone never fails; counted separately as sig_without_test.'], [CD, 'A limitation cancels the overreach only if it limits the same claim.'], [CD, 'Three runs vote, as in 1-1. score = FAIL / (FAIL + PASS).']]]],
+    line: 'Qwen2.5-32B compares evidence and claim and quotes the overreach; code verifies the quote and the class count. Three runs vote.' },
   '1-3': { unit: 'statement', units: 'statements',
-    stages: [['Statement', 'needs a case to be understood', 'paper'], ['Reader asks', 'what would it look like?', Q], ['Example', 'is one shown?', QC], ['Verdict', '3 runs vote', CD]],
+    stages: [['Statement', 'needs a case to be understood', 'paper'], ['Reader asks', 'what would it look like?', Q], ['Example', 'shown?', QC], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['Which statements need an example', [[CD, 'Candidates: sentences with a named category, a qualitative adjective (coherent, stealthy), “we introduce / define”, or a phenomenon a figure is said to show.'], [Q, 'Keeps those a reader cannot check from definitions, formulas or numbers alone.'], [CD, 'Captions and “Figure X shows…” sentences are not units: the figure is the exhibit.']]],
-      ['How the reader’s question is written', [[Q, 'Writes the concrete question a reader would ask (“what does a poisoned demonstration look like?”).'], [Q, 'Marks the statement sufficient_without_example when a definition or a number already answers it.']]],
-      ['How an example is searched', [[Q, 'Searches the whole paper for a real case: an input with its output, an error, a trigger list, a visualization.'], [Q, 'A second call (the judge) sees every caption and checks that the exhibit shows exactly this category or property.'], [CD, 'The example must share content words with the statement.']]],
-      ['How the verdict is decided', [[CD, 'A real case → PASS. A made-up example (“suppose…”) passes only for formats and procedures, never for something claimed to have happened.'], [CD, 'No example anywhere → FAIL. Runs disagree → U.'], [CD, 'score = FAIL / (FAIL + PASS). Small counts: read the number, not the ratio.']]]],
-    line: 'Qwen2.5-32B asks the reader’s question and looks for a real case. Code checks the match. Three runs vote.' },
+      ['Select the statements', [[CD, 'Candidates: named categories, qualitative adjectives (coherent, stealthy), “we introduce / define”, phenomena a figure is said to show.'], [Q, 'Keep those not checkable from definitions, formulas or numbers alone.'], [CD, 'Exclude captions and “Figure X shows…”: the figure is the exhibit.']]],
+      ['Pose the reader’s question', [[Q, 'Write the reader’s concrete question (“what does a poisoned demonstration look like?”).'], [Q, 'Already answered by a definition or number → sufficient_without_example.']]],
+      ['Search for an example', [[Q, 'Search the whole paper for a real case: input with output, error, trigger list, visualization.'], [Q, 'Judge (second call) reads every caption: does the exhibit show this exact category or property?'], [CD, 'The example must share content words with the statement.']]],
+      ['Decide PASS / FAIL / U', [[CD, 'Real case → PASS. Hypothetical (“suppose…”) → PASS only for formats and procedures, never for claimed events.'], [CD, 'No example → FAIL. Split runs → U.'], [CD, 'score = FAIL / (FAIL + PASS). Small counts: read the count, not the ratio.']]]],
+    line: 'Qwen2.5-32B poses the reader’s question and searches for a real case; code checks the match. Three runs vote.' },
   '1-4': { unit: 'cited work', units: 'cited works',
-    stages: [['Cited work', 'one citation key', 'paper'], ['Role', 'what it is to this paper', Q], ['Relation', 'a sentence that connects them?', QC], ['Verdict', '3 runs vote', CD]],
+    stages: [['Cited work', 'one citation key', 'paper'], ['Role', 'what it is to this paper', Q], ['Relation', 'stated in a sentence?', QC], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['Which citations are units', [[CD, 'Every citation key gets its sentences and its bib title.'], [CD, 'Units: works cited in Related Work, baselines in the experiments, works cited in the intro with a limitation or contrast.'], [CD, 'Not units: lists of 3+ works in one sentence, surveys and tutorials, datasets, tools and metrics.']]],
-      ['How the role is assigned', [[Q, 'Assigns a role: built on · related method · baseline · dataset, metric or tool · background fact.'], [Q, 'Points at sentences that state the relation to this paper.'], [CD, 'Adds candidates of its own: first-person or contrast sentences in the citing paragraph (“these methods…, we instead…”), and sentences naming the work in the first person.']]],
-      ['How a relation is recognised', [[Q, 'The judge reads each candidate: does it say how this work and the current paper relate, or state one property of the current method?'], [CD, 'A relation sentence must use the first person or the method’s name. “Unlike prior work,” on its own does not count.']]],
-      ['How the verdict is decided', [[CD, 'A relation sentence → PASS. A baseline compared in a first-person sentence → PASS.'], [CD, 'No relation sentence → FAIL. Survey or background citations → NA.'], [CD, '3 runs vote. score = FAIL / (FAIL + PASS). Deleting citations shows up as a smaller n_positioning.']]]],
-    line: 'Qwen2.5-32B assigns each cited work a role and finds the sentence that relates it to this paper. Code requires the first person or the method name. Three runs vote.' },
+      ['Select the citations', [[CD, 'Collect each citation key’s sentences and bib title.'], [CD, 'Units: Related Work citations, experimental baselines, intro citations with a limitation or contrast.'], [CD, 'Excluded: lists of 3+ works in one sentence, surveys, tutorials, datasets, tools, metrics.']]],
+      ['Assign a role', [[Q, 'Role: built on · related method · baseline · dataset, metric or tool · background fact.'], [Q, 'Point to sentences that state the relation to this paper.'], [CD, 'Add candidates: first-person or contrast sentences in the citing paragraph (“these methods…, we instead…”), first-person sentences naming the work.']]],
+      ['Recognise a relation', [[Q, 'Judge reads each candidate: does it relate the work to this paper, or only describe this method?'], [CD, 'Requires the first person or the method name. “Unlike prior work,” alone does not count.']]],
+      ['Decide PASS / FAIL / NA', [[CD, 'Relation sentence → PASS. Baseline compared in a first-person sentence → PASS.'], [CD, 'No relation sentence → FAIL. Survey or background citation → NA.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
+    line: 'Qwen2.5-32B assigns each cited work a role and finds the sentence relating it to this paper; code requires the first person or the method name. Three runs vote.' },
   '2-1': { unit: 'finding', units: 'findings',
     stages: [['Finding', 'a key result in the body', Q], ['Shown in', 'the table or sentence', CD], ['Up front?', 'abstract and intro', Q], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['How the key findings are listed', [[Q, 'Sees the body only (no abstract, no intro) and writes the research question in one sentence.'], [Q, 'Lists up to 6 findings that answer it or change how a contribution should be read, including unfavourable ones, each with its condition.'], [CD, 'Secondary results, limitations and future work are dropped.']]],
-      ['Where the finding lives', [[CD, 'Each finding keeps the ids it rests on: result sentences, tables, figures.']]],
-      ['How the front matter is checked', [[Q, 'The judge gets the finding and the full abstract + introduction and answers two questions: is the meaning conveyed (a higher-level summary is fine, the same number is not required)? is the important condition conveyed?'], [CD, 'Also measures word overlap between the finding and every abstract / intro sentence.']]],
-      ['How the verdict is decided', [[CD, 'Meaning or condition not conveyed → FAIL.'], [CD, 'But if some abstract / intro sentence shares 40%+ of the content words, it is held for a human (U) instead.'], [CD, '3 runs vote. score = FAIL / (FAIL + PASS). Adding one number to the abstract does not flip condition_conveyed.']]]],
-    line: 'Qwen2.5-32B reads the body first, then checks the abstract and introduction for each finding. Code guards with word overlap. Three runs vote.' },
+      ['Extract the key results', [[Q, 'From the body only, identify the paper’s research question.'], [Q, 'Extract up to six findings that bear directly on the research question. Keep negative results and qualifying conditions.'], [CD, 'Exclude secondary results, limitations, and future work.']]],
+      ['Trace each finding to its source', [[CD, 'Record the source IDs for each finding: result sentences, tables, and figures.']]],
+      ['Check the abstract and introduction', [[Q, 'Compare each finding against the abstract and introduction:'], [Q, 'Is the finding conveyed in substance? Exact numbers are not required.'], [Q, 'Is its key condition conveyed?'], [CD, 'Compute word overlap with each abstract / intro sentence.']]],
+      ['Decide PASS / FAIL / U', [[CD, 'Finding or condition not conveyed → FAIL.'], [CD, '≥40% content-word overlap → human review (U).'], [CD, 'Three independent runs vote; score = FAIL / (FAIL + PASS).']]]],
+    line: 'Qwen2.5-32B reads the body first, then checks the abstract and introduction; code guards with word overlap. Three runs vote.' },
   '2-2': { unit: 'question', units: 'questions',
-    stages: [['Question', 'needs 2+ results to answer', Q], ['Results', 'the ones to read together', Q], ['Joint sentence', 'does the paper connect them?', QC], ['Verdict', '3 runs vote', CD]],
+    stages: [['Question', 'needs 2+ results to answer', Q], ['Results', 'read together', Q], ['Joint sentence', 'connects them?', QC], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['How the questions are found', [[Q, 'Lists research questions that only two or more results answer together (“does module A help when data is small?”).']]],
-      ['Which results belong to it', [[Q, 'Names the result ids (tables, figures, sentences) that bear on the question, at least two.'], [CD, 'Fewer than two valid results → U.']]],
-      ['How the joint reading is checked', [[Q, 'Points at the sentence(s) that interpret the results together.'], [Q, 'The judge sees the result summaries and that sentence and grades it: specific (names the observed numbers, direction or condition) · generic · none.']]],
-      ['How the verdict is decided', [[CD, 'specific → PASS. generic or none → FAIL.'], [CD, '“Together, these results demonstrate the effectiveness of our approach.” is generic and does not help.'], [CD, '3 runs vote. score = FAIL / (FAIL + PASS).']]]],
-    line: 'Qwen2.5-32B finds the questions and the sentence that reads the results together. Code requires at least two results. Three runs vote.' },
+      ['Find the questions', [[Q, 'List research questions that need two or more results to answer (“does module A help when data is small?”).']]],
+      ['Link the results', [[Q, 'Name the result ids (tables, figures, sentences) bearing on each question; at least two.'], [CD, 'Fewer than two valid results → U.']]],
+      ['Check the joint reading', [[Q, 'Point to the sentence(s) that interpret the results together.'], [Q, 'Judge grades it against the result summaries: specific (names observed numbers, direction or condition) · generic · none.']]],
+      ['Decide PASS / FAIL / U', [[CD, 'specific → PASS. generic or none → FAIL.'], [CD, 'Generic: “Together, these results demonstrate the effectiveness of our approach.”'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
+    line: 'Qwen2.5-32B finds the questions and the sentence that reads the results together; code requires ≥2 results. Three runs vote.' },
   '2-3': { unit: 'name', units: 'names',
-    stages: [['Name', 'a label that needs a definition', CD], ['Where', 'the table or sentence it appears in', CD], ['Defined?', 'a sentence that says what it is', QC], ['Verdict', '3 runs vote', CD]],
+    stages: [['Name', 'a label that needs a definition', CD], ['Where', 'table or sentence', CD], ['Defined?', 'a sentence saying what it is', QC], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['Which names are units', [[CD, 'Row and column labels of result tables (variant names, metric abbreviations) and names in results prose like “Phase-0 analysis” or “retrieval margin”.'], [CD, 'Dropped: formatting residue, generic labels (Avg., Ours, Vanilla), standard benchmark abbreviations (MMLU, SQA…).']]],
-      ['Where it appears', [[CD, 'The table (with its caption) or the sentence that uses the name.']]],
-      ['How a definition is searched', [[CD, 'First the code: a prose sentence that contains all the content words of the label → resolved, no model call.'], [Q, 'Otherwise the model searches the whole paper for the defining sentence.'], [Q, 'Still nothing: the judge checks the nearest candidate sentences and whether the name is a standard one.']]],
-      ['How the verdict is decided', [[CD, 'A definition, a consistent name or a reference → PASS. Standard name → NA. No sentence identifies it → FAIL.'], [CD, 'A broken \\ref may be a parser limit, so it is only recorded as U.'], [CD, '3 runs vote. score = FAIL / (FAIL + PASS). Labels the code resolved are counted but not animated here.']]]],
-    line: 'Code collects the labels and resolves the easy ones. Qwen2.5-32B searches for the rest. Three runs vote.' },
+      ['Collect the names', [[CD, 'Row and column labels of result tables (variant names, metric abbreviations); names in results prose (“Phase-0 analysis”, “retrieval margin”).'], [CD, 'Excluded: formatting residue, generic labels (Avg., Ours, Vanilla), standard benchmark abbreviations (MMLU, SQA…).']]],
+      ['Locate each use', [[CD, 'The table with its caption, or the sentence using the name.']]],
+      ['Search for a definition', [[CD, 'Prose sentence containing all content words of the label → resolved by code, no model call.'], [Q, 'Otherwise search the whole paper for the defining sentence.'], [Q, 'Still none: judge checks the nearest candidates and whether the name is standard.']]],
+      ['Decide PASS / FAIL / NA / U', [[CD, 'Definition, consistent name or reference → PASS. Standard name → NA. Unidentified → FAIL.'], [CD, 'Broken \\ref → U (possible parser limit).'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS). Code-resolved labels: counted, not animated.']]]],
+    line: 'Code collects the labels and resolves the easy ones; Qwen2.5-32B searches for the rest. Three runs vote.' },
   '2-4': { unit: 'proposition', units: 'propositions',
-    stages: [['Figure says', 'one claim the overview makes', QV], ['Text says', 'the Method / Setup sentence', Q], ['Match?', 'consistent · conflicting · unverifiable', Q], ['Verdict', '3 runs vote', CD]],
+    stages: [['Figure says', 'one claim of the overview', QV], ['Text says', 'Method / Setup sentence', Q], ['Match?', 'consistent · conflicting · unverifiable', Q], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['How the figure is read', [[CD, 'Picks the body figure whose caption or label says overview / framework / pipeline (else the first figure).'], [QV, 'Qwen2.5-VL-32B transcribes it: legends, axes, panels, numbers, box text, what the arrows connect.'], [Q, 'Turns the transcript into propositions (“three scores are summed”, “12 attention layers”).']]],
-      ['How the text is matched', [[Q, 'For each proposition, points at the Method or Setup sentence that states the same thing.']]],
-      ['How the match is graded', [[Q, 'The judge sees transcript + caption + those sentences and grades each proposition: consistent · conflicting · unverifiable.']]],
-      ['How the verdict is decided', [[CD, 'conflicting with a valid text id → FAIL. consistent → PASS. No matching sentence → U.'], [CD, 'Copying a figure’s names or numbers into the text does not help if the structure or condition still differs.'], [CD, 'Candidate item: reported separately, not in the 17-item score.']]]],
+      ['Read the overview figure', [[CD, 'Take the body figure whose caption or label says overview / framework / pipeline; else the first figure.'], [QV, 'Qwen2.5-VL-32B transcribes legends, axes, panels, numbers, box text, arrow connections.'], [Q, 'Convert the transcript into propositions (“three scores are summed”, “12 attention layers”).']]],
+      ['Match the text', [[Q, 'For each proposition, point to the Method or Setup sentence stating the same thing.']]],
+      ['Grade the match', [[Q, 'Judge reads transcript, caption and those sentences: consistent · conflicting · unverifiable.']]],
+      ['Decide PASS / FAIL / U', [[CD, 'conflicting, with a valid text id → FAIL. consistent → PASS. No matching sentence → U.'], [CD, 'Candidate item: reported separately, outside the 17-item score.']]]],
     line: 'Qwen2.5-VL transcribes the overview figure; Qwen2.5-32B matches each proposition to the text. Three runs vote. Candidate item, reported separately.' },
   '3-1': { unit: 'choice', units: 'choices',
     stages: [['Choice', 'a setting that shapes the result', Q], ['Kind', 'data · baseline · value · metric · backbone', Q], ['Reason', 'why this, not another?', QC], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['Which choices are units', [[CD, 'Candidates: sentences with setting words (“we use / set / choose”, threshold, window, k=, dataset and baseline names) plus a number or formula.'], [Q, 'Keeps choices that affect the conclusion: data, subsets and sizes · baselines · method-specific values (layer, keep rate, threshold, k) · metrics and criteria · backbone.'], [CD, 'Minor settings → NA.']]],
-      ['How the kind is set', [[Q, 'Classes a–e and importance (central / minor).']]],
-      ['How a reason is searched', [[Q, 'Points at every id that gives a reason, appendix included: an ablation table, a cited standard, a constraint, an argument.'], [Q, 'The judge sees the reason text with the choice sentence and 4 sentences around it and decides: specific reason (why this value, not another) · describes only · generic phrase. It quotes the reason verbatim.'], [CD, 'The quote must occur in the text.']]],
-      ['How the verdict is decided', [[CD, 'A stock phrase (“for efficiency”, “following common practice” with no source) → FAIL at once.'], [CD, 'Baselines, metrics, backbones: a source → PASS; no reason → U (standard comparisons are not failed by rule).'], [CD, 'Data and key values: describes only / generic → FAIL; a specific reason in the text → PASS.'], [CD, '3 runs vote. score = FAIL / (FAIL + PASS).']]]],
-    line: 'Qwen2.5-32B lists the choices and quotes the reason the paper gives. Code fails stock phrases and verifies the quote. Three runs vote.' },
+      ['Select the choices', [[CD, 'Candidates: setting words (“we use / set / choose”, threshold, window, k=, dataset and baseline names) with a number or formula.'], [Q, 'Keep choices that affect the conclusion: data, subsets, sizes · baselines · method-specific values (layer, keep rate, threshold, k) · metrics and criteria · backbone.'], [CD, 'Minor settings → NA.']]],
+      ['Classify', [[Q, 'Class a–e; importance central / minor.']]],
+      ['Find the reason', [[Q, 'Point to every id that gives a reason, appendix included: ablation table, cited standard, constraint, argument.'], [Q, 'Judge reads the reason with the choice sentence and 4 surrounding sentences: specific reason (why this value, not another) · description only · generic phrase. Quotes the reason verbatim.'], [CD, 'The quote must occur in the text.']]],
+      ['Decide PASS / FAIL / U', [[CD, 'Stock phrase (“for efficiency”, unsourced “following common practice”) → FAIL.'], [CD, 'Baselines, metrics, backbones: source → PASS; no reason → U (standard comparisons not failed by rule).'], [CD, 'Data and key values: description only or generic → FAIL; specific reason → PASS.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
+    line: 'Qwen2.5-32B lists the choices and quotes the stated reason; code fails stock phrases and verifies the quote. Three runs vote.' },
   '4-1': { unit: 'sentence', units: 'sentences',
-    stages: [['Sentence', 'eligible prose', CD], ['Delete it', 'read the context without it', Q], ['Lost?', 'information or function', Q], ['Verdict', '3 runs vote', CD]],
+    stages: [['Sentence', 'eligible prose', CD], ['Delete it', 'context without it', Q], ['Lost?', 'information or function', Q], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['Which sentences are read', [[CD, 'All prose sentences of 8+ tokens. Not captions, ethics, acknowledgements, boilerplate.'], [CD, 'Candidates: sentences with no number, formula, citation, reference or paper-specific term, plus a random 10% of the rest as a spot check. A name alone is not information.'], [CD, 'Sentences that are not candidates pass by rule; they are counted but not animated here.']]],
-      ['The deletion test', [[Q, 'Sees the sentence with its neighbours and imagines it gone.']]],
-      ['What would be lost', [[Q, 'Answers: (i) specific information about this study, (ii) a needed function (background, transition, guidance), or nothing.']]],
-      ['How the verdict is decided', [[CD, 'no_loss → FAIL. Anything else → PASS.'], [CD, 'The denominator is every eligible sentence, so the score is the share of empty prose.'], [CD, '3 runs vote.']]]],
-    line: 'Code picks the candidates; Qwen2.5-32B runs the deletion test in context. The denominator is all eligible sentences. Three runs vote.' },
+      ['Select the sentences', [[CD, 'All prose sentences of ≥8 tokens. Excluded: captions, ethics, acknowledgements, boilerplate.'], [CD, 'Candidates: no number, formula, citation, reference or paper-specific term; plus a random 10% spot check. A name alone is not information.'], [CD, 'Non-candidates → PASS by rule (counted, not animated).']]],
+      ['Delete the sentence', [[Q, 'Read the neighbours without it.']]],
+      ['Check what is lost', [[Q, 'Lost: (i) study-specific information · (ii) a needed function (background, transition, guidance) · nothing.']]],
+      ['Decide PASS / FAIL', [[CD, 'no_loss → FAIL. Otherwise → PASS.'], [CD, 'Denominator: all eligible sentences, so the score is the share of empty prose.'], [CD, 'Three runs vote.']]]],
+    line: 'Code selects candidates; Qwen2.5-32B runs the deletion test in context. Denominator: all eligible sentences. Three runs vote.' },
   '4-2': { unit: 'term', units: 'terms',
-    stages: [['Term', 'needs a meaning to be understood', CD], ['Used', 'where and how often', CD], ['Defined?', 'a sentence that gives the meaning', QC], ['Verdict', '3 runs vote', CD]],
+    stages: [['Term', 'needs a meaning to be understood', CD], ['Used', 'where and how often', CD], ['Defined?', 'a sentence giving the meaning', QC], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['Which terms are units', [[CD, 'Abbreviations, hyphenated compounds used twice or more, quoted terms, names like Phase-0, two-word metrics (“X rate / score / ratio / margin”).'], [CD, 'Dropped: appendix-only terms, names right after a citation, names already in the table inventory.']]],
-      ['Where it is used', [[CD, 'First use and every occurrence are collected.']]],
-      ['How a definition is searched', [[CD, 'The code first: a parenthetical expansion (“Self-Recall Error (SRE)”) or a cue in the same paragraph (“we call”, “is defined as”, “denotes”).'], [Q, 'Otherwise the model searches the paper: defined here (id) · standard term · undefined · name variant.'], [Q, 'Still undefined: the judge re-reads every sentence that uses the term. Spelling out an abbreviation, or “X is our X module”, is not a definition.']]],
-      ['How the verdict is decided', [[CD, 'A valid defining sentence → PASS. Standard term or a name → NA. Undefined after both passes → FAIL. Name variants are recorded separately.'], [CD, '3 runs vote. score = FAIL / (FAIL + PASS).']]]],
-    line: 'Code finds the terms and the easy definitions; Qwen2.5-32B searches for the rest and re-reads every use. Three runs vote.' },
+      ['Collect the terms', [[CD, 'Abbreviations, hyphenated compounds used ≥2 times, quoted terms, names like Phase-0, two-word metrics (“X rate / score / ratio / margin”).'], [CD, 'Excluded: appendix-only terms, names right after a citation, names already in the table inventory.']]],
+      ['Locate each use', [[CD, 'Record the first use and every occurrence.']]],
+      ['Search for a definition', [[CD, 'Code first: parenthetical expansion (“Self-Recall Error (SRE)”) or a same-paragraph cue (“we call”, “is defined as”, “denotes”).'], [Q, 'Otherwise search the paper: defined here (id) · standard term · undefined · name variant.'], [Q, 'Still undefined: judge re-reads every use. Expanding an abbreviation, or “X is our X module”, is not a definition.']]],
+      ['Decide PASS / FAIL / NA', [[CD, 'Valid definition → PASS. Standard term or name → NA. Undefined after both passes → FAIL. Name variants recorded separately.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
+    line: 'Code finds the terms and easy definitions; Qwen2.5-32B searches for the rest and re-reads every use. Three runs vote.' },
   '4-3': { unit: 'sentence', units: 'sentences',
-    stages: [['Sentence', 'eligible prose', CD], ['Role', 'understand · check · reproduce · limits', Q], ['Any role?', 'or none at all', Q], ['Verdict', '3 runs vote', CD]],
+    stages: [['Sentence', 'eligible prose', CD], ['Role', 'understand · check · reproduce · limits', Q], ['Any role?', 'or none', Q], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['Which sentences are read', [[CD, 'All eligible prose sentences (as in 4-1).']]],
-      ['What a sentence can be for', [[Q, 'Picks sentences that serve none of the reader’s needs: understanding, checking, reproducing, or reading the limits (file-renaming history, anecdotes, implementation chatter unrelated to results).']]],
-      ['How a flag is confirmed', [[Q, 'The judge re-reads the flagged sentence with its context. Preprocessing exceptions, hardware, data constraints and failure conditions are needed information.']]],
-      ['How the verdict is decided', [[CD, 'Confirmed → FAIL. In conference-length papers this is nearly always 0; the sample here shows three sentences that were not flagged.'], [CD, '3 runs vote. score = FAIL / (FAIL + PASS) over all eligible sentences.']]]],
-    line: 'Qwen2.5-32B flags sentences that serve no reader need; a second call confirms in context. Conference papers rarely have any.' },
+      ['Select the sentences', [[CD, 'All eligible prose sentences, as in 4-1.']]],
+      ['Flag sentences with no role', [[Q, 'Flag sentences that serve no reader need (understanding, checking, reproducing, reading the limits): file-renaming history, anecdotes, implementation chatter unrelated to results.']]],
+      ['Confirm in context', [[Q, 'Judge re-reads each flag in context. Preprocessing exceptions, hardware, data constraints, failure conditions count as needed.']]],
+      ['Decide PASS / FAIL', [[CD, 'Confirmed → FAIL. Near zero in conference-length papers; the sample shows three unflagged sentences.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS) over all eligible sentences.']]]],
+    line: 'Qwen2.5-32B flags sentences that serve no reader need; a second call confirms in context. Rare in conference papers.' },
   '4-4': { unit: 'sentence', units: 'later sentences',
     stages: [['Sentence', 'a later one', CD], ['Earlier twin', 'the sentence it overlaps', CD], ['Adds?', 'info · interpretation · reminder · summary · nothing', Q], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['Which sentences are read', [[CD, 'Every later sentence that overlaps an earlier one. Not the abstract, captions, formula-heavy sentences, code-release lines.'], [CD, 'Sentences with no overlapping earlier sentence pass by rule; they are counted but not animated here.']]],
-      ['How the pair is found', [[CD, 'Candidate pairs: a shared 8-gram across paragraphs, or MiniLM cosine ≥ 0.75 with content-word Jaccard ≥ 0.2.'], [CD, 'The later sentence gets a slot tag: [conclusion], [section opening], [contribution list].']]],
-      ['What the later sentence adds', [[Q, 'Sees both sentences and decides: info · interpretation · needed reminder · summary function (only in a summary slot) · nothing.']]],
-      ['How the verdict is decided', [[CD, 'nothing → FAIL. Abstract → intro preview, abstract / intro → first numeric statement in results, the conclusion’s first paragraph and the contribution list → PASS as summary function.'], [CD, 'Cosine ≥ 0.85 with ≤ 2 new content words and no new number → FAIL whatever the model says (deterministic guard).'], [CD, 'A loose paraphrase (cosine < 0.80, Jaccard < 0.4) judged “nothing” → U.'], [CD, '3 runs vote. score = FAIL / (FAIL + PASS).']]]],
-    line: 'Code finds the overlapping pairs; Qwen2.5-32B says what the later sentence adds. A deterministic guard catches near-copies. Three runs vote.' },
+      ['Select later sentences', [[CD, 'Every later sentence that overlaps an earlier one. Excluded: abstract, captions, formula-heavy sentences, code-release lines.'], [CD, 'No overlapping earlier sentence → PASS by rule (counted, not animated).']]],
+      ['Pair with the earlier twin', [[CD, 'Candidate pairs: shared 8-gram across paragraphs, or MiniLM cosine ≥ 0.75 with content-word Jaccard ≥ 0.2.'], [CD, 'Tag the later sentence’s slot: [conclusion], [section opening], [contribution list].']]],
+      ['Label what it adds', [[Q, 'Read both: info · interpretation · needed reminder · summary function (summary slots only) · nothing.']]],
+      ['Decide PASS / FAIL / U', [[CD, 'nothing → FAIL. Summary function → PASS for: abstract → intro preview, abstract / intro → first numeric result, the conclusion’s first paragraph, the contribution list.'], [CD, 'Deterministic guard: cosine ≥ 0.85, ≤2 new content words, no new number → FAIL regardless of the model.'], [CD, 'Loose paraphrase (cosine < 0.80, Jaccard < 0.4) labelled “nothing” → U.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
+    line: 'Code finds overlapping pairs; Qwen2.5-32B labels what the later sentence adds; a deterministic guard catches near-copies. Three runs vote.' },
   '4-5': { unit: 'figure', units: 'figures',
-    stages: [['Figure', 'a body figure with an image', CD], ['Transcribed', 'what is in the image', QV], ['Explained?', 'elements, numbers, caption, comparisons', Q], ['Verdict', '3 runs vote', CD]],
+    stages: [['Figure', 'body figure with an image', CD], ['Transcribed', 'what the image contains', QV], ['Explained?', 'elements, numbers, caption, comparisons', Q], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['Which figures are units', [[CD, 'Every body figure that has an image. AI papers: the figure file. Human papers: the PDF page found by caption.']]],
-      ['How the image is read', [[QV, 'Qwen2.5-VL-32B transcribes the image. If it says the image and caption do not match → U.']]],
-      ['What the judge checks', [[Q, 'With transcript + caption + the sentences that cite the figure, it lists: (1) elements needed for the purpose that nothing explains, (2) result numbers in the figure and whether their condition can be read, (3) caption vs image conflicts, (4) comparisons the body draws from the figure that cannot be matched to it.'], [CD, 'Only elements a reader must interpret count (arrow and line styles, symbols, colour classes, legends, panels, axis labels), not “the exact value is not printed”.']]],
-      ['How the verdict is decided', [[CD, 'FAIL = a caption conflict, or a figure-only number whose condition cannot be read, or 2+ unexplained structural elements, or 1 unexplained + an uninspectable comparison.'], [CD, 'One weak signal alone → U.'], [CD, '3 runs vote. score = FAIL / (FAIL + PASS). Bound by transcription quality (numbers on bars are sometimes missed).']]]],
-    line: 'Qwen2.5-VL transcribes the image; Qwen2.5-32B checks what the caption and body leave unexplained. Code applies the thresholds. Three runs vote.' },
+      ['Select the figures', [[CD, 'Every body figure with an image: the figure file (AI papers) or the PDF page located by caption (human papers).']]],
+      ['Transcribe the image', [[QV, 'Qwen2.5-VL-32B transcribes the image. Image–caption mismatch → U.']]],
+      ['Check the explanation', [[Q, 'Judge reads transcript, caption and citing sentences, and lists: (1) unexplained elements the figure’s purpose needs, (2) figure numbers and whether their condition is readable, (3) caption–image conflicts, (4) body comparisons that cannot be matched to the figure.'], [CD, 'Count only elements a reader must interpret (arrow and line styles, symbols, colour classes, legends, panels, axis labels), not “exact value not printed”.']]],
+      ['Decide PASS / FAIL / U', [[CD, 'FAIL: caption conflict · figure-only number with unreadable condition · ≥2 unexplained structural elements · 1 unexplained + an uncheckable comparison.'], [CD, 'One weak signal alone → U.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS). Limited by transcription quality (numbers on bars are sometimes missed).']]]],
+    line: 'Qwen2.5-VL transcribes the image; Qwen2.5-32B lists what caption and body leave unexplained; code applies the thresholds. Three runs vote.' },
   '5-1': { unit: 'problem', units: 'problems',
-    stages: [['Presented', 'as worth studying', Q], ['Problem', 'a concrete gap stated?', Q], ['Why', 'a reason it matters?', Q], ['Verdict', '3 runs vote', CD]],
+    stages: [['Presented', 'as worth studying', Q], ['Problem', 'concrete gap stated?', Q], ['Why', 'reason it matters?', Q], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['Which units are read', [[Q, 'Every problem, question or contribution the abstract, intro or related work presents as worth studying, with or without words like “critical”.']]],
-      ['How the problem is located', [[Q, 'Points at the sentence(s) that state the concrete problem or gap (gap ids). “Existing methods face challenges” is not concrete.']]],
-      ['How the reason is located', [[Q, 'Points at the sentence(s) that say why it is worth solving (reason ids): a consequence, a cost, a failure case, or a scientific question. One sentence may do both.'], [Q, 'The judge reads those sentences and answers both questions. No numbers required; a theoretical motive counts.']]],
-      ['How the verdict is decided', [[CD, 'Either answer “no” → FAIL. Both “yes” → PASS.'], [CD, 'Deleting “critical” changes nothing: the unit is what the paper presents as worth studying. Invented numbers are a 5-4 matter.'], [CD, '3 runs vote. score = FAIL / (FAIL + PASS).']]]],
-    line: 'Qwen2.5-32B locates the problem sentence and the reason sentence, then judges both. Three runs vote.' },
+      ['Select the problems', [[Q, 'Every problem, question or contribution that abstract, intro or related work presents as worth studying, with or without words like “critical”.']]],
+      ['Locate the problem', [[Q, 'Point to the sentence(s) stating the concrete problem or gap (gap ids). “Existing methods face challenges” is not concrete.']]],
+      ['Locate the reason', [[Q, 'Point to the sentence(s) stating why it is worth solving (reason ids): consequence, cost, failure case, or scientific question. One sentence may serve both.'], [Q, 'Judge reads those sentences and answers both questions. Numbers not required; a theoretical motive counts.']]],
+      ['Decide PASS / FAIL', [[CD, 'Either answer “no” → FAIL. Both “yes” → PASS.'], [CD, 'Invented numbers → 5-4.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
+    line: 'Qwen2.5-32B locates the problem and reason sentences, then judges both. Three runs vote.' },
   '5-2': { unit: 'contrast', units: 'contrasts',
-    stages: [['Contrast', 'ours vs a named target', CD], ['Target says', 'how the paper describes it', Q], ['Difference', 'shown, or contradicted?', QC], ['Verdict', '3 runs vote', CD]],
+    stages: [['Contrast', 'ours vs a named target', CD], ['Target says', 'how the paper describes it', Q], ['Difference', 'shown or contradicted?', QC], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['Which contrasts are units', [[CD, 'Candidates: first-person sentences with contrast words (unlike, in contrast, rather than, whereas, outperform, compared to…) or a baseline name + comparison word.'], [Q, 'Keeps contrasts with an identifiable target and a stated difference: structural, performance, or cost. “Requires no training” is a structural difference.'], [CD, 'Not units: findings about own data, comparisons between prior works, contrasts between settings of the own method (NA).']]],
-      ['How the target is described', [[Q, 'Records the target, the property attributed to it, and the paper’s own property.'], [CD, 'Collects every sentence in the paper that mentions the target by name.']]],
-      ['How the difference is checked', [[Q, 'The judge reads all target sentences and the evidence and answers: (1) does the paper’s own description of the target contradict the attributed property? (2) is a structural difference traceable to the method or the target description? (3) is a performance or cost difference shown under comparable conditions?'], [CD, 'If the target is a table label, its results are attached automatically.']]],
-      ['How the verdict is decided', [[CD, 'A contradiction → FAIL. Performance or cost difference with no result, or incomparable conditions → FAIL.'], [CD, 'Structural difference traceable → PASS; only a citation → U. Target not identifiable (“prior methods”) → FAIL.'], [CD, '3 runs vote. score = FAIL / (FAIL + PASS). Known over-detection on human papers (settings compared as if they were methods).']]]],
+      ['Select the contrasts', [[CD, 'Candidates: first-person sentences with contrast words (unlike, in contrast, rather than, whereas, outperform, compared to…), or a baseline name + comparison word.'], [Q, 'Keep contrasts with an identifiable target and a stated difference: structural, performance or cost. “Requires no training” = structural.'], [CD, 'NA: findings about own data, comparisons among prior works, contrasts between settings of the own method.']]],
+      ['Describe the target', [[Q, 'Record the target, the property attributed to it, and the paper’s own property.'], [CD, 'Collect every sentence that names the target.']]],
+      ['Check the difference', [[Q, 'Judge reads all target sentences and the evidence: (1) does the paper’s own description of the target contradict the attributed property? (2) is a structural difference traceable to the method or the target description? (3) is a performance or cost difference shown under comparable conditions?'], [CD, 'Target is a table label → its results attached automatically.']]],
+      ['Decide PASS / FAIL / U', [[CD, 'Contradiction → FAIL. Performance or cost difference without results, or under incomparable conditions → FAIL.'], [CD, 'Traceable structural difference → PASS; citation only → U. Unidentifiable target (“prior methods”) → FAIL.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS). Known over-detection on human papers (settings compared as methods).']]]],
     line: 'Code gathers every sentence about the target; Qwen2.5-32B checks the contrast against them and the results. Three runs vote.' },
   '5-3': { unit: 'interpretation', units: 'interpretations',
-    stages: [['Interpretation', 'cause · mechanism · generalization · implication', CD], ['Observation', 'the result it reads from', Q], ['Support', 'something beyond the result itself?', QC], ['Verdict', '3 runs vote', CD]],
+    stages: [['Interpretation', 'cause · mechanism · generalization · implication', CD], ['Observation', 'the result it reads from', Q], ['Support', 'beyond the result itself?', QC], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['Which sentences are units', [[CD, 'Candidates: Experiments, Conclusion and caption sentences with interpretation cues (demonstrating, indicating, suggesting, because, stems from, thus…), and abstract / intro / method sentences with a mechanism cue. “We show that…” contribution lines are not.'], [Q, 'Types each one: restatement · scope summary · mechanism · cause · generalization · implication. The same proposition in abstract, intro and conclusion is one unit.']]],
-      ['How the observation is located', [[Q, 'Points at the observation ids (the table rows or figure) and at any support ids. Notes whether the sentence is hedged (may, we hypothesize).']]],
-      ['How support is checked', [[Q, 'The judge sees the full observation rows and the support and answers: (1) is the interpretation compatible with the numbers (no reading no-change as change)? (2) does the support carry the inferential step, not just restate the observation? (3) is it an immediate inference (removing X loses the gain, so X is needed)? (4) is it just a summary?']]],
-      ['How the verdict is decided', [[CD, 'Contradicts the observation → FAIL. Summary or restatement → NA.'], [CD, 'Support, immediate inference, or a citation → PASS. No support but every occurrence hedged → PASS. Otherwise, stated as fact → FAIL. Implications fail only on contradiction.'], [CD, '3 runs vote. score = FAIL / (FAIL + PASS). Changing “demonstrating” to “suggesting” in one place does not help while the abstract still asserts it.']]]],
-    line: 'Qwen2.5-32B locates the observation and the support, then judges whether the step from one to the other is carried. Three runs vote.' },
+      ['Select the interpretations', [[CD, 'Candidates: Experiments, Conclusion and caption sentences with interpretation cues (demonstrating, indicating, suggesting, because, stems from, thus…); abstract / intro / method sentences with a mechanism cue. Not “We show that…” contribution lines.'], [Q, 'Type: restatement · scope summary · mechanism · cause · generalization · implication. One proposition across abstract, intro and conclusion = one unit.']]],
+      ['Locate the observation', [[Q, 'Point to observation ids (table rows or figure) and any support ids. Note hedging (may, we hypothesize).']]],
+      ['Check the support', [[Q, 'Judge reads the full observation rows and the support: (1) compatible with the numbers (no-change not read as change)? (2) does the support carry the inferential step, beyond restating? (3) immediate inference (removing X loses the gain, so X is needed)? (4) only a summary?']]],
+      ['Decide PASS / FAIL / NA', [[CD, 'Contradicts the observation → FAIL. Summary or restatement → NA.'], [CD, 'Support, immediate inference or citation → PASS. Unsupported but hedged everywhere → PASS. Otherwise, stated as fact → FAIL. Implications fail only on contradiction.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
+    line: 'Qwen2.5-32B locates the observation and the support, then judges whether the inferential step is carried. Three runs vote.' },
   '5-4': { unit: 'statement', units: 'evidence statements',
     stages: [['Describes', 'prior work · own scope · scale · consensus', CD], ['Checked against', 'the paper or the cited abstract', QC], ['Match?', 'consistent · contradicted · silent', Q], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['Which statements are units', [[CD, 'Candidates: (a) “prior work has shown X”, (b) own evaluation scope (“we evaluate on three domains”), (c) scale words (extensive, numerous, consistently), (d) consensus or authority (“well known”, “typically considered”).'], [Q, 'Confirms the unit, its type, and what evidence it describes.']]],
-      ['What it is checked against', [[Q, 'For (b)(c): the tables and setup sentences that show the real scope. For (a)(d): in-paper sentences that contradict it, and what the cited work is said to have shown.'], [CD, 'For cited (a)(d) statements, fetches the cited paper’s abstract from Semantic Scholar by bib title and hands it to the judge.']]],
-      ['How the match is judged', [[Q, '(b)(c): does the described scope match the actual evaluation? (a): does the abstract support, contradict or stay silent? (d): is there a source or in-paper support?'], [CD, 'An abstract’s silence is not a contradiction.']]],
-      ['How the verdict is decided', [[CD, '(b)(c) scope mismatch → FAIL. (a)(d) contradicted in the paper or by the abstract → FAIL. (d) with no source at all, or (a) with no citation → FAIL (a citation in the same paragraph counts).'], [CD, 'Abstract silent or unavailable → U.'], [CD, '3 runs vote. score = FAIL / (FAIL + PASS).']]]],
+      ['Select the statements', [[CD, 'Candidates: (a) “prior work has shown X”, (b) own evaluation scope (“we evaluate on three domains”), (c) scale words (extensive, numerous, consistently), (d) consensus or authority (“well known”, “typically considered”).'], [Q, 'Confirm the unit, its type, and the evidence it describes.']]],
+      ['Gather the reference', [[Q, '(b)(c): tables and setup sentences showing the actual scope. (a)(d): contradicting in-paper sentences, and what the cited work reportedly showed.'], [CD, 'Cited (a)(d): fetch the cited abstract from Semantic Scholar by bib title for the judge.']]],
+      ['Judge the match', [[Q, '(b)(c): described scope = actual evaluation? (a): abstract supports, contradicts or is silent? (d): source or in-paper support?'], [CD, 'Silence in the abstract ≠ contradiction.']]],
+      ['Decide PASS / FAIL / U', [[CD, '(b)(c) scope mismatch → FAIL. (a)(d) contradicted by the paper or the abstract → FAIL. (d) unsourced, or (a) uncited → FAIL (a same-paragraph citation counts).'], [CD, 'Abstract silent or unavailable → U.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
     line: 'Qwen2.5-32B checks scope words against the tables and cited claims against the cited abstracts (fetched by code). Three runs vote.' },
 };
 const VLAB = { FAIL: 'FAIL', PASS: 'PASS', UNRESOLVED: 'U', NOT_APPLICABLE: 'NA' };
@@ -681,8 +681,8 @@ function buildFlow(m, data, wrap) {
   const answer = (k, u) => [
     () => h('div', {}, h('q', { class: 'mw-q', text: short(u.text) }), h('small', { text: [u.id, u.sec, u.kind].filter(Boolean).join(' · ') })),
     () => h('div', {}, h('span', { text: u.s2 || '—' })),
-    () => h('div', {}, u.found.length ? h('span', { class: 'mw-ids' }, ...u.found.map(id => h('code', { text: id }))) : h('span', { class: 'mw-none', text: 'nothing' }), u.found_note ? h('small', { text: u.found_note }) : null, u.judge_line ? h('small', { text: u.judge_line }) : null),
-    () => h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: u.final_reason }) : null),
+    () => h('div', {}, u.found.length ? h('span', { class: 'mw-ids' }, ...u.found.map(id => h('code', { text: id }))) : h('span', { class: 'mw-none', text: 'nothing' }), u.found_note ? h('small', { text: tidyNote(u.found_note) }) : null, u.judge_line ? h('small', { text: tidyNote(u.judge_line) }) : null),
+    () => h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: tidyNote(u.final_reason) }) : null),
   ][k]();
   const steps = h('ol', { class: 'mw-steps' });
   let open = -1;
@@ -1248,6 +1248,7 @@ const RG_ORDER = GROUPS.flatMap(g => ITEMS.filter(i => i.plane === g.key));
 let rgCur = RG_ORDER[0].id;
 $('#rg-idx').replaceChildren(...GROUPS.map(g => h('div', { class: 'rg-g ' + g.cls }, h('p', { class: 'rg-gt' }, g.title, h('span', { text: ' · ' + g.q })),
   ...ITEMS.filter(i => i.plane === g.key).map(it => h('a', { class: 'rg-i', href: '#' + it.id, 'data-id': it.id, 'data-xref': it.id }, h('i'), it.name)))));
+const tidyNote = t => t && t.replace(/^runs disagree: \[.*\]$/, 'split vote → U').replace(/^unit extracted in only (\d)\/3 runs \(unstable unit\)$/, 'found in $1 of 3 runs → U').replace(/^the model pointed only at the claim sentence itself; a sentence is not evidence for itself$/, 'only the claim itself was cited as evidence').replace(/\(background_uncited; [^)]*\)/, '').replace(/^judge: scope consistent · source no source$/, 'judge: scope consistent · no source').replace(/: True\b/g, ': yes').replace(/: False\b/g, ': no');
 function measureSteps(it) {
   // every step of the measurer, all of its rules, and what that step returned on one real paper
   const m = MEASURE[it.id];
@@ -1259,10 +1260,10 @@ function measureSteps(it) {
     h('div', { class: 'rs-do' }, ...(m.how[k] ? [h('p', { class: 'rs-ht', text: m.how[k][0] }), h('ul', {}, ...m.how[k][1].map(([ww, tt]) => h('li', {}, h('span', { class: 'rs-who sm ' + (ww === 'code' ? 'rule' : 'model'), text: ww === 'code' ? 'rule' : 'model' }), tt)))] : [])),
     ex[k]));
   const pick = h('select', { class: 'rs-pick', 'aria-label': 'Which unit the example column follows' });
-  const head = h('div', { class: 'rs-head' }, h('span', { class: 'rs-hl', text: 'Step' }), h('span', { class: 'rs-hl', text: 'What happens' }), h('span', { class: 'rs-hl' }, 'On a real paper: ', pick));
+  const head = h('div', { class: 'rs-head' }, h('span', { class: 'rs-hl', text: 'Step' }), h('span', { class: 'rs-hl', text: 'Procedure' }), h('span', { class: 'rs-hl' }, 'Example: ', pick));
   const score = h('p', { class: 'mw-score' });
   // a player: the steps run one after another on the chosen unit, each example appears when its step is reached
-  const play = h('button', { type: 'button', class: 'rs-play', text: '▶ Play the steps' });
+  const play = h('button', { type: 'button', class: 'rs-play', text: '▶ Play' });
   const box = h('div', { class: 'rs-wrap' }, h('div', { class: 'rs-top' }, h('p', { class: 'rs-line', text: m.line }), play), head, h('ol', { class: 'rs' }, ...rows), score);
   const seq = { s: -1, t: 0 };
   const setStep = k => { seq.s = k; rows.forEach((r, j) => { r.classList.toggle('done', j < k); r.classList.toggle('cur', j === k); r.classList.toggle('todo', j > k); });
@@ -1277,22 +1278,22 @@ function measureSteps(it) {
   const seen = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { seen.disconnect(); run(); } }, { threshold: .25 });
   requestAnimationFrame(() => seen.observe(box));
   fetch('measure/' + it.id + '.json').then(r => r.json()).then(data => {
-    const U = data.units, pre = data.meta.pre || {}; if (!U.length) { ex.forEach(e => e.replaceChildren(h('span', { class: 'rs-wait', text: 'no unit on this paper' }))); return; }
+    const U = data.units, pre = data.meta.pre || {}; if (!U.length) { ex.forEach(e => e.replaceChildren(h('span', { class: 'rs-wait', text: 'no units in this paper' }))); return; }
     const VW = { FAIL: 'slop', PASS: 'fine', UNRESOLVED: 'open', NOT_APPLICABLE: 'n/a' };
     pick.replaceChildren(...U.map((u, k) => h('option', { value: k, text: `${VW[u.final]} · ${u.text.slice(0, 48)}…` })));
     const sh = t => t.length > 140 ? t.slice(0, 138).replace(/\s+\S*$/, '') + '…' : t;
     const fill = k => { const u = U[k]; const vals = [
       h('div', {}, h('q', { class: 'mw-q', text: sh(u.text) }), h('small', { text: [u.id, u.sec].filter(Boolean).join(' · ') })),
       h('div', {}, h('span', { text: u.s2 || '—' })),
-      h('div', {}, u.found.length ? h('span', { class: 'mw-ids' }, ...u.found.map(x => h('code', { text: x }))) : h('span', { class: 'mw-none', text: 'nothing' }), u.found_note ? h('small', { text: u.found_note }) : null, u.judge_line ? h('small', { text: u.judge_line }) : null),
-      h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: u.final_reason }) : null)];
+      h('div', {}, u.found.length ? h('span', { class: 'mw-ids' }, ...u.found.map(x => h('code', { text: x }))) : h('span', { class: 'mw-none', text: 'nothing' }), u.found_note ? h('small', { text: tidyNote(u.found_note) }) : null, u.judge_line ? h('small', { text: tidyNote(u.judge_line) }) : null),
+      h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: tidyNote(u.final_reason) }) : null)];
       ex.forEach((e, j) => e.replaceChildren(vals[j] || h('span', { text: '—' }))); };
     pick.addEventListener('change', () => { fill(+pick.value); run(); });
     const k0 = Math.max(0, U.findIndex(u => u.final === 'FAIL')); pick.value = k0; fill(k0);
     const c = { FAIL: 0, PASS: 0, UNRESOLVED: 0 }; U.forEach(u => { if (u.final in c) c[u.final]++; });
     const F = c.FAIL + (pre.FAIL || 0), P = c.PASS + (pre.PASS || 0), UU = c.UNRESOLVED + (pre.UNRESOLVED || 0), D = F + P;
-    score.replaceChildren(`${data.meta.side} ${data.meta.paper}: ${U.length} ${m.units} checked. Score = slop ÷ decided = `, h('b', { text: `${F} ÷ ${D}` }), ' = ', h('b', { class: 'big', text: D ? (F / D).toFixed(2) : '—' }), UU ? `  ·  ${UU} left open for a human, not counted` : '');
-  }).catch(() => ex.forEach(e => e.replaceChildren(h('span', { class: 'rs-wait', text: 'run data unavailable' }))));
+    score.replaceChildren(`${data.meta.side} ${data.meta.paper} · ${U.length} ${m.units} · score = FAIL ÷ (FAIL + PASS) = `, h('b', { text: `${F} ÷ ${D}` }), ' = ', h('b', { class: 'big', text: D ? (F / D).toFixed(2) : '—' }), UU ? ` · ${UU} U, not counted` : '');
+  }).catch(() => ex.forEach(e => e.replaceChildren(h('span', { class: 'rs-wait', text: 'run data not loaded' }))));
   return box;
 }
 function regShow(id) {
