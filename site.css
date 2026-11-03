@@ -468,7 +468,9 @@ body { background: var(--bg); color: var(--ink); }
 .rv2 .ghost { fill: none; stroke: var(--scan); stroke-width: 1.2; stroke-dasharray: 4 3; }
 .rv2 .gl { font-family: var(--mono); font-size: 11px; fill: var(--scan); }
 .rv2-line { position: absolute; top: 0; bottom: 0; left: var(--split); width: 2px; margin-left: -1px; background: var(--scan); box-shadow: 0 0 22px 4px var(--scan-soft); z-index: 3; outline: none; }
-.rv2-line span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--scan); color: #fff; font-size: 15px; box-shadow: 0 6px 18px rgba(0,0,0,.25); }
+.rv2-line span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--scan); color: #fff; box-shadow: 0 0 0 3px var(--surface), 0 6px 18px rgba(0,0,0,.22); transition: transform .2s ease; }
+.rv2-line span svg { display: block; }
+.rv2-stage:hover .rv2-line span, .rv2-line:focus-visible span { transform: translate(-50%, -50%) scale(1.08); }
 .rv2-line:focus-visible span { outline: 2px solid var(--ink); outline-offset: 2px; }
 .hk-h { font-size: clamp(36px, 4.6vw, 62px); }
 .hk .cx { margin-top: 6px; }
@@ -1126,7 +1128,7 @@ body::after { display: none; }
 .hk-count i.live { background: conic-gradient(var(--structure) 0 120deg, var(--argument) 0 240deg, var(--artifacts) 0); }
 .hk-count i.live::after { background: var(--structure); animation: live 1.8s ease-out infinite, tri 5.4s step-end infinite; }
 @keyframes tri { 0% { background: var(--structure); } 33.333% { background: var(--argument); } 66.666% { background: var(--artifacts); } }
-/* "Science Slop" in the three area colours */
+/* "Scientific Slop" in the three area colours */
 .tri { background: linear-gradient(90deg, var(--structure-deep), var(--argument-deep) 55%, var(--artifacts-deep)); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; padding-bottom: .06em; }
 /* four questions as a selector */
 .qx { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 48px; align-items: center; }

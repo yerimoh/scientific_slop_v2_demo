@@ -322,7 +322,7 @@ const CUES = [
 const MAP = [['1-3', 'Evidence gap'], ['1-4', 'Citation isolation'], ['2-3', 'Cross-section references'], ['4-4', 'Macro redundancy'], ['4-5', 'Figure exposition']];
 
 // ------------------------------------------------------------------ findings (verified numbers: paper Table 2, §4; live index)
-const BENCH = [['Science Slop Index', .859, true], ['Binoculars', .687], ['CycleReviewer', .685], ['DetectGPT', .638], ['NTS', .626], ['AI Scientist reviewer', .615]];
+const BENCH = [['Scientific Slop Index', .859, true], ['Binoculars', .687], ['CycleReviewer', .685], ['DetectGPT', .638], ['NTS', .626], ['AI Scientist reviewer', .615]];
 const MEASURES = [['Cross-section references', .905, C.struct, '2-3'], ['Figure exposition', .809, C.art, '4-5'], ['Citation isolation', .793, C.arg, '1-4'], ['Evidence gap', .764, C.art, '1-3'], ['Macro redundancy', .723, C.struct, '4-4'], ['Argument graph', .586, C.arg, '1-1 · 5-x']];
 const HARNESS = [['Review only', .30, '17% of rounds break a guard'], ['Definitions + review', .25, 'no located instances'], ['Definitions + locations', .11, '23% of rounds break a guard'], ['Full SciSlopHarness', .17, 'no guard breaks', true]];
 function hbars(rows, o = {}) { // rows: [label, value, {color, bold, note}]
@@ -1179,6 +1179,10 @@ if (!reduce) setInterval(() => { if (!document.hidden) tick(); }, 55); else for 
 const rv = { x: 50, auto: true, t0: performance.now(), shown: 0 };
 function setSplit(x) {
   rv.x = Math.max(4, Math.min(96, x)); $('#rv2-stage').style.setProperty('--split', rv.x + '%'); $('#rv2').style.setProperty('--split', rv.x + '%'); $('#rv2-line').setAttribute('aria-valuenow', Math.round(rv.x));
+  { const box = $('#rv2'), tl = box.querySelector(':scope > .rv2-tag.l'), tr = box.querySelector(':scope > .rv2-tag.r');   // keep both handwritten labels inside the figure
+    if (tl && tr && innerWidth > 760) { const W = box.clientWidth, px = W * rv.x / 100;
+      tr.style.left = Math.max(0, Math.min(px, W - tr.offsetWidth)) + 'px'; tl.style.right = Math.max(0, Math.min(W - px, W - tl.offsetWidth)) + 'px'; }
+    else if (tl && tr) { tr.style.left = ''; tl.style.right = ''; } }
   const seen = [292, 716, 702].filter(px => px / 1010 * 100 > rv.x).length;   // breaks right of the line are visible
   if (seen !== rv.shown) { rv.shown = seen; $('#rv2-n').textContent = `${seen} break${seen === 1 ? '' : 's'}`; }
 }
