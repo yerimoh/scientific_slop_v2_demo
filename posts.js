@@ -14,38 +14,63 @@ const qBars = (rows, chance) => h('div', { class: 'qa-bars' }, ...rows.map(([l, 
   h('span', { class: 'qa-bl', text: l }), h('span', { class: 'qa-bt' }, h('i', { style: `width:${(v * 100).toFixed(1)}%` }), chance ? h('b', { class: 'qa-ch', style: `left:${chance * 100}%` }) : null), h('span', { class: 'qa-bv', text: (v * 100).toFixed(1) + '%' }))));
 const qYears = (ys) => h('div', { class: 'qa-yrs' }, ...ys.map(([y, v]) => h('div', { class: 'qa-yr' }, h('span', { class: 'qa-yv', text: v.toFixed(2) }), h('span', { class: 'qa-yb' }, h('i', { style: `height:${((v - .4) / .35 * 100).toFixed(0)}%` }), h('b', { class: 'qa-y5' })), h('span', { class: 'qa-yl', text: '’' + String(y).slice(2) }))));
 const qTable = (head, rows) => h('table', { class: 'qa-tbl' }, h('thead', {}, h('tr', {}, ...head.map(t => h('th', { text: t })))), h('tbody', {}, ...rows.map(r => h('tr', {}, ...r.map(t => h('td', { text: t }))))));
+// Q1 figures: paper glyph, design, filter, match grid, outcomes. Animate once when scrolled into view (.qa-fig → .in).
+const qDoc = (cls, label, sub) => h('div', { class: 'q1-p ' + cls }, h('span', { class: 'q1-doc' }, h('i'), h('i'), h('i'), h('i')), h('b', { text: label }), h('span', { text: sub }));
+const qDesign = () => h('figure', { class: 'qa-fig q1-design' },
+  h('div', { class: 'q1-row' },
+    qDoc('q1-good', 'Well-written human', 'accepted, similar topic'),
+    h('span', { class: 'q1-link', 'aria-hidden': 'true' }),
+    qDoc('q1-ai', 'AI paper', 'FARS or Agents4Science'),
+    h('span', { class: 'q1-link', 'aria-hidden': 'true' }),
+    qDoc('q1-poor', 'Poorly written human', 'rejected, writing flagged')),
+  h('div', { class: 'q1-meas' }, h('span', { text: 'All three scored on the same 17 slop measures, authorship hidden' })),
+  h('figcaption', { class: 'qa-cap', text: 'One triplet. Each AI paper gets two human controls on a similar topic.' }));
+const qFunnel = () => h('figure', { class: 'qa-fig q1-funnel' },
+  ...[['ICLR and NeurIPS rejects', 18014, 'q1-f-all'], ['Writing flagged by reviewers', 2594, 'q1-f-poor']].map(([l, v, c]) => h('div', { class: 'q1-fr ' + c },
+    h('span', { class: 'q1-fl', text: l }), h('span', { class: 'q1-ft' }, h('i', { style: `--w:${(v / 18014 * 100).toFixed(1)}%` })), h('span', { class: 'q1-fv', text: v.toLocaleString('en-US') }))),
+  h('figcaption', { class: 'qa-cap', text: '14% of rejects qualify. A reject alone is not evidence of bad writing.' }));
+const qGrid = () => {
+  const dots = []; for (let i = 0; i < 390; i++) dots.push(h('i', { class: i < 15 ? 'g-sp' : i < 226 ? 'g-sf' : 'g-no', style: `--d:${Math.min(i, 389) * 3}ms` }));
+  return h('figure', { class: 'qa-fig q1-grid' }, h('div', { class: 'q1-dots', role: 'img', 'aria-label': '390 AI papers: 15 with a same-problem poorly written match, 211 with a same-field match, 164 without a match' }, ...dots),
+    h('div', { class: 'q1-leg' }, h('span', {}, h('i', { class: 'g-sp' }), 'Same problem · 15'), h('span', {}, h('i', { class: 'g-sf' }), 'Same field · 211'), h('span', {}, h('i', { class: 'g-no' }), 'No match yet · 164')),
+    h('figcaption', { class: 'qa-cap', text: 'Each dot is one of the 390 AI papers.' }));
+};
+const qOut = () => {
+  const panel = (title, vals, verdict) => h('div', { class: 'q1-op' }, h('b', { text: title }),
+    h('div', { class: 'q1-ob' }, ...[['AI', vals[0], 'q1-ai'], ['Poorly written', vals[1], 'q1-poor'], ['Well-written', vals[2], 'q1-good']].map(([l, v, c]) =>
+      h('div', { class: 'q1-oc ' + c }, h('span', { class: 'q1-obar' }, h('i', { style: `--h:${v}%` })), h('span', { class: 'q1-ol', text: l })))),
+    h('span', { class: 'q1-ov', text: verdict }));
+  return h('figure', { class: 'qa-fig q1-out' }, h('div', { class: 'q1-ops' },
+      panel('If slop is just bad writing', [80, 76, 26], 'Poorly written ≈ AI'),
+      panel('If it is not', [80, 34, 26], 'AI stands apart')),
+    h('figcaption', { class: 'qa-cap', text: 'The two possible outcomes. Bar height is slop measured; illustration, not data.' }));
+};
 const QPOST = {
   f1: { title: 'Is AI slop just bad writing?', tag: 'v1 result · v2 running', body: () => [
-    h('p', { text: 'The first objection we hear is that a slop index just catches bad writing, and AI papers happen to have more of it. Testing that takes three papers on the same research problem: one written by an AI system, one well-written human paper, and one human paper that reviewers found hard to read.' }),
-    h('h4', { text: 'What v1 showed' }),
-    h('p', { text: 'v1 had the first two. SciSlopBench pairs 390 AI-generated papers with human papers matched by research problem and contribution type. Six counting measures picked the AI paper in 85.9% of pairs. Binoculars, the strongest text detector in our table, got 68.7%.' }),
-    qBars([['Science Slop Index (v1)', .859, true], ['Binoculars', .687], ['CycleReviewer', .685], ['DetectGPT', .638], ['NTS', .626], ['AI Scientist reviewer', .615]], .5),
-    h('p', { class: 'qa-cap', text: 'Pair accuracy on SciSlopBench, 390 pairs. Chance is 50%.' }),
-    h('p', { text: 'So the measures separate AI papers from good human papers. That says nothing yet about poorly written human papers.' }),
+    h('p', { text: 'To test whether AI slop is simply bad writing, we compare AI papers not only with well-written human papers, but also with human papers that reviewers actually found poorly written. Each AI paper is paired with a similar accepted paper and a rejected paper whose reviews flag writing problems.' }),
+    qDesign(),
     h('h4', { text: 'Data setup' }),
-    h('p', { text: 'v2 gives each AI paper two human papers matched as closely by topic as the data allows: one accepted at a top venue, and one rejected because reviewers found it poorly written. Every human paper was first posted by the end of 2024.' }),
+    h('p', { text: 'The comparison has three groups: AI, well-written human, and poorly written human.' }),
     qTable(['Paper', 'What it is', 'Where it comes from'], [
-      ['AI', 'Written end to end by an AI system', 'FARS (143) and Agents4Science 2025 (247)'],
-      ['Well-written human', 'Accepted, matched by topic', 'The v1 pair, or a new match from 85,175 accepted papers (ICLR, NeurIPS, ICML, ACL, EMNLP, CVPR and others)'],
-      ['Poorly written human', 'Rejected, and reviewers said the writing was poor', '18,014 ICLR and NeurIPS rejects, 2017–2025']]),
-    h('p', { class: 'qa-sub', text: 'What counts as poorly written' }),
-    h('p', { text: 'The reviewers have to have said so. A rejected paper counts if one of these holds:' }),
-    h('ul', { class: 'qa-ul' },
-      h('li', { text: 'its presentation score averages 2.0 or lower on the 1–4 scale (ICLR 2024–2025, NeurIPS 2022–2023);' }),
-      h('li', { text: 'at least half of its reviews name a writing problem, such as “hard to follow”, “poorly written”, “many typos” or “the writing should be improved”.' })),
-    h('p', { text: 'A low overall score is not enough, because weak experiments or limited novelty also lower it. Withdrawn papers and preprints that nobody reviewed are left out. 2,594 of the 18,014 rejects qualify.' }),
-    h('p', { class: 'qa-sub', text: 'How the papers are matched' }),
-    h('p', { text: 'Candidates come from embedding search on the abstract and from references shared with the AI paper. An LLM judge reads each candidate’s title and abstract and marks it as same problem and same kind of contribution, same problem, or same field only. For the rejected paper we take the arXiv LaTeX of the version the reviewers saw. Each human paper is used once and is at most three times the length of the AI paper.' }),
-    qTable(['', 'Count'], [
-      ['AI papers with both human papers', '226 of 390 (FARS 102, Agents4Science 124)'],
-      ['Poorly written: presentation ≤ 2.0', '169'],
-      ['Poorly written: reviews name writing problems', '57'],
-      ['Rejected paper on the same problem', '15'],
-      ['Rejected paper in the same field only', '211']]),
+      ['AI', 'Written end to end by an AI system', 'FARS (143), Agents4Science 2025 (247)'],
+      ['Well-written human', 'Accepted paper on a similar topic', '85,175 papers from major venues'],
+      ['Poorly written human', 'Rejected paper flagged for writing', '18,014 ICLR and NeurIPS rejects']]),
+    h('p', { text: 'We identify poorly written papers from their reviews, not from rejection alone. A paper qualifies if its mean presentation score is 2.0 or lower, or if at least half of its reviews explicitly flag a writing problem. Of 18,014 rejects, 2,594 meet this criterion.' }),
+    qFunnel(),
+    h('h4', { text: 'Matching' }),
+    h('p', { text: 'We obtain both human controls for 226 of the 390 AI papers. We retrieve candidates using abstract similarity and shared references, then use their titles and abstracts to prioritize papers on the same research problem. Each human paper is used once.' }),
+    h('p', { text: 'Exact matches are scarce for poorly written papers: 15 cover the same research problem as the AI paper, while the remaining 211 are matched within the same field.' }),
+    qGrid(),
+    qTable(['Matched triplets', 'Count'], [
+      ['Same-problem poorly written human', '15'],
+      ['Same-field poorly written human', '211'],
+      ['Total', '226']]),
     h('p', { class: 'qa-cap', text: 'Data as of October 17, 2026.' }),
-    h('p', { text: 'Most rejected papers share the field but not the exact problem. The AI papers work on narrow 2025–26 problems, and few rejects from before 2025 address the same ones, so the 15 same-problem triples are reported on their own. The other 164 AI papers, most of them natural or social science from Agents4Science, have no reviewed reject in the same field.' }),
-    h('p', { text: 'All three papers are judged on the 17 items with the author hidden. If AI slop were just bad writing, the rejected human papers would fail the same items, in the same way, as often as the AI papers.' }),
-    h('h4', { text: 'Result' }), h('p', { class: 'qa-none', text: 'Not in yet.' })] },
+    h('h4', { text: 'Test' }),
+    h('p', { text: 'The remaining question is whether the same 17 slop measures separate AI papers from both human groups. We score all papers with authorship hidden.' }),
+    h('p', { text: 'If the gap between AI and well-written human papers disappears for poorly written human papers, scientific slop is largely capturing bad writing. If AI papers still show more slop, bad writing alone does not explain the difference.' }),
+    qOut(),
+    h('h4', { text: 'Result' }), h('p', { class: 'qa-none', text: 'v2 running.' })] },
   f2: { title: 'Does slop cost review points?', tag: 'v1 result · v2 running', body: () => [
     h('p', { text: 'Reviewers never see a slop score. If slop is something they notice anyway, it should show up in the scores they give.' }),
     h('h4', { text: 'What v1 showed' }),
@@ -81,6 +106,9 @@ function show() {
   $('#qa').replaceChildren(h('a', { class: 'qa-back', href: './#questions', text: '← Four questions' }),
     h('header', { class: 'qa-h' }, h('span', { class: 'qa-n', text: 'Question ' + n }), h('h1', { text: p.title }), h('span', { class: 'qa-tag', text: p.tag })),
     h('div', { class: 'qa-b' }, ...p.body()), h('nav', { class: 'qa-pn' }, prev, next));
+  const figs = document.querySelectorAll('.qa-fig');
+  if ('IntersectionObserver' in window) { const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .35 }); figs.forEach(f => io.observe(f)); }
+  else figs.forEach(f => f.classList.add('in'));
   scrollTo(0, 0);
 }
 addEventListener('hashchange', show); show();
