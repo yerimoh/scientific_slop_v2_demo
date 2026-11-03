@@ -14,37 +14,47 @@ const qBars = (rows, chance) => h('div', { class: 'qa-bars' }, ...rows.map(([l, 
   h('span', { class: 'qa-bl', text: l }), h('span', { class: 'qa-bt' }, h('i', { style: `width:${(v * 100).toFixed(1)}%` }), chance ? h('b', { class: 'qa-ch', style: `left:${chance * 100}%` }) : null), h('span', { class: 'qa-bv', text: (v * 100).toFixed(1) + '%' }))));
 const qYears = (ys) => h('div', { class: 'qa-yrs' }, ...ys.map(([y, v]) => h('div', { class: 'qa-yr' }, h('span', { class: 'qa-yv', text: v.toFixed(2) }), h('span', { class: 'qa-yb' }, h('i', { style: `height:${((v - .4) / .35 * 100).toFixed(0)}%` }), h('b', { class: 'qa-y5' })), h('span', { class: 'qa-yl', text: '’' + String(y).slice(2) }))));
 const qTable = (head, rows) => h('table', { class: 'qa-tbl' }, h('thead', {}, h('tr', {}, ...head.map(t => h('th', { text: t })))), h('tbody', {}, ...rows.map(r => h('tr', {}, ...r.map(t => h('td', { text: t }))))));
-// Q1 figures: paper glyph, design, filter, match grid, outcomes. Animate once when scrolled into view (.qa-fig → .in).
-const qDoc = (cls, label, sub) => h('div', { class: 'q1-p ' + cls }, h('span', { class: 'q1-doc' }, h('i'), h('i'), h('i'), h('i')), h('b', { text: label }), h('span', { text: sub }));
-const qDesign = () => h('figure', { class: 'qa-fig q1-design' },
-  h('div', { class: 'q1-row' },
-    qDoc('q1-good', 'Well-written human', 'accepted, similar topic'),
-    h('span', { class: 'q1-link', 'aria-hidden': 'true' }),
-    qDoc('q1-ai', 'AI paper', 'FARS or Agents4Science'),
-    h('span', { class: 'q1-link', 'aria-hidden': 'true' }),
-    qDoc('q1-poor', 'Poorly written human', 'rejected, writing flagged')),
-  h('div', { class: 'q1-meas' }, h('span', { text: 'All three scored on the same 17 slop measures, authorship hidden' })),
-  h('figcaption', { class: 'qa-cap', text: 'One triplet. Each AI paper gets two human controls on a similar topic.' }));
-const qFunnel = () => h('figure', { class: 'qa-fig q1-funnel' },
-  ...[['ICLR and NeurIPS rejects', 18014, 'q1-f-all'], ['Writing flagged by reviewers', 2594, 'q1-f-poor']].map(([l, v, c]) => h('div', { class: 'q1-fr ' + c },
-    h('span', { class: 'q1-fl', text: l }), h('span', { class: 'q1-ft' }, h('i', { style: `--w:${(v / 18014 * 100).toFixed(1)}%` })), h('span', { class: 'q1-fv', text: v.toLocaleString('en-US') }))),
-  h('figcaption', { class: 'qa-cap', text: '14% of rejects qualify. A reject alone is not evidence of bad writing.' }));
-const qGrid = () => {
-  const dots = []; for (let i = 0; i < 390; i++) dots.push(h('i', { class: i < 15 ? 'g-sp' : i < 226 ? 'g-sf' : 'g-no', style: `--d:${Math.min(i, 389) * 3}ms` }));
-  return h('figure', { class: 'qa-fig q1-grid' }, h('div', { class: 'q1-dots', role: 'img', 'aria-label': '390 AI papers: 15 with a same-problem poorly written match, 211 with a same-field match, 164 without a match' }, ...dots),
-    h('div', { class: 'q1-leg' }, h('span', {}, h('i', { class: 'g-sp' }), 'Same problem · 15'), h('span', {}, h('i', { class: 'g-sf' }), 'Same field · 211'), h('span', {}, h('i', { class: 'g-no' }), 'No match yet · 164')),
-    h('figcaption', { class: 'qa-cap', text: 'Each dot is one of the 390 AI papers.' }));
-};
-const qOut = () => {
-  const panel = (title, vals, verdict) => h('div', { class: 'q1-op' }, h('b', { text: title }),
-    h('div', { class: 'q1-ob' }, ...[['AI', vals[0], 'q1-ai'], ['Poorly written', vals[1], 'q1-poor'], ['Well-written', vals[2], 'q1-good']].map(([l, v, c]) =>
-      h('div', { class: 'q1-oc ' + c }, h('span', { class: 'q1-obar' }, h('i', { style: `--h:${v}%` })), h('span', { class: 'q1-ol', text: l })))),
-    h('span', { class: 'q1-ov', text: verdict }));
-  return h('figure', { class: 'qa-fig q1-out' }, h('div', { class: 'q1-ops' },
-      panel('If slop is just bad writing', [80, 76, 26], 'Poorly written ≈ AI'),
-      panel('If it is not', [80, 34, 26], 'AI stands apart')),
-    h('figcaption', { class: 'qa-cap', text: 'The two possible outcomes. Bar height is slop measured; illustration, not data.' }));
-};
+// Q1 figures, drawn like the main page's question sketches: paper sheets, robot/person badges, red pen that draws itself once (.qa-fig → .in).
+let sk = 11; const rn = () => (sk = (sk * 16807) % 2147483647) / 2147483647 - .5;
+const pn = (pts, j = 1.6) => { const p = pts.map(([x, y]) => [x + rn() * j, y + rn() * j]); let d = `M${p[0][0].toFixed(1)} ${p[0][1].toFixed(1)}`;
+  for (let i = 0; i < p.length - 1; i++) { const a = p[i - 1] || p[i], b = p[i], c = p[i + 1], e = p[i + 2] || c;
+    d += ` C${(b[0] + (c[0] - a[0]) / 6).toFixed(1)} ${(b[1] + (c[1] - a[1]) / 6).toFixed(1)} ${(c[0] - (e[0] - b[0]) / 6).toFixed(1)} ${(c[1] - (e[1] - b[1]) / 6).toFixed(1)} ${c[0].toFixed(1)} ${c[1].toFixed(1)}`; }
+  return d; };
+const sS = (pts, d0, j = 1, cls = 'red') => `<path class="pen ${cls}" pathLength="1" style="--d:${d0}s" d="${pn(pts, j)}"/><path class="pen ${cls} gh" pathLength="1" style="--d:${d0 + .05}s" d="${pn(pts, j * 1.4)}"/>`;
+const sLoop = (cx, cy, rx, ry, d0) => { const pts = []; for (let k = 0; k <= 26; k++) { const t = -2.4 + k / 24 * Math.PI * 2.15; pts.push([cx + Math.cos(t) * rx * (1 + rn() * .06), cy + Math.sin(t) * ry * (1 + rn() * .12)]); } return sS(pts, d0, 1); };
+const sSquig = (x0, x1, y, d0) => { const pts = []; for (let x = x0; x <= x1; x += 9) pts.push([x, y + (((x - x0) / 9) % 2 ? 3.5 : -2)]); return sS(pts, d0, .6); };
+const sArrow = (pts, d0, cls = 'red') => { const [a, b] = pts.slice(-2), g = Math.atan2(b[1] - a[1], b[0] - a[0]), hd = s => [b[0] - 11 * Math.cos(g + s), b[1] - 11 * Math.sin(g + s)];
+  return sS(pts, d0, 1.6, cls) + `<path class="pen ${cls}" pathLength="1" style="--d:${d0 + .5}s" d="M${hd(.45).map(v => v.toFixed(1)).join(' ')} L${b[0]} ${b[1]} L${hd(-.45).map(v => v.toFixed(1)).join(' ')}"/>`; };
+const sNote = (x, y, t, d0, cls = 'red', size = 21, anchor = 'start') => `<text class="hand ${cls}" style="--d:${d0}s;font-size:${size}px" x="${x}" y="${y}" text-anchor="${anchor}">${t}</text>`;
+const sMono = (x, y, t, anchor = 'middle', cls = '') => `<text class="qm ${cls}" x="${x}" y="${y}" text-anchor="${anchor}">${t}</text>`;
+const sPaper = (x, y, w, hh, cls = '') => { let r = `<rect class="qp ${cls}" x="${x}" y="${y}" width="${w}" height="${hh}" rx="4"/>`; for (let yy = y + 18; yy < y + hh - 8; yy += 11) r += `<rect class="ql" x="${x + 10}" y="${yy}" width="${w - 20 - ((yy * 7) % 22)}" height="4" rx="2"/>`; return r; };
+const sRobot = (x, y, r) => `<g class="ico"><line x1="${x}" y1="${y - r - 6}" x2="${x}" y2="${y - r}"/><circle cx="${x}" cy="${y - r - 7}" r="2.2"/><rect x="${x - r}" y="${y - r}" width="${2 * r}" height="${2 * r * .85}" rx="${r * .35}"/><circle class="ey" cx="${x - r * .4}" cy="${y - r * .2}" r="${r * .16}"/><circle class="ey" cx="${x + r * .4}" cy="${y - r * .2}" r="${r * .16}"/></g>`;
+const sPerson = (x, y, r) => `<g class="ico"><circle cx="${x}" cy="${y - r * .55}" r="${r * .55}"/><path d="M${x - r} ${y + r * .95} a${r} ${r} 0 0 1 ${2 * r} 0z"/></g>`;
+const sBadge = (x, y, who) => `<circle class="qbadge" cx="${x}" cy="${y}" r="15"/>` + (who === 'ai' ? sRobot(x, y + 3, 8) : sPerson(x, y + 1, 9));
+const sFig = (vb, inner, label) => { const f = h('figure', { class: 'qa-fig q1s' }); f.innerHTML = `<svg viewBox="${vb}" role="img" aria-label="${label}">${inner}</svg>`; return f; };
+
+// 1. one triplet: well-written human ← similar topic → AI paper ← similar topic → poorly written human
+const qDesign = () => sFig('0 0 640 262', `
+  ${sPaper(40, 46, 120, 138)}${sBadge(40, 46, 'human')}
+  ${sPaper(260, 46, 120, 138)}${sBadge(260, 46, 'ai')}${sLoop(318, 86, 48, 9, .3)}${sSquig(276, 360, 141, .8)}
+  ${sPaper(480, 46, 120, 138)}${sBadge(480, 46, 'human')}${sS([[494, 108], [590, 103]], 1.2)}${sS([[496, 152], [560, 148]], 1.4)}${sNote(576, 162, '?', 1.6, 'red', 26)}
+  ${sS([[170, 116], [212, 112], [250, 116]], 2, 1.2, 'ink dash')}${sS([[390, 116], [430, 112], [470, 116]], 2.1, 1.2, 'ink dash')}
+  ${sNote(210, 100, 'similar topic', 2.3, 'ink', 17, 'middle')}${sNote(430, 100, 'similar topic', 2.4, 'ink', 17, 'middle')}
+  ${sNote(100, 216, 'well-written', 2.6, 'ink', 22, 'middle')}${sNote(320, 216, 'AI paper', 2.7, 'red', 22, 'middle')}${sNote(540, 216, 'poorly written', 2.8, 'ink', 22, 'middle')}
+  ${sMono(100, 240, 'accepted')}${sMono(320, 240, 'FARS · Agents4Science')}${sMono(540, 240, 'rejected, writing flagged')}`,
+  'One AI paper with two human papers on a similar topic: an accepted, well-written one and a rejected, poorly written one');
+
+// 2. the two outcomes, as marked-up papers (illustration)
+const qOut = () => { const panel = (ox, title, poorSlop, verdict, d) => `
+    <rect class="qp soft" x="${ox}" y="8" width="300" height="236" rx="12"/>${sNote(ox + 150, 42, title, d, 'ink', 22, 'middle')}
+    ${sPaper(ox + 22, 64, 72, 96)}${sBadge(ox + 22, 64, 'ai')}${sLoop(ox + 56, 88, 30, 7, d + .3)}${sSquig(ox + 30, ox + 86, 136, d + .6)}
+    ${sPaper(ox + 114, 64, 72, 96)}${sBadge(ox + 114, 64, 'human')}${poorSlop ? sLoop(ox + 148, 88, 30, 7, d + .9) + sSquig(ox + 122, ox + 178, 136, d + 1.1) : sS([[ox + 122, 112], [ox + 176, 109]], d + .9, .8)}
+    ${sPaper(ox + 206, 64, 72, 96)}${sBadge(ox + 206, 64, 'human')}
+    ${sMono(ox + 58, 182, 'AI')}${sMono(ox + 150, 182, 'poorly')}${sMono(ox + 150, 197, 'written')}${sMono(ox + 242, 182, 'well-')}${sMono(ox + 242, 197, 'written')}
+    ${sNote(ox + 150, 224, verdict, d + 1.5, 'red', 23, 'middle')}`;
+  const f = sFig('0 0 640 252', panel(8, 'if slop = bad writing', true, 'poorly written ≈ AI', .2) + panel(332, 'if it is not', false, 'AI stands apart', 1.2),
+    'Two possible outcomes: poorly written human papers show the same slop as AI papers, or only AI papers do');
+  f.append(h('figcaption', { class: 'qa-cap', text: 'Illustration of the two outcomes, not data.' })); return f; };
 const QPOST = {
   f1: { title: 'Is AI slop just bad writing?', tag: 'v1 result · v2 running', body: () => [
     h('p', { text: 'To test whether AI slop is simply bad writing, we compare AI papers not only with well-written human papers, but also with human papers that reviewers actually found poorly written. Each AI paper is paired with a similar accepted paper and a rejected paper whose reviews flag writing problems.' }),
@@ -56,11 +66,9 @@ const QPOST = {
       ['Well-written human', 'Accepted paper on a similar topic', '85,175 papers from major venues'],
       ['Poorly written human', 'Rejected paper flagged for writing', '18,014 ICLR and NeurIPS rejects']]),
     h('p', { text: 'We identify poorly written papers from their reviews, not from rejection alone. A paper qualifies if its mean presentation score is 2.0 or lower, or if at least half of its reviews explicitly flag a writing problem. Of 18,014 rejects, 2,594 meet this criterion.' }),
-    qFunnel(),
     h('h4', { text: 'Matching' }),
     h('p', { text: 'We obtain both human controls for 226 of the 390 AI papers. We retrieve candidates using abstract similarity and shared references, then use their titles and abstracts to prioritize papers on the same research problem. Each human paper is used once.' }),
     h('p', { text: 'Exact matches are scarce for poorly written papers: 15 cover the same research problem as the AI paper, while the remaining 211 are matched within the same field.' }),
-    qGrid(),
     qTable(['Matched triplets', 'Count'], [
       ['Same-problem poorly written human', '15'],
       ['Same-field poorly written human', '211'],
