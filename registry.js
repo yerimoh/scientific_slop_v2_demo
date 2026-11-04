@@ -1181,7 +1181,8 @@ function setSplit(x) {
   rv.x = Math.max(4, Math.min(96, x)); $('#rv2-stage').style.setProperty('--split', rv.x + '%'); $('#rv2').style.setProperty('--split', rv.x + '%'); $('#rv2-line').setAttribute('aria-valuenow', Math.round(rv.x));
   { const box = $('#rv2'), tl = box.querySelector(':scope > .rv2-tag.l'), tr = box.querySelector(':scope > .rv2-tag.r');   // keep both handwritten labels inside the figure
     if (tl && tr && innerWidth > 760) { const W = box.clientWidth, px = W * rv.x / 100;
-      tr.style.left = Math.max(0, Math.min(px, W - tr.offsetWidth)) + 'px'; tl.style.right = Math.max(0, Math.min(W - px, W - tl.offsetWidth)) + 'px'; }
+      const j = Math.max(tl.offsetWidth, Math.min(px, W - tr.offsetWidth));   // the two labels meet at j; j stays where both fit
+      tr.style.left = j + 'px'; tl.style.right = (W - j) + 'px'; }
     else if (tl && tr) { tr.style.left = ''; tl.style.right = ''; } }
   const seen = [292, 716, 702].filter(px => px / 1010 * 100 > rv.x).length;   // breaks right of the line are visible
   if (seen !== rv.shown) { rv.shown = seen; $('#rv2-n').textContent = `${seen} break${seen === 1 ? '' : 's'}`; }
