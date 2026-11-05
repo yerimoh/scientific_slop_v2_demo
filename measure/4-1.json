@@ -1,141 +1,277 @@
 {
-"meta": {
-"item": "4-1",
-"paper": "2405.20915",
-"side": "human paper",
-"title": "Fast yet Safe: early-exiting with risk control",
-"n_runs": 3,
-"F": 3,
-"P": 243,
-"U": 2,
-"NA": 0,
-"pre": {
-"FAIL": 0,
-"PASS": 241,
-"UNRESOLVED": 0,
-"NOT_APPLICABLE": 0
-},
-"source": "v2/runs/v2_deep2/HU_2405.20915/4-1.json"
-},
-"units": [
-{
-"id": "S4.183",
-"sec": "Experiments",
-"kind": "candidate: no numbers, citations or paper-specific terms",
-"text": "This highlights the practical benefit of allocating more calibration samples: a larger sample size can aid to mitigate the price paid by a high-probability guarantee in terms of obtained inference speed-ups.",
-"runs": [
-"PASS",
-"PASS",
-"PASS"
-],
-"final": "PASS",
-"final_reason": "carries information",
-"s2": "delete it: is anything lost?",
-"found": [],
-"found_note": "deletion: info",
-"judge_line": "Provides specific information about the practical benefit of allocating more calibration samples in the context of this…"
-},
-{
-"id": "S4.244",
-"sec": "Experiments",
-"kind": "candidate: no numbers, citations or paper-specific terms",
-"text": "This step can be performed in a single forward pass for all proposed tokens, necessitating less computations from the larger, more expensive model.",
-"runs": [
-"PASS",
-"PASS",
-"PASS"
-],
-"final": "PASS",
-"final_reason": "carries a reading function",
-"s2": "delete it: is anything lost?",
-"found": [],
-"found_note": "deletion: guidance",
-"judge_line": "Provides necessary background for understanding the process of speculative decoding in large language models."
-},
-{
-"id": "S5.266",
-"sec": "Conclusion",
-"kind": "candidate: no numbers, citations or paper-specific terms",
-"text": "Their computational savings can reduce energy costs and the carbon footprint, as well as allow the model to be deployed on resource-constrained hardware.",
-"runs": [
-"FAIL",
-"PASS",
-"FAIL"
-],
-"final": "UNRESOLVED",
-"final_reason": "runs disagree: ['FAIL', 'PASS', 'FAIL']",
-"s2": "delete it: is anything lost?",
-"found": [],
-"found_note": "deletion: no loss",
-"judge_line": "General statement about the benefits of computational savings; not specific to this research."
-},
-{
-"id": "S5.268",
-"sec": "Conclusion",
-"kind": "candidate: no numbers, citations or paper-specific terms",
-"text": "This facilitates safer model deployment in real-world applications and contributes to more responsible decision-making.",
-"runs": [
-"FAIL",
-"PASS",
-"FAIL"
-],
-"final": "UNRESOLVED",
-"final_reason": "runs disagree: ['FAIL', 'PASS', 'FAIL']",
-"s2": "delete it: is anything lost?",
-"found": [],
-"found_note": "deletion: no loss",
-"judge_line": "General statement about safer model deployment and responsible decision-making; not specific to this research."
-},
-{
-"id": "S5.274",
-"sec": "Conclusion",
-"kind": "candidate: no numbers, citations or paper-specific terms",
-"text": "We are also grateful to the anonymous reviewers who helped improve the work with their constructive feedback.",
-"runs": [
-"FAIL",
-"FAIL",
-"FAIL"
-],
-"final": "FAIL",
-"final_reason": "deletion loses nothing",
-"s2": "delete it: is anything lost?",
-"found": [],
-"found_note": "deletion: no loss",
-"judge_line": "Acknowledgment of reviewers; not specific to the research content."
-},
-{
-"id": "S5.275",
-"sec": "Conclusion",
-"kind": "candidate: no numbers, citations or paper-specific terms",
-"text": "This project was generously supported by the Bosch Center for Artificial Intelligence.",
-"runs": [
-"FAIL",
-"FAIL",
-"FAIL"
-],
-"final": "FAIL",
-"final_reason": "deletion loses nothing",
-"s2": "delete it: is anything lost?",
-"found": [],
-"found_note": "deletion: no loss",
-"judge_line": "Acknowledgment of funding; not specific to the research content."
-},
-{
-"id": "S5.276",
-"sec": "Conclusion",
-"kind": "candidate: no numbers, citations or paper-specific terms",
-"text": "Eric Nalisnick did not utilize resources from Johns Hopkins University for this project.",
-"runs": [
-"FAIL",
-"FAIL",
-"FAIL"
-],
-"final": "FAIL",
-"final_reason": "deletion loses nothing",
-"s2": "delete it: is anything lost?",
-"found": [],
-"found_note": "deletion: no loss",
-"judge_line": "Acknowledgment of resource usage; not specific to the research content."
-}
-]
+ "meta": {
+  "item": "4-1",
+  "paper": "FA0064",
+  "side": "AI paper",
+  "title": "NLL-Guided Full-Attention Layer Selection for Training-Free Sliding-Window Adaptation",
+  "n_runs": 3,
+  "F": 4,
+  "P": 5,
+  "U": 4,
+  "NA": 0,
+  "pre": {
+   "FAIL": 0,
+   "PASS": 91,
+   "UNRESOLVED": 0,
+   "NOT_APPLICABLE": 0
+  },
+  "source": "v2/verification/m41_v12_eval/full143_h2k/AI_FA0064.json (Haiku 4.5, thinking 2000, 3 runs, HF pairing)"
+ },
+ "units": [
+  {
+   "id": "A05",
+   "sec": "Abstract",
+   "kind": "frame: rigor",
+   "text": "De-confounding analysis confirms the signal is specific to long-range attention needs.",
+   "s2": "reader already has: “NLL-guided selection outperforms the best periodic 1/4-FA pattern by 10.4 percentage points and attention-based heuristics by …”",
+   "found": [
+    "confounding",
+    "needs",
+    "range",
+    "signal"
+   ],
+   "found_note": "lost if deleted: info / info / info",
+   "judge_line": "Haiku: Confirms mechanistic validation; not derivable from context",
+   "runs": [
+    "PASS",
+    "PASS",
+    "PASS"
+   ],
+   "final": "PASS",
+   "final_reason": "adds information"
+  },
+  {
+   "id": "S0.009",
+   "sec": "Introduction",
+   "kind": "frame: rigor",
+   "text": "We propose NLL-guided layer selection, a principled approach that directly measures what we care about: how much does each layer's output quality degrade when we restrict its attention?",
+   "s2": "reader already has: “The choice of layers dramatically affects performance---on Qwen3-4B, the gap between good and poor 1/4-FA layer selections …”",
+   "found": [
+    "guided",
+    "selection"
+   ],
+   "found_note": "lost if deleted: info / info / info",
+   "judge_line": "Haiku: Introduces method name and core principle",
+   "runs": [
+    "PASS",
+    "PASS",
+    "PASS"
+   ],
+   "final": "PASS",
+   "final_reason": "adds information"
+  },
+  {
+   "id": "S0.010",
+   "sec": "Introduction",
+   "kind": "frame: rigor",
+   "text": "By computing the negative log-likelihood (NLL) on answer tokens under different attention configurations, we identify layers that genuinely benefit from full attention for long-range information flow.",
+   "s2": "reader already has: “We propose NLL-guided layer selection, a principled approach that directly measures what we care about: how much does each …”",
+   "found": [],
+   "found_note": "lost if deleted: not_applicable / info / not_applicable",
+   "judge_line": "Haiku: Pure method implementation description",
+   "runs": [
+    "PASS",
+    "PASS",
+    "PASS"
+   ],
+   "final": "PASS",
+   "final_reason": "adds information"
+  },
+  {
+   "id": "S0.014",
+   "sec": "Introduction",
+   "kind": "frame: tail",
+   "text": "We provide mechanistic validation through de-confounding analysis, showing that the NLL signal is specific to long-range attention needs (Spearman xxmathxx between long and short-prompt rankings) rather than generic layer sensitivity.",
+   "s2": "judged part: “showing that the NLL signal is specific to long-range attention needs (Spearman xxmathxx between long and …” · reader already has: “We provide mechanistic validation through de-confounding analysis.”",
+   "found": [
+    "correlation",
+    "long",
+    "needs",
+    "range"
+   ],
+   "found_note": "lost if deleted: info / info / info",
+   "judge_line": "Haiku: Adds validation evidence with quantitative support",
+   "runs": [
+    "PASS",
+    "PASS",
+    "PASS"
+   ],
+   "final": "PASS",
+   "final_reason": "adds information"
+  },
+  {
+   "id": "S1.036",
+   "sec": "Related work",
+   "kind": "frame: rigor",
+   "text": "Our NLL-guided approach directly measures each layer's sensitivity to attention restriction, providing a principled selection criterion.",
+   "s2": "reader already has: “However, these methods either use fixed patterns that ignore layer-specific roles or rely on indirect signals that may not …”",
+   "found": [
+    "criterion"
+   ],
+   "found_note": "lost if deleted: little / info / nothing",
+   "judge_line": "Haiku: Restates approach already introduced; generic principle only",
+   "runs": [
+    "FAIL",
+    "PASS",
+    "FAIL"
+   ],
+   "final": "UNRESOLVED",
+   "final_reason": "runs disagree"
+  },
+  {
+   "id": "S2.051",
+   "sec": "Method",
+   "kind": "frame: scaffold",
+   "text": "Our key insight is that the importance of full attention at each layer can be measured by how much it improves the model's ability to predict answer tokens.",
+   "s2": "reader already has: “Following SWAA, we assume full-attention decode is enabled, meaning all layers use full attention during generation regardless …”",
+   "found": [
+    "how",
+    "measured",
+    "much"
+   ],
+   "found_note": "lost if deleted: little / info / info",
+   "judge_line": "Haiku: Frames philosophy; AFTER specifies concrete NLL definition",
+   "runs": [
+    "PASS",
+    "PASS",
+    "FAIL"
+   ],
+   "final": "UNRESOLVED",
+   "final_reason": "runs disagree"
+  },
+  {
+   "id": "S3.082",
+   "sec": "Experiments",
+   "kind": "frame: tail",
+   "text": "This demonstrates that intelligent layer selection can substantially reduce computational cost with minimal accuracy loss.",
+   "s2": "reader already has: “NLL-Guided 1/4-FA achieves 64.6% accuracy, within 0.4 percentage points of the 1/2-FA Periodic baseline (65.0%) while using …”",
+   "found": [],
+   "found_note": "lost if deleted: nothing / nothing / nothing",
+   "judge_line": "Haiku: Rephrases prior numbers as generic ritual interpretation",
+   "runs": [
+    "FAIL",
+    "FAIL",
+    "FAIL"
+   ],
+   "final": "FAIL",
+   "final_reason": "deleting it loses nothing the context does not already say"
+  },
+  {
+   "id": "S3.086",
+   "sec": "Experiments",
+   "kind": "frame: tail",
+   "text": "Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%), demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.",
+   "s2": "judged part: “demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.” · reader already has: “Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%).”",
+   "found": [],
+   "found_note": "lost if deleted: nothing / nothing / nothing",
+   "judge_line": "Haiku: Restates 10.4pp result already stated in prior sentence",
+   "runs": [
+    "FAIL",
+    "FAIL",
+    "FAIL"
+   ],
+   "final": "FAIL",
+   "final_reason": "deleting it loses nothing the context does not already say"
+  },
+  {
+   "id": "S3.087",
+   "sec": "Experiments",
+   "kind": "frame: tail",
+   "text": "The improvement over LightTransfer is even more pronounced at 26.4 percentage points (64.6% vs 38.2%), indicating that NLL-based scoring provides a fundamentally better signal than attention-pattern heuristics for this task.",
+   "s2": "judged part: “indicating that NLL-based scoring provides a fundamentally better signal than attention-pattern heuristics for this …” · reader already has: “The improvement over LightTransfer is even more pronounced at 26.4 percentage points (64.6% vs 38.2%).”",
+   "found": [],
+   "found_note": "lost if deleted: nothing / nothing / nothing",
+   "judge_line": "Haiku: Generic interpretation of 26.4pp comparison already given",
+   "runs": [
+    "FAIL",
+    "FAIL",
+    "FAIL"
+   ],
+   "final": "FAIL",
+   "final_reason": "deleting it loses nothing the context does not already say"
+  },
+  {
+   "id": "S3.091",
+   "sec": "Experiments",
+   "kind": "frame: tail",
+   "text": "The largest gains appear on single-session-user (+37.1pp) and temporal-reasoning (+33.9pp), suggesting that NLL-guided selection particularly benefits tasks requiring precise long-range information retrieval.",
+   "s2": "judged part: “suggesting that NLL-guided selection particularly benefits tasks requiring precise long-range information retrieval.” · reader already has: “The largest gains appear on single-session-user (+37.1pp) and temporal-reasoning (+33.9pp).”",
+   "found": [
+    "information",
+    "particularly",
+    "precise",
+    "requiring"
+   ],
+   "found_note": "lost if deleted: little / nothing / little",
+   "judge_line": "Haiku: Hypothesis interpretation, not new data; tested later",
+   "runs": [
+    "PASS",
+    "FAIL",
+    "PASS"
+   ],
+   "final": "UNRESOLVED",
+   "final_reason": "runs disagree"
+  },
+  {
+   "id": "S3.100",
+   "sec": "Experiments",
+   "kind": "frame: rigor + tail",
+   "text": "These results confirm that the NLL signal is specific to long-range attention needs, not generic layer sensitivity.",
+   "s2": "reader already has: “Furthermore, long-prompt xxmathxx -NLL values are 85.6 xxmathxx larger in magnitude than short-prompt values.”",
+   "found": [
+    "attention",
+    "needs",
+    "range",
+    "signal"
+   ],
+   "found_note": "lost if deleted: little / nothing / little",
+   "judge_line": "Haiku: Conclusion from prior correlation/magnitude stats; slight framing value",
+   "runs": [
+    "PASS",
+    "FAIL",
+    "PASS"
+   ],
+   "final": "UNRESOLVED",
+   "final_reason": "runs disagree"
+  },
+  {
+   "id": "S4.117",
+   "sec": "Conclusion",
+   "kind": "frame: rigor",
+   "text": "We presented NLL-guided layer selection, a principled, training-free method for identifying which layers should retain full attention in hybrid sliding-window attention models.",
+   "s2": "reader already has: “We recommend 64+ calibration examples for production deployment to maximize stability.”",
+   "found": [],
+   "found_note": "lost if deleted: nothing / nothing / nothing",
+   "judge_line": "Haiku: Generic recap of method introduced earlier",
+   "runs": [
+    "FAIL",
+    "FAIL",
+    "FAIL"
+   ],
+   "final": "FAIL",
+   "final_reason": "deleting it loses nothing the context does not already say"
+  },
+  {
+   "id": "S4.121",
+   "sec": "Conclusion",
+   "kind": "frame: future",
+   "text": "Future work should validate across model families and tasks, and explore dynamic per-input layer selection.",
+   "s2": "reader already has: “Our work has limitations: we evaluate on a single model (Qwen3-4B) and benchmark (LongMemEval).”",
+   "found": [
+    "dynamic",
+    "explore",
+    "families",
+    "input"
+   ],
+   "found_note": "lost if deleted: info / info / little",
+   "judge_line": "Haiku: Specifies concrete future directions",
+   "runs": [
+    "PASS",
+    "PASS",
+    "PASS"
+   ],
+   "final": "PASS",
+   "final_reason": "adds information"
+  }
+ ]
 }

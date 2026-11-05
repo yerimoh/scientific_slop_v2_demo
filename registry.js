@@ -90,7 +90,7 @@ const PIC = {
   '2-1': () => row([E.card('Abstract', inner.chip('46% · 93% kept', C.struct, { outline: true })), E.miss(C.struct, { left: true }), E.card('§4 Results', inner.chip('MQ: 12.1 → 3.65', C.struct))]),
   '2-3': () => row([E.card('§3 · Method', inner.chip('Eq. 1', C.struct)), E.miss(C.struct, { left: true }), E.card('§4 · Experiments', inner.chip('ratio formula', C.struct))]),
   '3-1': () => row([E.chip('layer 12 of 32', C.art), E.miss(C.art), E.ask(['why 12?'])]),
-  '4-1': () => row([E.para('§1 Introduction', 'this holds exciting promise …', C.struct)]),
+  '4-1': () => row([E.para('§1 Introduction', 'this confirms the effectiveness …', C.struct)]),
   '4-2': () => row([E.chip('retrieval rate', C.art), E.miss(C.art), E.ask(['= ?'])]),
   '4-4': () => row([E.card('§3 · Method', inner.chip('destroys saliency', C.struct)), E.eq(), E.card('§4 · Experiments', inner.chip('destroys saliency', C.struct))]),
   '4-5': () => row([E.card('Figure 1', inner.bars(), { lines: false }), E.miss(C.art), E.ask(['L8 in the text?'])]),
@@ -158,12 +158,12 @@ const ITEMS = [
     not: ['A standard setting with a source.', 'Minor settings that do not touch the core claims.'],
     fix: ['Give the real rationale, constraint, or comparison.', 'Not a fix: inventing alternatives that were never run.'] },
 
-  { id: '4-1', area: 4, name: 'Generic Filler', what: 'Stock prose that says nothing about this study and does no work.',
-    ex: { spec: 'Our innovative framework unlocks new possibilities and addresses important challenges.', specnote: 'Delete it and nothing is lost. Which possibilities? Which challenges? Never specified.', src: 'Human paper · LoLCATs, arXiv 2410.10254 · §1 Introduction', pre: '', mark: 'This holds exciting promise for quickly scaling up subquadratic capabilities.', post: '', note: 'The two sentences before it already say what the promise is. Delete this one and nothing is lost.' },
-    judge: ['What information or function is lost if the sentence goes?', '“Could be pasted into any paper” finds candidates; it is not the verdict.'],
-    not: ['Needed background or standard definitions.', 'A short pointer to what comes next.'],
-    fix: ['Delete it, or replace it with the study’s content.', 'Not a fix: inserting model and dataset names.'],
-    borders: [['4-4', 'repeated rather than empty']] },
+  { id: '4-1', area: 4, name: 'Generic Filler', what: 'A sentence in a stock frame (“This shows that …”, “…, demonstrating that …”, “The key finding is …”) that adds nothing the sentences around it have not already said.',
+    ex: { spec: 'This confirms the effectiveness of our approach.', specnote: 'It follows “Our model beats all baselines” and re-labels it. Delete it and nothing is lost.', src: 'AI paper · SciSlopBench FA0064 · §4 Experiments', pre: 'Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%), ', mark: 'demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.', post: '', note: 'The first half gives the gain. The marked clause restates it as a general claim, with no condition or reason added.' },
+    judge: ['Delete the sentence: does the reader lose anything the two sentences before and the one after do not already say?', 'The stock frame only selects the candidate; it is not the verdict.'],
+    not: ['A framed sentence that adds a condition, reason or limitation.', 'A claim that is too strong but informative (that is 1-2).'],
+    fix: ['Delete the sentence or its framing clause, or state the condition or reason the number implies.', 'Not a fix: swapping the frame word (“shows” → “suggests”).'],
+    borders: [['4-4', 'copied from another section, not re-labelled in place'], ['1-2', 'too strong rather than empty']] },
   { id: '4-2', area: 4, name: 'Undefined Terms', what: 'A term the reader needs is never given a meaning.',
     ex: { spec: 'semantic anchoring', specnote: 'No definition, equation, citation, or example says what semantic anchoring does.', src: 'AI paper · SciSlopBench FA0083 · §4 Experiments', pre: 'This occurs because LLaMA-3.1-8B-Instruct has a ', mark: 'low retrieval rate (<14%)', post: ', limiting the effectiveness of consensus-based validation.', note: '“Retrieval rate” explains the paper’s main negative result. It is never defined, and no table reports it.' },
     judge: ['Fix the intended reader and field.', 'Can the meaning be recovered from context, equations, or a cited definition?', 'Several names for one thing is a naming inconsistency, logged separately.'],
@@ -213,9 +213,10 @@ const DEF = {
     q: [{ pre: 'Our approach is straightforward: extract attention weights from ', mark: 'layer 12 (out of 32 LLM layers in InternVL2.5-8B)', post: ' and apply MIS selection directly without any debiasing.', src: 'AI paper · SciSlopBench FA0280 · §3 Method' },
         { pre: 'Key Insight: Deeper Layers = Better Token Selection · L2 55% · L4 39% · ', mark: 'L8 69% · L12 66%', post: '', src: 'Same paper · Figure 1, text inside the figure' }],
     note: 'The method is the choice of layer, and the paper never says why 12. Its own figure shows layer 8 scoring higher, and the text never mentions it.' },
-  '4-1': { what: 'A sentence says nothing about this study and could be deleted without loss.',
-    q: [{ pre: 'Linearizing aims to start with openly available LLMs … and (i) swap their softmax attentions with subquadratic analogs, before (ii) further finetuning to recover quality. ', mark: 'This holds exciting promise for quickly scaling up subquadratic capabilities.', post: '', src: 'Human paper · LoLCATs, arXiv 2410.10254 · §1 Introduction' }],
-    note: 'The sentence before already says what the promise is: cheaper models of the same quality. The marked sentence adds only “exciting”, and deleting it loses nothing.' },
+  '4-1': { what: 'The sentence re-labels what its context already says.',
+    q: [{ pre: 'Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%), ', mark: 'demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.', post: '', src: 'AI paper · SciSlopBench FA0064 · §4 Experiments' },
+        { pre: '', mark: 'This demonstrates that intelligent layer selection can substantially reduce computational cost with minimal accuracy loss.', post: '', src: 'Same paper · §4 Experiments, right after the accuracy and FA-budget numbers' }],
+    note: 'Both follow a sentence that already gives the numbers. Neither adds a condition, a reason or a limit, and deleting them loses nothing.' },
   '4-2': { what: 'The paper leans on a term it never defines.',
     q: [{ pre: 'This occurs because LLaMA-3.1-8B-Instruct has a ', mark: 'low retrieval rate (<14%)', post: ', limiting the effectiveness of consensus-based validation.', src: 'AI paper · SciSlopBench FA0083 · §4 Experiments' }],
     note: 'The paper’s main negative result is explained by this number. “Retrieval rate” is never defined and no table reports it, so the reader cannot tell what 14% is a share of.' },
@@ -322,7 +323,7 @@ const FAIL = {
   '2-1': { to: 'gneg', label: 'this finding never reaches the Abstract' },
   '2-3': { to: 'gloss', label: 'Eq. 2 defines λ here · §4 never points back', miss: true },
   '3-1': { to: 'g31', label: 'excluded, no reason given' },
-  '4-1': { to: 'g41', label: 'says nothing about this paper' },
+  '4-1': { to: 'g41', label: 're-labels the sentence before' },
   '4-2': { to: 'g42', label: 'never defined' },
   '4-4': { to: 'g44', label: 'the same sentence as in §1', eq: true, from: '§1 Introduction', at: '§4.2 Results' },
   '4-5': { to: 'gfig', label: 'arrows and colors never explained' },
@@ -342,7 +343,7 @@ const GROUPS = [
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
 const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'The claim goes further than the evidence.', '1-4': 'Cited, but never related to this paper.',
   '2-1': 'The key finding is missing from the abstract.', '2-3': 'Set up in one section, never pointed back to.', '3-1': 'A design choice with no reason given.',
-  '4-1': 'Says nothing about this paper.', '4-2': 'A term that is never defined.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
+  '4-1': 'Re-labels what was just said.', '4-2': 'A term that is never defined.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
   '5-4': 'The cited source says something else.' };
 for (const it of ITEMS) it.short = SHORT[it.id];
 const BY_ID = Object.fromEntries(ITEMS.map(i => [i.id, i]));
@@ -445,7 +446,7 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // Flow animation over a real run. measure/<id>.json (built by v2/slop_v2/build_measure_json.py) holds one paper's units in a
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
-const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL';
+const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code';
 const MEASURE = {
   '1-1': { unit: 'claim', units: 'claims',
     stages: [['Claim', 'stated as fact', 'paper'], ['Needs', 'what would prove it?', Q], ['Found', 'in the paper?', QC], ['Verdict', '3 runs vote', CD]],
@@ -503,14 +504,14 @@ const MEASURE = {
       ['Find the reason', [[Q, 'Point to every id that gives a reason, appendix included: ablation table, cited standard, constraint, argument.'], [Q, 'Judge reads the reason with the choice sentence and 4 surrounding sentences: specific reason (why this value, not another) · description only · generic phrase. Quotes the reason verbatim.'], [CD, 'The quote must occur in the text.']]],
       ['Decide PASS / FAIL / U', [[CD, 'Stock phrase (“for efficiency”, unsourced “following common practice”) → FAIL.'], [CD, 'Baselines, metrics, backbones: source → PASS; no reason → U (standard comparisons not failed by rule).'], [CD, 'Data and key values: description only or generic → FAIL; specific reason → PASS.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
     line: 'Qwen2.5-32B lists the choices and quotes the stated reason; code fails stock phrases and verifies the quote. Three runs vote.' },
-  '4-1': { unit: 'sentence', units: 'sentences',
-    stages: [['Sentence', 'eligible prose', CD], ['Delete it', 'context without it', Q], ['Lost?', 'information or function', Q], ['Verdict', '3 runs vote', CD]],
+  '4-1': { unit: 'sentence', units: 'framed sentences',
+    stages: [['Sentence', 'body prose with a stock frame', CD], ['Context', '2 sentences before, 1 after', CD], ['Lost?', 'what deleting it removes', HC], ['Verdict', '3 runs vote', CD]],
     how: [
-      ['Select the sentences', [[CD, 'All prose sentences of ≥8 tokens. Excluded: captions, ethics, acknowledgements, boilerplate.'], [CD, 'Candidates: no number, formula, citation, reference or paper-specific term; plus a random 10% spot check. A name alone is not information.'], [CD, 'Non-candidates → PASS by rule (counted, not animated).']]],
-      ['Delete the sentence', [[Q, 'Read the neighbours without it.']]],
-      ['Check what is lost', [[Q, 'Lost: (i) study-specific information · (ii) a needed function (background, transition, guidance) · nothing.']]],
-      ['Decide PASS / FAIL', [[CD, 'no_loss → FAIL. Otherwise → PASS.'], [CD, 'Denominator: all eligible sentences, so the score is the share of empty prose.'], [CD, 'Three runs vote.']]]],
-    line: 'Code selects candidates; Qwen2.5-32B runs the deletion test in context. Denominator: all eligible sentences. Three runs vote.' },
+      ['Select the sentences', [[CD, 'Body prose of ≥4 words. Excluded: captions, appendix, ethics / reproducibility statements.'], [CD, 'Candidate → a stock frame: “This shows / confirms …”, “…, demonstrating / indicating that …”, “The key finding is”, “we verify”, “root cause”, “principled”, “informing future research”.'], [CD, 'No frame → PASS by rule (in the denominator, not shown).']]],
+      ['Cut out the context', [[CD, 'Two sentences before, one after.'], [CD, '“Fact, demonstrating that …” → the fact joins the context; only the framing clause is judged.']]],
+      ['Delete it: what is lost?', [[H, 'Answer: nothing · little · info · not applicable. Copy the words that carry the lost information.'], [H, 'Information → a number, name, condition, reason, mechanism, comparison, new claim, limitation. Re-labelling the context as a finding, confirmation or insight → not information.'], [H, 'Strength is not judged (1-2).']]],
+      ['Decide PASS / FAIL / U', [[CD, 'nothing → FAIL.'], [CD, 'little / info → copied words must occur in the sentence; ≤1 content word left after removing context and frame words → FAIL; otherwise → PASS.'], [CD, 'Three runs: FAIL needs a majority and no PASS; split runs → U.'], [CD, 'score = FAIL ÷ (FAIL + PASS) over all eligible sentences.']]]],
+    line: 'Code finds stock frames and cuts the context; Claude Haiku 4.5 runs the deletion test; code checks the copied words. Three runs vote.' },
   '4-2': { unit: 'term', units: 'terms',
     stages: [['Term', 'needs a meaning to be understood', CD], ['Used', 'where and how often', CD], ['Defined?', 'a sentence giving the meaning', QC], ['Verdict', '3 runs vote', CD]],
     how: [
@@ -644,9 +645,9 @@ List the choices that affect the conclusion: architecture, data selection, exclu
 For each, give the actual rationale, constraint, or comparison. "For efficiency" alone is not a reason.
 Do not invent alternatives that were never run; a value that is given but unexplained is the target here, not a missing value.`,
   '4-1': `# Fix · Generic Filler (4-1)
-For each sentence, ask what information or function is lost if it is deleted.
-If nothing is lost, delete it. If it stands where motivation or a definition should be, replace it with the study's own content.
-Inserting model or dataset names to make a sentence look specific is not a fix.`,
+Find each sentence or clause in a stock frame ("This shows / confirms that ...", ", demonstrating that ...", "The key finding is ...", "informing future research").
+Delete it and read the two sentences before and the one after. If nothing is lost, keep it deleted.
+If it should stay, replace it with what the number implies: the condition, the reason, or the limit. Swapping the frame word is not a fix.`,
   '4-2': `# Fix · Undefined Terms (4-2)
 For every term or abbreviation the intended reader cannot interpret from context, give its operation, object, or role where it first appears, or cite the definition.
 Expanding an acronym or swapping in another abstract word is not enough. If one thing has several names, pick one.`,
@@ -896,13 +897,13 @@ function srcParts(src) { const m = String(src || '').split(' · '); return [h('s
 // six v1 measures → eleven slops, drawn as a hand-ruled tree; the caption under the page says what the chosen slop is
 const TREE = [['Argument graph', ['1-1', '1-2', '5-4']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4']], ['Figure exposition', ['4-5']], [null, ['2-1', '3-1', '4-1', '4-2']]];
 // results so far, on the 123 AI / human pairs; an item stays blank until its measure is final
-const RESULTS = { '2-3': { ai: '0.92', hu: '0.59', auc: '0.88', prec: '—' }, '4-4': { ai: '0.49', hu: '0.13', auc: '0.90', prec: '0.83' } };
+const RESULTS = { '2-3': { ai: '0.92', hu: '0.59', auc: '0.88', prec: '—' }, '4-1': { ai: '0.031', hu: '0.010', auc: '0.82', prec: '0.63' }, '4-4': { ai: '0.49', hu: '0.13', auc: '0.90', prec: '0.83' } };
 $('#sm-res').replaceChildren(h('table', { class: 'res-tbl' },
   h('thead', {}, h('tr', {}, ...['Slop', 'AI papers', 'Human papers', 'AUROC', 'Precision'].map(t => h('th', { text: t })))),
   h('tbody', {}, ...GROUPS.flatMap(g => [h('tr', { class: 'res-g ' + g.cls }, h('td', { colspan: 5, text: g.title })),
     ...ITEMS.filter(i => i.plane === g.key).map(it => { const r = RESULTS[it.id] || {};
       return h('tr', { class: RESULTS[it.id] ? 'has' : '' }, h('td', {}, h('span', { class: 'res-id', text: it.id }), it.name), h('td', { text: r.ai || '' }), h('td', { text: r.hu || '' }), h('td', { text: r.auc || '' }), h('td', { text: r.prec || '' })); })]))),
-  h('p', { class: 'res-note', text: '123 pairs of AI and human papers. AI and human columns: average share of units where the slop was found (4-4: body sections; 2-3: method and experiment sections and numbered equations). Precision: the share of flagged cases that hold up when checked blind (4-4: 35 cases; 2-3: not checked yet, —). 2-3 uses 115 pairs: 8 human sources have missing input files. Blank rows are not measured yet.' }));
+  h('p', { class: 'res-note', text: 'AI and human columns: average share of units where the slop was found (4-1: body sentences; 4-4: body sections; 2-3: method and experiment sections and numbered equations). 2-3 and 4-4: 123 pairs; 4-1: the 143 FARS pairs of the released SciSlopBench. Precision: the share of flagged cases that hold up when checked blind (4-1: two blind judges on 20 pairs, 296 sentences; 4-4: 35 cases; 2-3: not checked yet, —). 2-3 uses 115 pairs: 8 human sources have missing input files. Blank rows are not measured yet.' }));
 // the three areas, each in its own colour: Structure, Argument, Artifacts
 const TREE2 = GROUPS.map(g => [g, ITEMS.filter(i => i.plane === g.key).map(i => i.id)]);
 $('#tree-rows').replaceChildren(...TREE2.map(([g, ids]) => h('div', { class: 'tr ' + g.cls },
