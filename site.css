@@ -1478,3 +1478,13 @@ mark.cx-e { color: inherit; background: rgba(255, 214, 10, .38); border-radius: 
 .cx-rc p { margin: 0 0 6px; line-height: 1.5; }
 .cx-rc .cx-lab { display: block; margin: 0 0 3px; }
 .rs-n .dc-who { margin-left: 0; display: inline-block; margin-top: 4px; }
+/* 11-07: scores in the 1-2 panels read as ordinary text (no big red monospace) */
+.eb-vd { font-size: 14px; color: var(--ink); }
+.eb-vd b { font-family: inherit; font-weight: 650; }
+.eb-vd .v-F, .eb-vd .v-P { color: inherit; }
+.eb-vd small { font-size: 13px; }
+.pt .mw-score, .pt-comb { font-size: 14px; }
+.pt .mw-score b, .pt .mw-score .big, .pt-comb b, .pt-comb .big { font-family: inherit; font-size: inherit; font-weight: 650; color: var(--ink); }
+.pt .mw-score .v-F, .pt-comb .v-F { color: var(--ink); }
+.pt-comb .pt-cl { text-transform: none; letter-spacing: 0; font-size: 13px; }
+.eb-kv dd.bad { color: var(--ink); }

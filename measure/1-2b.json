@@ -108,7 +108,7 @@
     [
      {
       "verdict": {
-       "score": "0 / 100",
+       "score": "Score 0 of 100",
        "v": "FAIL",
        "note": "Two models from two families on four datasets would score 46."
       }
