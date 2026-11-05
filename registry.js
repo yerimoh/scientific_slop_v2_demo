@@ -96,11 +96,10 @@ const PIC = {
   '4-3': () => row([E.para('§4.1 Data', 'folder layout · renamed files · scratch dirs', C.struct, { box: true })]),
   '4-4': () => row([E.card('§3 · Method', inner.chip('destroys saliency', C.struct)), E.eq(), E.card('§4 · Experiments', inner.chip('destroys saliency', C.struct))]),
   '4-5': () => row([E.card('Figure 1', inner.bars(), { lines: false }), E.miss(C.art), E.ask(['L8 in the text?'])]),
-  '5-2': () => row([E.chip('H2O prunes high-attn tokens', C.arg), E.clash(), E.card('H2O in §2', inner.text(['keeps them', 'same paper'], { bold0: true, mute1: true }), { lines: false })]),
   '5-4': () => row([E.chip('0.3, "typically considered"', C.arg), E.miss(C.arg), E.ask(['by whom?', '[ ? ]'])]),
 };
 // what the pattern looks like, one line under each scene
-const CAP = { '1-1': 'a claim with nothing behind it', '1-2': 'claim wider than its evidence', '1-3': 'numbers only, no example', '1-4': 'cited, related to nothing', '2-1': 'the bad news never reaches the front', '2-3': 'used later, never pointed back to', '3-1': 'a choice with no reason', '4-1': 'delete it and nothing is lost', '4-2': 'a term with no meaning', '4-3': 'detail the reader never needs', '4-4': 'the same sentence, another section', '4-5': 'a result only the figure reports', '5-2': 'the contrast is not true', '5-4': 'a source that is not there' };
+const CAP = { '1-1': 'a claim with nothing behind it', '1-2': 'claim wider than its evidence', '1-3': 'numbers only, no example', '1-4': 'cited, related to nothing', '2-1': 'the bad news never reaches the front', '2-3': 'used later, never pointed back to', '3-1': 'a choice with no reason', '4-1': 'delete it and nothing is lost', '4-2': 'a term with no meaning', '4-3': 'detail the reader never needs', '4-4': 'the same sentence, another section', '4-5': 'a result only the figure reports', '5-4': 'a source that is not there' };
 // hero: a paper spine with the five kinds of broken connection
 function heroSvg() {
   const secs = [['Abstract', 4], ['Introduction', 42], ['Method', 80], ['Experiments', 118], ['Conclusion', 156]];
@@ -146,8 +145,7 @@ const ITEMS = [
     ex: { spec: 'We propose C.', specnote: 'Does C follow A or B? Which limitation does it address? What differs? Not said.', src: 'AI paper · SciSlopBench FA0280 · §2 Related Work', pre: 'SparseVLM introduces text-aware sparsification that conditions token selection on the input query, and ', mark: 'FEATHER revisits pruning strategies with improved layer selection.', post: '', note: 'The paragraph lists eight pruning methods and never says how this paper relates to any of them. FEATHER also picks layers, which is this paper’s whole idea.' },
     judge: ['Does the citing passage explain the role of that work?', 'Relations among prior works are logged apart from relations to this study.', 'Judge when a relation needed to place the study is missing.'],
     not: ['Citations for background facts or standard tools.', 'The relation explained in another paragraph.'],
-    fix: ['Explain the actual difference, inheritance, or limitation.', 'Not a fix: adding “Unlike prior work”; deleting citations.'],
-    borders: [['5-2', 'a difference is stated but does not hold']] },
+    fix: ['Explain the actual difference, inheritance, or limitation.', 'Not a fix: adding “Unlike prior work”; deleting citations.'] },
 
   { id: '2-1', area: 2, name: 'Buried Findings', what: 'The body’s key finding never reaches the Abstract or Introduction.',
     ex: { spec: 'a novel attention mechanism that improves performance', specnote: '§4.2 shows the gain comes almost entirely from sentences with negation. The front matter never says so.', src: 'AI paper · SciSlopBench FA0002 · §4 Experiments', pre: 'On Multi-Query, ', mark: 'we achieve 70% reduction but with larger accuracy loss (3.65% vs. 12.10%)', post: ', indicating that distributed-information tasks inherently require higher cache coverage.', note: 'The abstract reports only the favorable task (46% cache reduction, 93% of accuracy kept). The accuracy collapse on the other task never reaches it.' },
@@ -197,18 +195,12 @@ const ITEMS = [
     not: ['A short caption whose meaning is clear from the legend and text.', 'A simplified overview whose detail is clearly located.'],
     fix: ['Explain the notation and tie it to the method.', 'Not a fix: a longer caption; deleting the figure.'] },
 
-  { id: '5-2', area: 5, v1: 'Argument graph', name: 'Unsupported Comparisons', link: ['what the compared method actually does', 'the difference claimed'], what: 'A difference from other methods is claimed, and the target is unclear or the difference is not true.',
-    ex: { spec: 'Unlike baselines A and B, which assign fixed weights to all inputs,', specnote: 'The paper’s own equations for A and B compute weights from the input too. The contrast does not hold.', src: 'AI paper · SciSlopBench FA0002 · §1 Introduction', pre: 'This is fundamentally different from attention-based methods like H2O, ', mark: 'which prune high-attention tokens', post: '; we prune tokens with low approximation error.', note: 'The paper’s own related work says H2O keeps the high-attention tokens and drops the rest. The contrast is with a method that does not exist.' },
-    judge: ['Log the target, the compared property, and the claimed property; check each.', 'A structural difference is checked in the equations; a performance difference needs an evaluation.', 'The target may be named by citation, name, definition, or context.'],
-    not: ['A structural difference confirmed by the equations.', 'A contrast with a standard setting that is clear from context.'],
-    fix: ['Name the target and the property precisely, or withdraw the distinction and align the Abstract and conclusion.', 'Not a fix: deleting “unlike”; attaching unrelated citations.'],
-    borders: [['1-4', 'the relation is never explained'], ['1-2', 'the difference holds but is inflated']] },
   { id: '5-4', area: 5, v1: 'Argument graph', name: 'Misrepresented Evidence', link: ['the evidence as described', 'the actual source or experiments'], what: 'The paper says evidence exists, and the evidence does not say that.',
     ex: { spec: 'Prior studies established that update rule A converges under adaptive step sizes [12].', specnote: 'The theorem in [12] covers fixed step sizes only. Nothing extends it.', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments', pre: 'All values are well below ', mark: 'the 0.3 threshold typically considered indicative of meaningful positional bias.', post: '', note: 'No source for the threshold, and none for who considers it. The paper’s central diagnostic rests on it.' },
     judge: ['Check four things against the material: existence, content, scope, consensus.', '“Extensive”, “numerous”, and citation counts are not the criterion.', 'Source unreachable means undecidable, not a defect.'],
     not: ['A citation that describes its source and conditions accurately.', 'A single survey backing a consensus statement.'],
     fix: ['Describe what the support actually shows.', 'If a support statement goes, recheck the remaining claim.', 'Not a fix: more citations; deleting “extensive”.'],
-    borders: [['1-1', 'no support is claimed at all'], ['1-2', 'range reported right, then generalized'], ['5-2', 'a misdescribed comparison target']] },
+    borders: [['1-1', 'no support is claimed at all'], ['1-2', 'range reported right, then generalized']] },
 ];
 // Definitions tab text, 1013: one plain definition, one or two real sentences (the second shows where the support should be), two-sentence note.
 const DEF = {
@@ -254,10 +246,6 @@ const DEF = {
   '4-5': { what: 'The figure shows something the reader cannot interpret from the figure, its caption, or the text.',
     q: [{ pre: 'Key Insight: Deeper Layers = Better Token Selection · ', mark: 'L2 55% · L4 39% · L8 69% · L12 66%', post: '', src: 'AI paper · SciSlopBench FA0280 · Figure 1, text inside the figure' }],
     note: 'Nothing says what the four bars measure, or that the L2 bar is a different method with debiasing. The highest bar, L8, is never mentioned in the text, so the reader cannot tell what the figure is showing.' },
-  '5-2': { what: 'The paper says it differs from another method, and describes that method wrongly.',
-    q: [{ pre: 'This is fundamentally different from attention-based methods like H2O, ', mark: 'which prune high-attention tokens', post: '; we prune tokens with low approximation error.', src: 'AI paper · SciSlopBench FA0002 · §1 Introduction' },
-        { pre: 'H2O identifies “heavy hitter” tokens that consistently receive high attention scores and ', mark: 'retains only these tokens', post: ' plus recent context.', src: 'Same paper · §2 Related Work' }],
-    note: 'H2O keeps the high-attention tokens; the introduction says it prunes them. The claimed difference is with a method that does not exist.' },
   '5-4': { what: 'The paper says a source or a standard backs a claim, and the source is not there or does not say that.',
     q: [{ pre: 'All values are well below the 0.3 threshold ', mark: 'typically considered', post: ' indicative of meaningful positional bias.', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments' }],
     note: '“Typically considered” points to a convention someone established. No citation is given here or anywhere in the paper, and the paper’s central diagnostic rests on this threshold.' },
@@ -275,7 +263,6 @@ const PRINCIPLES = [
 ];
 const CUES = [
   ['Evaluative words', 'novel, robust, significantly, state-of-the-art', ['1-2']],
-  ['Contrast frames', 'unlike …, rather than …, not X but Y', ['5-2']],
   ['Evidence talk', 'it is well established that, extensive experiments show', ['5-4']],
   ['Rule of three', 'novel, efficient, and scalable', ['1-1', '1-2', '5-4']],
   ['Empty signposting', 'it is worth noting that, in summary, overall', ['4-1', '4-4']],
@@ -302,7 +289,7 @@ function hbars(rows, o = {}) { // rows: [label, value, {color, bold, note}]
   return `<svg class="v-chart" viewBox="0 0 ${W} ${H}" font-family="Inter, system-ui, sans-serif">${s}</svg>`;
 }
 const FINDINGS = [
-  { id: 'f1', q: 'How does AI slop differ from human poor writing?', a: 'Human and AI papers on the same 14 items, author hidden.',
+  { id: 'f1', q: 'How does AI slop differ from human poor writing?', a: 'Human and AI papers on the same 13 items, author hidden.',
     compare: 'Human-written papers and AI-generated papers. The judge never sees the author; the label is joined afterwards.',
     measure: 'The distribution of each item in each group: how often, how severe, and in what concrete form. Which slop is shared, which is AI’s alone.',
     v1: 'Six counting measures already pick the AI paper in 85.9% of 390 matched pairs; the best AI-text detector reaches 68.7%.',
@@ -332,10 +319,9 @@ const PAGE = {
     { h: 'Abstract', p: ['Cross-lingual retrieval models weight every token the same. We introduce ', M('2-1'), ' on three benchmarks. ', M('1-2'), ', with gains of up to 4 points.'], lines: 1 },
     { h: '1  Introduction', p: ['We propose a framework that learns token weights for cross-lingual retrieval. ', A('g44', 'Our model beats all baselines on both datasets.')], lines: 1 },
     { p: [M('4-1'), ' ', G('g41', 'delete it: nothing is lost')], lines: 1 },
-    { h: '2  Related Work', p: ['Method A [3] uses contrastive pairs; method B [7] adds a memory module. ', A('gab', 'Both compute their weights w = f(x) from the input.'), ' ', M('1-4'), ' ', G('g14', 'follows A or B? what differs?')], lines: 1 },
+    { h: '2  Related Work', p: ['Method A [3] uses contrastive pairs; method B [7] adds a memory module. ', M('1-4'), ' ', G('g14', 'follows A or B? what differs?')], lines: 1 },
     { p: [M('5-4')], lines: 1 },
     { h: '3  Method', p: ['We apply ', M('4-2'), ' ', G('g42', 'definition'), ' before fusion and then project to the shared space. ', A('gloss', 'We add an alignment term: L = L_task + λ·L_align (Eq. 2).')], lines: 1 },
-    { p: [M('5-2'), ' our method learns input-dependent weights.'], lines: 1 },
     { fig: true, cap: [M('4-5'), ' Solid and dashed arrows; blue, green, and orange blocks.'] },
   ],
   right: [
@@ -364,15 +350,14 @@ const FAIL = {
   '4-3': { self: true, label: 'no result depends on this' },
   '4-4': { to: 'g44', label: 'the same sentence as in §1', eq: true, from: '§1 Introduction', at: '§4.2 Results' },
   '4-5': { to: 'gfig', label: 'arrows and colors never explained' },
-  '5-2': { to: 'gab', label: 'A and B are input-dependent too' },
   '5-4': { to: 'gref', label: '[12] covers fixed step sizes only' },
 };
 const PLANES = { structure: { title: 'Structure', q: 'Do the sections build on one another?' }, argument: { title: 'Argument', q: 'Are the claims and citations argued?' }, artifacts: { title: 'Artifacts', q: 'Can the method and the evidence be inspected?' } };
 const PLANE_OF = { '2-1': 'structure', '2-3': 'structure', '4-1': 'structure', '4-3': 'structure', '4-4': 'structure',
-  '1-1': 'argument', '1-2': 'argument', '1-4': 'argument', '5-2': 'argument', '5-4': 'argument',
+  '1-1': 'argument', '1-2': 'argument', '1-4': 'argument', '5-4': 'argument',
   '1-3': 'artifacts', '3-1': 'artifacts', '4-2': 'artifacts', '4-5': 'artifacts' };
 const PLANE_C = { structure: '#7E4E66', argument: '#E4959E', artifacts: '#56717B' };   // site planes: structure/artifacts in their deep shade so structure and argument separate
-// the page groups the fourteen items by the index's three planes; the 1-5 area numbers stay in the item ids
+// the page groups the thirteen items by the index's three planes; the 1-5 area numbers stay in the item ids
 const GROUPS = [
   { n: 1, key: 'structure', cls: 'p-structure', title: 'Structure', q: 'Do the sections build on one another?' },
   { n: 2, key: 'argument', cls: 'p-argument', title: 'Argument', q: 'Are the claims and citations argued?' },
@@ -382,7 +367,7 @@ for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g
 const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'The claim goes further than the evidence.', '1-3': 'Results, but not one example shown.', '1-4': 'Cited, but never related to this paper.',
   '2-1': 'The key finding is missing from the abstract.', '2-3': 'Set up in one section, never pointed back to.', '3-1': 'A design choice with no reason given.',
   '4-1': 'Says nothing about this paper.', '4-2': 'A term that is never defined.', '4-3': 'Detail that no result depends on.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
-  '5-2': 'A claimed difference that does not hold.', '5-4': 'The cited source says something else.' };
+  '5-4': 'The cited source says something else.' };
 for (const it of ITEMS) it.short = SHORT[it.id];
 const BY_ID = Object.fromEntries(ITEMS.map(i => [i.id, i]));
 function renderPage() {
@@ -461,7 +446,7 @@ renderPage();
 const PAPER = (x, y, w, h, label, marks) => K.card(x, y, w, h, label) + K.lines(x + 3, y + 7, w - 6, 3, { gap: 3.2, last: .6 }) + (marks || []).map(([mx, my, mw, col]) => K.box(x + mx, y + my, mw, 2.6, { fc: col, ec: col, r: .8 })).join('');
 const PERSON = (x, y, col) => `<circle cx="${x}" cy="${y}" r="2.6" fill="${col}"/><path d="M${x - 4.6} ${y + 9.5} a4.6 4.6 0 0 1 9.2 0z" fill="${col}"/>`;
 const ROBOT = (x, y, col) => K.box(x - 3.4, y - 2.6, 6.8, 6, { fc: col, ec: col, r: 1 }) + `<rect x="${x - 2}" y="${y - 1}" width="1.4" height="1.4" fill="#fff"/><rect x="${x + .6}" y="${y - 1}" width="1.4" height="1.4" fill="#fff"/><line x1="${x}" y1="${y - 2.6}" x2="${x}" y2="${y - 4.5}" stroke="${col}" stroke-width=".8"/>` + K.box(x - 4.6, y + 4.4, 9.2, 5, { fc: col, ec: col, r: 1 });
-const MINI_CAP = {"f1": "Human and AI papers, same 14 items, author hidden", "f2": "Slop against review scores, year by year and venue by venue", "f3": "One paper, one human review and one AI review", "f4": "Each review remark matched to the slop it points at"};
+const MINI_CAP = {"f1": "Human and AI papers, same 13 items, author hidden", "f2": "Slop against review scores, year by year and venue by venue", "f3": "One paper, one human review and one AI review", "f4": "Each review remark matched to the slop it points at"};
 const MINI = {
   f1: () => `<img src="img/q1.png" alt="An AI paper that looks polished next to a human paper full of red marks">`,
   f2: () => `<img src="img/q2_v2.png" alt="Clean and sloppy AI papers, reviewers' star ratings, and the scores plotted by year and by venue">`,
@@ -590,14 +575,6 @@ const MEASURE = {
       ['Check the explanation', [[Q, 'Judge reads transcript, caption and citing sentences, and lists: (1) unexplained elements the figure’s purpose needs, (2) figure numbers and whether their condition is readable, (3) caption–image conflicts, (4) body comparisons that cannot be matched to the figure.'], [CD, 'Count only elements a reader must interpret (arrow and line styles, symbols, colour classes, legends, panels, axis labels), not “exact value not printed”.']]],
       ['Decide PASS / FAIL / U', [[CD, 'FAIL: caption conflict · figure-only number with unreadable condition · ≥2 unexplained structural elements · 1 unexplained + an uncheckable comparison.'], [CD, 'One weak signal alone → U.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS). Limited by transcription quality (numbers on bars are sometimes missed).']]]],
     line: 'Qwen2.5-VL transcribes the image; Qwen2.5-32B lists what caption and body leave unexplained; code applies the thresholds. Three runs vote.' },
-  '5-2': { unit: 'contrast', units: 'contrasts',
-    stages: [['Contrast', 'ours vs a named target', CD], ['Target says', 'how the paper describes it', Q], ['Difference', 'shown or contradicted?', QC], ['Verdict', '3 runs vote', CD]],
-    how: [
-      ['Select the contrasts', [[CD, 'Candidates: first-person sentences with contrast words (unlike, in contrast, rather than, whereas, outperform, compared to…), or a baseline name + comparison word.'], [Q, 'Keep contrasts with an identifiable target and a stated difference: structural, performance or cost. “Requires no training” = structural.'], [CD, 'NA: findings about own data, comparisons among prior works, contrasts between settings of the own method.']]],
-      ['Describe the target', [[Q, 'Record the target, the property attributed to it, and the paper’s own property.'], [CD, 'Collect every sentence that names the target.']]],
-      ['Check the difference', [[Q, 'Judge reads all target sentences and the evidence: (1) does the paper’s own description of the target contradict the attributed property? (2) is a structural difference traceable to the method or the target description? (3) is a performance or cost difference shown under comparable conditions?'], [CD, 'Target is a table label → its results attached automatically.']]],
-      ['Decide PASS / FAIL / U', [[CD, 'Contradiction → FAIL. Performance or cost difference without results, or under incomparable conditions → FAIL.'], [CD, 'Traceable structural difference → PASS; citation only → U. Unidentifiable target (“prior methods”) → FAIL.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS). Known over-detection on human papers (settings compared as methods).']]]],
-    line: 'Code gathers every sentence about the target; Qwen2.5-32B checks the contrast against them and the results. Three runs vote.' },
   '5-4': { unit: 'statement', units: 'evidence statements',
     stages: [['Describes', 'prior work · own scope · scale · consensus', CD], ['Checked against', 'the paper or the cited abstract', QC], ['Match?', 'consistent · contradicted · silent', Q], ['Verdict', '3 runs vote', CD]],
     how: [
@@ -729,10 +706,6 @@ The abstract and the conclusion are not checked. Rewording the same content is n
 State the figure's purpose. List every element, symbol, arrow type, and color the reader must interpret.
 Explain each in the figure, the legend, or the caption, and tie it to the method or result it shows.
 A longer caption, or deleting the figure, is not by itself a fix.`,
-  '5-2': `# Fix · Unsupported Comparisons (5-2)
-For every "unlike …" or "rather than …", name the compared method, the compared property, and the claimed difference.
-Verify a structural difference in the equations or method description; verify a performance difference with an evaluation.
-If the difference does not hold, withdraw it and align the Abstract and conclusion. Deleting "unlike" is not a fix.`,
   '5-4': `# Fix · Misrepresented Evidence (5-4)
 For every sentence that says evidence exists ("prior work shows", "extensive experiments", "[12] established"), check existence, content, scope, and consensus against the actual source or experiment list.
 Describe what the support actually shows. If a support statement is withdrawn, recheck that the remaining claim is still supported.
@@ -893,7 +866,7 @@ function openHash() {
 document.addEventListener('click', e => { const a = e.target.closest('a[data-xref], a.ql, a.atile'); if (!a) return; e.preventDefault(); history.pushState({}, '', a.getAttribute('href')); openHash(); });
 addEventListener('hashchange', openHash);
 // ------------------------------------------------------------------ studio: the specimen page under a lens, one slop at a time, votes beside it
-const PAGE_ORDER = ['2-1', '1-2', '4-1', '1-4', '5-4', '4-2', '5-2', '4-5', '3-1', '4-3', '2-3', '4-4', '1-3', '1-1'];
+const PAGE_ORDER = ['2-1', '1-2', '4-1', '1-4', '5-4', '4-2', '4-5', '3-1', '4-3', '2-3', '4-4', '1-3', '1-1'];
 const tally = id => hub.votes[id] || { up: 0, down: 0 };
 const nCases = id => hub.cases.filter(c => c.item === id).length;
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
@@ -968,8 +941,8 @@ function showFix(id) { const box = $('#sp-body .sp-fix'); if (box) { box.hidden 
 const clip = (t, n) => (t = String(t || '').replace(/\s+/g, ' ').trim()).length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t;
 const cap1 = t => t.charAt(0).toUpperCase() + t.slice(1);
 function srcParts(src) { const m = String(src || '').split(' · '); return [h('span', { class: 'snip-who', text: m[0] || '' }), h('span', { text: m.slice(1).join(' · ') })]; }
-// six v1 measures → fourteen slops, drawn as a hand-ruled tree; the caption under the page says what the chosen slop is
-const TREE = [['Argument graph', ['1-1', '1-2', '5-2', '5-4']], ['Evidence gap', ['1-3']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4']], ['Figure exposition', ['4-5']], [null, ['2-1', '3-1', '4-1', '4-2', '4-3']]];
+// six v1 measures → thirteen slops, drawn as a hand-ruled tree; the caption under the page says what the chosen slop is
+const TREE = [['Argument graph', ['1-1', '1-2', '5-4']], ['Evidence gap', ['1-3']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4']], ['Figure exposition', ['4-5']], [null, ['2-1', '3-1', '4-1', '4-2', '4-3']]];
 // results so far, on the 123 AI / human pairs; an item stays blank until its measure is final
 const RESULTS = { '2-3': { ai: '0.92', hu: '0.59', auc: '0.88', prec: '—' }, '4-4': { ai: '0.49', hu: '0.13', auc: '0.90', prec: '0.83' } };
 $('#sm-res').replaceChildren(h('table', { class: 'res-tbl' },
@@ -1024,7 +997,7 @@ function renderStrip() {
     c.classList.toggle('on', on); c.setAttribute('aria-pressed', String(on));
     c.querySelector('.bk-r').textContent = String(i + 1).padStart(2, '0');
     c.querySelector('.bk-v').textContent = up ? '▲' + up : '';
-    c.querySelector('.bk-cv').textContent = `${String(i + 1).padStart(2, '0')} / 14 · ${up} ran into it`;
+    c.querySelector('.bk-cv').textContent = `${String(i + 1).padStart(2, '0')} / 13 · ${up} ran into it`;
     strip.append(c);
   });
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) for (const [el, y] of before) { const dy = y - el.offsetTop; if (dy) el.animate([{ transform: `translateY(${dy}px)` }, { transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.2,.7,.2,1)' }); }
