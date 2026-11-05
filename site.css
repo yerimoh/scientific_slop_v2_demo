@@ -1471,3 +1471,10 @@ mark.cx-e { color: inherit; background: rgba(255, 214, 10, .38); border-radius: 
 .rs-do.dc .dc-l { font-size: 14px; font-weight: 650; color: var(--ink); }
 .rs-do.dc .dc-g p { margin: 0; font-size: 14px; line-height: 1.55; color: var(--ink); }
 .rs-do.dc .dc-g ul { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.55; color: var(--ink); }
+/* 4-1: four kinds of interpretation as a scannable list; result vs claim rows */
+.rs-four { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 2px 0 8px; font-size: 14px; line-height: 1.45; }
+.rs-four dt { font: 600 11.5px/1.7 var(--mono); letter-spacing: .05em; color: var(--ink); }
+.rs-four dd { margin: 0; color: var(--ink-2); }
+.cx-rc p { margin: 0 0 6px; line-height: 1.5; }
+.cx-rc .cx-lab { display: block; margin: 0 0 3px; }
+.rs-n .dc-who { margin-left: 0; display: inline-block; margin-top: 4px; }

@@ -449,8 +449,8 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // Flow animation over a real run. measure/<id>.json (built by v2/slop_v2/build_measure_json.py) holds one paper's units in a
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
-const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code';
-const MV = '1107i';   // bump with the run data so browsers do not keep an old measure/*.json
+const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code', H45 = 'Haiku 4.5';
+const MV = '1107q41b';   // bump with the run data so browsers do not keep an old measure/*.json
 const MEASURE = {
   '1-1': { unit: 'claim', units: 'claims',
     stages: [['Claim', 'stated as fact', 'paper'], ['Needs', 'what would prove it?', Q], ['Found', 'in the paper?', QC], ['Verdict', '3 runs vote', CD]],
@@ -512,14 +512,14 @@ const MEASURE = {
       ['Find the reason', [[Q, 'Point to every id that gives a reason, appendix included: ablation table, cited standard, constraint, argument.'], [Q, 'Judge reads the reason with the choice sentence and 4 surrounding sentences: specific reason (why this value, not another) · description only · generic phrase. Quotes the reason verbatim.'], [CD, 'The quote must occur in the text.']]],
       ['Decide PASS / FAIL / U', [[CD, 'Stock phrase (“for efficiency”, unsourced “following common practice”) → FAIL.'], [CD, 'Baselines, metrics, backbones: source → PASS; no reason → U (standard comparisons not failed by rule).'], [CD, 'Data and key values: description only or generic → FAIL; specific reason → PASS.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
     line: 'Qwen2.5-32B lists the choices and quotes the stated reason; code fails stock phrases and verifies the quote. Three runs vote.' },
-  '4-1': { unit: 'sentence', units: 'candidate sentences', plain: true,
-    stages: [['Find it', '', CD], ['Read around it', '', CD], ['What does it add?', '', HC], ['Anything new?', '', CD]],
+  '4-1': { unit: 'sentence', units: 'candidate sentences', plain: true, tags: true,
+    stages: [['Find the claim', '', CD], ['Separate result from interpretation', '', CD], ['Does it explain the result?', '', H45], ['Verdict', '', CD]],
     how: [
-      ['', [[CD, 'Look for sentences that use stock phrases such as “This shows that…”, “The key finding is…”, or “We verify…”.']]],
-      ['', [[CD, 'Use the two preceding sentences and the following sentence.'], [CD, 'Judge only what the framing phrase adds, not information already stated nearby.']]],
-      ['', [[H, 'Ask one question: does the sentence add something the text before it did not say?'], [H, 'It counts only if it is one of four: why (the mechanism), how far (scope or limit), what it rules out (an alternative explanation), or what follows (a decision for the next design or experiment). Saying the numbers again, or calling them a “finding” or “confirmation”, does not count.']]],
-      ['', [[CD, 'Nothing new → FAIL'], [CD, 'Adds one of the four → PASS'], [CD, 'Runs disagree → U']]]],
-    line: 'Find the stock phrase, then check whether the sentence adds a why, a how far, a ruled-out alternative, or a what next.' },
+      ['', [[CD, 'Find sentences that interpret a result.'], [CD, 'Look for phrases like “This shows …” · “This suggests …” · “…, demonstrating that …”.']]],
+      ['', [[CD, 'Read the surrounding sentences.'], [CD, 'Ignore what the result already tells us. Check only what the interpretation adds.']]],
+      ['', [[H45, 'It counts if it adds:'], [H45, [['WHY', 'Why did this happen?'], ['SCOPE', 'When does it hold, or fail?'], ['ALTERNATIVE', 'What explanation does it rule out?'], ['NEXT', 'What should we test or do next?']]], [H45, 'Just restating the result does not count.']]],
+      ['', [[CD, 'Adds an interpretation → PASS'], [CD, 'Restates the result → FAIL']]]],
+    line: 'After a result, does the sentence only repeat it, or add an interpretation?' },
   '4-2': { unit: 'term', units: 'terms',
     stages: [['Term', 'needs a meaning to be understood', CD], ['Used', 'where and how often', CD], ['Defined?', 'a sentence giving the meaning', QC], ['Verdict', '3 runs vote', CD]],
     how: [
@@ -1343,20 +1343,18 @@ function blkView(b) {
 // 4-1: the passage around a framed sentence, so the reader can see what deleting it loses
 const cxSegs = (segs, cls) => segs.map(([t, on]) => on ? h('mark', { class: cls, text: t }) : t);
 function cxView(u, step) {
+  // 4-1: the result and the interpretation side by side, so the reader sees whether they say the same thing
   const c = u.ctx, fail = u.final === 'FAIL', cut = t => t.length > 240 ? t.slice(0, 238).replace(/\s+\S*$/, '') + ' …' : t;
-  const fact = c.clause ? c.target.segs[0][0] : null, frame = c.clause ? c.target.segs[1][0] : null;
-  const tgtSegs = c.clause ? [h('mark', { class: 'cx-e', text: fact }), h('mark', { class: 'cx-f', text: frame })] : cxSegs(c.target.segs, 'cx-f');
-  const ctxLine = (b, lab) => h('p', { class: 'cx-c' }, h('span', { class: 'cx-lab', text: lab }), cut(b.text));
-  const lost = fail ? 'Nothing new: no why, how far, ruled-out alternative, or what next.' : (c.kept && c.kept.length ? 'Missing without it: ' + c.kept.join(', ') : 'Something goes missing without it.');
-  if (step === 0) return h('div', {}, h('q', { class: 'mw-q' }, ...(c.clause ? [fact, h('mark', { class: 'cx-f', text: frame })] : tgtSegs)), h('small', { text: `${u.id} · ${u.sec} · red: the part that is checked` }));
-  if (step === 1) return c.clause
-    ? h('div', { class: 'cx-p' }, h('p', { class: 'cx-t' }, ...tgtSegs), h('small', { text: 'yellow: the result · red: the part that is checked' }))
-    : h('div', { class: 'cx-p' }, ...c.before.slice(-1).map(b => ctxLine(b, 'before')), h('p', { class: 'cx-t' }, h('span', { class: 'cx-lab', text: 'this one' }), ...tgtSegs), ...c.after.map(a => ctxLine(a, 'after')));
-  if (c.clause) return h('div', { class: 'cx-p' }, h('p', { class: 'cx-t' }, fact, fail ? h('span', { class: 'cx-x', text: frame }) : h('mark', { class: 'cx-f', text: frame })),
-    h('small', { class: 'cx-verdict', text: lost }));
-  return h('div', { class: 'cx-p' }, ...c.before.slice(-1).map(b => ctxLine(b, 'before')),
-    h('p', { class: 'cx-t' }, h('span', { class: 'cx-lab', text: fail ? 'deleted' : 'kept' }), fail ? h('span', { class: 'cx-x', text: c.target.segs.map(x => x[0]).join('') }) : h('span', {}, ...tgtSegs)),
-    h('small', { class: 'cx-verdict', text: lost }));
+  const prev = c.before.length ? c.before[c.before.length - 1].text : '';
+  const res = c.clause ? c.target.segs[0][0].replace(/,\s*$/, '.') : prev, interp = c.clause ? c.target.segs[1][0] : c.target.segs.map(x => x[0]).join('');
+  const pair = (l1, t1, cls1, l2, t2, cls2) => h('div', { class: 'cx-rc' },
+    h('p', {}, h('span', { class: 'cx-lab', text: l1 }), cls1 ? h('mark', { class: cls1, text: t1 }) : t1),
+    h('p', {}, h('span', { class: 'cx-lab', text: l2 }), cls2 ? h('mark', { class: cls2, text: t2 }) : t2));
+  if (step === 0) return h('div', {}, h('q', { class: 'mw-q' }, ...(c.clause ? [c.target.segs[0][0], h('mark', { class: 'cx-f', text: interp })] : cxSegs(c.target.segs, 'cx-f'))), h('small', { text: `${u.id} · ${u.sec} · red: the interpretation` }));
+  if (step === 1) return pair('Result', cut(res), 'cx-e', 'Interpretation', cut(interp), 'cx-f');
+  const rc = u.rc || { result: cut(res), claim: cut(interp) };
+  return h('div', {}, pair('Result', rc.result, null, 'Claim', rc.claim, null),
+    h('small', { class: 'cx-verdict', text: fail ? 'Same information. No why · scope · alternative · next.' : (c.kept && c.kept.length ? 'Adds: ' + c.kept.join(', ') : 'Adds something the result does not say.') }));
 }
 // 1-4: the citing sentences of intro and related work as a list; each step marks what it decides
 function ciMap(cm) {
@@ -1419,11 +1417,11 @@ function measureSteps(it) {
     : b.list ? h('div', { class: 'dc-g' }, h('span', { class: 'dc-l', text: b.l }), h('ul', {}, ...b.list.map(t => h('li', { text: t }))))
     : b.l ? h('div', { class: 'dc-g' }, h('span', { class: 'dc-l', text: b.l }), h('p', { text: b.t })) : b.s ? h('p', { class: 'dc-s', text: b.s }) : null);
   const docWho = w => h('span', { class: 'dc-who ' + (w === 'code' ? 'rule' : 'llm'), text: w === 'code' ? 'Rule' : 'LLM (Haiku)' });
-  const whoTag = w => doc ? (w === 'paper' ? null : docWho(w)) : (plain || w === 'paper') ? null : h('span', { class: 'rs-who ' + (w === 'code' ? 'rule' : 'model'), text: w === 'code' ? 'rule' : w.includes('code') ? 'model + rule' : 'model' });
+  const whoTag = w => doc ? (w === 'paper' ? null : docWho(w)) : (m.tags && w !== 'paper') ? h('span', { class: 'dc-who ' + (w === 'code' ? 'rule' : 'llm'), text: w === 'code' ? 'Rule' : 'LLM (' + w + ')' }) : (plain || w === 'paper') ? null : h('span', { class: 'rs-who ' + (w === 'code' ? 'rule' : 'model'), text: w === 'code' ? 'rule' : w.includes('code') ? 'model + rule' : 'model' });
   const ex = m.stages.map(() => h('div', { class: 'rs-ex' }, h('span', { class: 'rs-wait', text: '…' })));
   const rows = m.stages.map(([title, sub, w], k) => h('li', { class: 'rs-row' + (k === m.stages.length - 1 ? ' last' : '') },
     h('div', { class: 'rs-n' }, h('b', { text: String(k + 1) }), h('div', {}, h('p', { class: 'rs-t', text: title }), sub ? h('p', { class: 'rs-q', text: sub }) : null, whoTag(w))),
-    doc ? h('div', { class: 'rs-do dc' }, ...docBody(doc[k])) : h('div', { class: 'rs-do' + (plain ? ' plain' : '') }, ...(m.how[k] ? [m.how[k][0] ? h('p', { class: 'rs-ht', text: m.how[k][0] }) : null, plain ? h('div', {}, ...m.how[k][1].map(([, tt]) => h('p', { text: tt }))) : h('ul', {}, ...m.how[k][1].map(([ww, tt]) => h('li', {}, h('span', { class: 'rs-who sm ' + (ww === 'code' ? 'rule' : 'model'), text: ww === 'code' ? 'rule' : 'model' }), tt)))] : [])),
+    doc ? h('div', { class: 'rs-do dc' }, ...docBody(doc[k])) : h('div', { class: 'rs-do' + (plain ? ' plain' : '') }, ...(m.how[k] ? [m.how[k][0] ? h('p', { class: 'rs-ht', text: m.how[k][0] }) : null, plain ? h('div', {}, ...m.how[k][1].map(([, tt]) => Array.isArray(tt) ? h('dl', { class: 'rs-four' }, ...tt.flatMap(([kk, vv]) => [h('dt', { text: kk }), h('dd', { text: vv })])) : h('p', { text: tt }))) : h('ul', {}, ...m.how[k][1].map(([ww, tt]) => h('li', {}, h('span', { class: 'rs-who sm ' + (ww === 'code' ? 'rule' : 'model'), text: ww === 'code' ? 'rule' : 'model' }), tt)))] : [])),
     ex[k]));
   const pick = h('select', { class: 'rs-pick', 'aria-label': 'Which unit the example column follows' });
   const head = h('div', { class: 'rs-head' }, h('span', { class: 'rs-hl', text: 'Step' }), h('span', { class: 'rs-hl', text: 'Procedure' }), h('span', { class: 'rs-hl' }, 'Example: ', pick));
@@ -1457,7 +1455,7 @@ function measureSteps(it) {
       u.pair ? pairQ(u.pair.earlier, 'earlier') : h('div', {}, h('span', { text: u.s2 || '—' })),
       h('div', {}, u.found.length ? h('span', { class: 'mw-ids' }, ...u.found.map(x => h('code', { text: x }))) : h('span', { class: 'mw-none', text: 'nothing' }), u.found_note ? h('small', { text: tidyNote(u.found_note) }) : null, u.judge_line ? h('small', { text: tidyNote(u.judge_line) }) : null),
       h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: tidyNote(u.final_reason) }) : null)];
-      if (u.ctx || u.ci) vals[u.ci ? 4 : 3] = h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: tidyNote(u.final_reason) }) : null);
+      if (u.ctx || u.ci) vals[u.ci ? 4 : 3] = h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), (u.ctx ? h('small', { text: { FAIL: 'Restates the result', PASS: 'Adds an interpretation', UNRESOLVED: 'Runs disagree' }[u.final] || '' }) : u.final_reason ? h('small', { text: tidyNote(u.final_reason) }) : null));
       ex.forEach((e, j) => e.replaceChildren(vals[j] || h('span', { text: '—' }))); if (XM && (data.cimap || (data.map && data.map.units[k]))) XM.sel(k); };
     pick.addEventListener('change', () => { fill(+pick.value); run(); });
     const kd = data.meta.default ? U.findIndex(u => u.id === data.meta.default) : -1;

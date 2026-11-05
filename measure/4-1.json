@@ -651,7 +651,11 @@
     "FAIL"
    ],
    "final": "FAIL",
-   "final_reason": "Nothing is lost"
+   "final_reason": "Nothing is lost",
+   "rc": {
+    "result": "NLL-Guided beats the best periodic pattern by 10.4 points.",
+    "claim": "Data-driven selection beats fixed patterns."
+   }
   },
   {
    "ctx": {
