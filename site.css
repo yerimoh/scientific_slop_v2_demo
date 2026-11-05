@@ -307,7 +307,7 @@ body { background: var(--bg); color: var(--ink); }
 .sp-act .ic { flex: none; width: 24px; height: 24px; border-radius: 9px; background: var(--soft); display: grid; place-items: center; font-family: var(--mono); font-size: 12px; color: var(--ink-2); }
 .sp-fix { margin: 0; max-height: 220px; overflow: auto; white-space: pre-wrap; font-size: 12px; background: var(--soft); border-radius: 10px; padding: 10px; color: var(--ink-2); }
 
-/* shelf of the fifteen (after motionsites' Shelf Hero) */
+/* shelf of the fourteen (after motionsites' Shelf Hero) */
 .st-strip-wrap { margin-top: 10px; position: relative; padding-bottom: 14px; }
 .st-strip-wrap::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 14px; border-radius: 3px; background: linear-gradient(#d4cfc6, #bdb6aa); box-shadow: 0 10px 20px rgba(0,0,0,.12); }
 :root[data-theme="dark"] .st-strip-wrap::after { background: linear-gradient(#2b2825, #1a1816); }
@@ -630,7 +630,7 @@ body { background: var(--bg); color: var(--ink); }
 
 .qv-art { padding: 8px 10px; }
 
-/* ---------- six measures → fifteen slops: same pen and surfaces as the hero */
+/* ---------- six measures → fourteen slops: same pen and surfaces as the hero */
 .sm { padding-block: 56px 32px; }
 .sm-head { margin-bottom: 20px; }
 .sm-h { margin: 0; font-size: clamp(26px, 3vw, 40px); font-weight: 700; letter-spacing: -.03em; line-height: 1.1; color: var(--ink); }
@@ -964,7 +964,7 @@ body::after { display: none; }
 .trail .tr-p.ghost { display: none; }
 .trail .tr-p, .trail .tr-h { stroke-width: 1.6 !important; opacity: .85; }
 .sk-h { font-size: 24px; }
-/* v53 preview: three parts only. check your paper, the fifteen slops (one place), what we study next */
+/* v53 preview: three parts only. check your paper, the fourteen slops (one place), what we study next */
 .tabs-bar, #tab-defs { display: none !important; }
 #questions, #studio { border-top: 1px solid var(--line); padding-block: 56px 48px; }
 .sm-head { margin-bottom: 28px; }
