@@ -1332,3 +1332,7 @@ mark.cx-f { color: inherit; background: rgba(200, 70, 60, .22); border-radius: 2
 mark.cx-e { color: inherit; background: rgba(255, 214, 10, .38); border-radius: 2px; padding: 0 1px; }
 .cx-x { text-decoration: line-through; text-decoration-color: #C8463C; text-decoration-thickness: 2px; opacity: .6; }
 .cx-verdict { font-weight: 600; color: var(--ink) !important; }
+
+/* plain measurement panel (4-1): a reader's explanation, not the implementation rules */
+.rs-do.plain p { margin: 0 0 6px; font-size: 14px; line-height: 1.55; }
+.mw-score.small { font-size: 12px; color: var(--ink-3); }

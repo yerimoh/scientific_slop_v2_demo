@@ -102,7 +102,7 @@
     "PASS"
    ],
    "final": "PASS",
-   "final_reason": "adds information"
+   "final_reason": "Information is lost"
   },
   {
    "ctx": {
@@ -182,7 +182,7 @@
     "PASS"
    ],
    "final": "PASS",
-   "final_reason": "adds information"
+   "final_reason": "Information is lost"
   },
   {
    "ctx": {
@@ -256,7 +256,7 @@
     "PASS"
    ],
    "final": "PASS",
-   "final_reason": "adds information"
+   "final_reason": "Information is lost"
   },
   {
    "ctx": {
@@ -337,7 +337,7 @@
     "PASS"
    ],
    "final": "PASS",
-   "final_reason": "adds information"
+   "final_reason": "Information is lost"
   },
   {
    "ctx": {
@@ -415,7 +415,7 @@
     "FAIL"
    ],
    "final": "UNRESOLVED",
-   "final_reason": "runs disagree"
+   "final_reason": "Runs disagree"
   },
   {
    "ctx": {
@@ -506,7 +506,7 @@
     "FAIL"
    ],
    "final": "UNRESOLVED",
-   "final_reason": "runs disagree"
+   "final_reason": "Runs disagree"
   },
   {
    "ctx": {
@@ -581,7 +581,7 @@
     "FAIL"
    ],
    "final": "FAIL",
-   "final_reason": "deleting it loses nothing the context does not already say"
+   "final_reason": "Nothing is lost"
   },
   {
    "ctx": {
@@ -651,7 +651,7 @@
     "FAIL"
    ],
    "final": "FAIL",
-   "final_reason": "deleting it loses nothing the context does not already say"
+   "final_reason": "Nothing is lost"
   },
   {
    "ctx": {
@@ -721,7 +721,7 @@
     "FAIL"
    ],
    "final": "FAIL",
-   "final_reason": "deleting it loses nothing the context does not already say"
+   "final_reason": "Nothing is lost"
   },
   {
    "ctx": {
@@ -815,7 +815,7 @@
     "PASS"
    ],
    "final": "UNRESOLVED",
-   "final_reason": "runs disagree"
+   "final_reason": "Runs disagree"
   },
   {
    "ctx": {
@@ -896,7 +896,7 @@
     "PASS"
    ],
    "final": "UNRESOLVED",
-   "final_reason": "runs disagree"
+   "final_reason": "Runs disagree"
   },
   {
    "ctx": {
@@ -970,7 +970,7 @@
     "FAIL"
    ],
    "final": "FAIL",
-   "final_reason": "deleting it loses nothing the context does not already say"
+   "final_reason": "Nothing is lost"
   },
   {
    "ctx": {
@@ -1051,7 +1051,7 @@
     "PASS"
    ],
    "final": "PASS",
-   "final_reason": "adds information"
+   "final_reason": "Information is lost"
   }
  ]
 }

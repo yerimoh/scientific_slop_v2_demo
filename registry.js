@@ -158,12 +158,12 @@ const ITEMS = [
     not: ['A standard setting with a source.', 'Minor settings that do not touch the core claims.'],
     fix: ['Give the real rationale, constraint, or comparison.', 'Not a fix: inventing alternatives that were never run.'] },
 
-  { id: '4-1', area: 4, name: 'Generic Filler', what: 'A sentence in a stock frame (“This shows that …”, “…, demonstrating that …”, “The key finding is …”) that adds nothing the sentences around it have not already said.',
-    ex: { spec: 'This confirms the effectiveness of our approach.', specnote: 'It follows “Our model beats all baselines” and re-labels it. Delete it and nothing is lost.', src: 'AI paper · SciSlopBench FA0064 · §4 Experiments', pre: 'Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%), ', mark: 'demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.', post: '', note: 'The first half gives the gain. The marked clause restates it as a general claim, with no condition or reason added.' },
-    judge: ['Delete the sentence: does the reader lose anything the two sentences before and the one after do not already say?', 'The stock frame only selects the candidate; it is not the verdict.'],
-    not: ['A framed sentence that adds a condition, reason or limitation.', 'A claim that is too strong but informative (that is 1-2).'],
-    fix: ['Delete the sentence or its framing clause, or state the condition or reason the number implies.', 'Not a fix: swapping the frame word (“shows” → “suggests”).'],
-    borders: [['4-4', 'copied from another section, not re-labelled in place'], ['1-2', 'too strong rather than empty']] },
+  { id: '4-1', area: 4, name: 'Generic Filler', what: 'A sentence that repeats the result just reported, in vaguer words (“This shows that …”, “…, demonstrating that …”). Delete it and the paragraph says the same.',
+    ex: { spec: 'This confirms the effectiveness of our approach.', specnote: 'It only repeats “Our model beats all baselines.” Delete it and nothing is missing.', src: 'AI paper · SciSlopBench FA0064 · §4 Experiments', pre: 'Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%), ', mark: 'demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.', post: '', note: 'The first half gives the result. The marked half says the same thing in vaguer words.' },
+    judge: ['Delete the sentence. Does the paragraph still say the same thing?', 'Phrases like “this shows that” only pick candidates. They do not decide.'],
+    not: ['The sentence adds a condition, a cause or a limit.', 'The claim is too strong but still adds something (that is 1-2).'],
+    fix: ['Delete it, or say what the result means here: when it holds, why, or where it stops.', 'Not a fix: changing “shows” to “suggests”.'],
+    borders: [['4-4', 'repeats another section, not the sentence right before'], ['1-2', 'too strong, not empty']] },
   { id: '4-2', area: 4, name: 'Undefined Terms', what: 'A term the reader needs is never given a meaning.',
     ex: { spec: 'semantic anchoring', specnote: 'No definition, equation, citation, or example says what semantic anchoring does.', src: 'AI paper · SciSlopBench FA0083 · §4 Experiments', pre: 'This occurs because LLaMA-3.1-8B-Instruct has a ', mark: 'low retrieval rate (<14%)', post: ', limiting the effectiveness of consensus-based validation.', note: '“Retrieval rate” explains the paper’s main negative result. It is never defined, and no table reports it.' },
     judge: ['Fix the intended reader and field.', 'Can the meaning be recovered from context, equations, or a cited definition?', 'Several names for one thing is a naming inconsistency, logged separately.'],
@@ -213,10 +213,10 @@ const DEF = {
     q: [{ pre: 'Our approach is straightforward: extract attention weights from ', mark: 'layer 12 (out of 32 LLM layers in InternVL2.5-8B)', post: ' and apply MIS selection directly without any debiasing.', src: 'AI paper · SciSlopBench FA0280 · §3 Method' },
         { pre: 'Key Insight: Deeper Layers = Better Token Selection · L2 55% · L4 39% · ', mark: 'L8 69% · L12 66%', post: '', src: 'Same paper · Figure 1, text inside the figure' }],
     note: 'The method is the choice of layer, and the paper never says why 12. Its own figure shows layer 8 scoring higher, and the text never mentions it.' },
-  '4-1': { what: 'The sentence re-labels what its context already says.',
+  '4-1': { what: 'The sentence repeats the result right before it.',
     q: [{ pre: 'Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%), ', mark: 'demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.', post: '', src: 'AI paper · SciSlopBench FA0064 · §4 Experiments' },
         { pre: '', mark: 'This demonstrates that intelligent layer selection can substantially reduce computational cost with minimal accuracy loss.', post: '', src: 'Same paper · §4 Experiments, right after the accuracy and FA-budget numbers' }],
-    note: 'Both follow a sentence that already gives the numbers. Neither adds a condition, a reason or a limit, and deleting them loses nothing.' },
+    note: 'Both come right after the numbers and say them again in vaguer words. Deleting them loses nothing.' },
   '4-2': { what: 'The paper leans on a term it never defines.',
     q: [{ pre: 'This occurs because LLaMA-3.1-8B-Instruct has a ', mark: 'low retrieval rate (<14%)', post: ', limiting the effectiveness of consensus-based validation.', src: 'AI paper · SciSlopBench FA0083 · §4 Experiments' }],
     note: 'The paper’s main negative result is explained by this number. “Retrieval rate” is never defined and no table reports it, so the reader cannot tell what 14% is a share of.' },
@@ -323,7 +323,7 @@ const FAIL = {
   '2-1': { to: 'gneg', label: 'this finding never reaches the Abstract' },
   '2-3': { to: 'gloss', label: 'Eq. 2 defines λ here · §4 never points back', miss: true },
   '3-1': { to: 'g31', label: 'excluded, no reason given' },
-  '4-1': { to: 'g41', label: 're-labels the sentence before' },
+  '4-1': { to: 'g41', label: 'says the sentence before again' },
   '4-2': { to: 'g42', label: 'never defined' },
   '4-4': { to: 'g44', label: 'the same sentence as in §1', eq: true, from: '§1 Introduction', at: '§4.2 Results' },
   '4-5': { to: 'gfig', label: 'arrows and colors never explained' },
@@ -343,7 +343,7 @@ const GROUPS = [
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
 const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'The claim goes further than the evidence.', '1-4': 'Cited, but never related to this paper.',
   '2-1': 'The key finding is missing from the abstract.', '2-3': 'Set up in one section, never pointed back to.', '3-1': 'A design choice with no reason given.',
-  '4-1': 'Re-labels what was just said.', '4-2': 'A term that is never defined.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
+  '4-1': 'Says the last result again, in vaguer words.', '4-2': 'A term that is never defined.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
   '5-4': 'The cited source says something else.' };
 for (const it of ITEMS) it.short = SHORT[it.id];
 const BY_ID = Object.fromEntries(ITEMS.map(i => [i.id, i]));
@@ -504,14 +504,14 @@ const MEASURE = {
       ['Find the reason', [[Q, 'Point to every id that gives a reason, appendix included: ablation table, cited standard, constraint, argument.'], [Q, 'Judge reads the reason with the choice sentence and 4 surrounding sentences: specific reason (why this value, not another) · description only · generic phrase. Quotes the reason verbatim.'], [CD, 'The quote must occur in the text.']]],
       ['Decide PASS / FAIL / U', [[CD, 'Stock phrase (“for efficiency”, unsourced “following common practice”) → FAIL.'], [CD, 'Baselines, metrics, backbones: source → PASS; no reason → U (standard comparisons not failed by rule).'], [CD, 'Data and key values: description only or generic → FAIL; specific reason → PASS.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
     line: 'Qwen2.5-32B lists the choices and quotes the stated reason; code fails stock phrases and verifies the quote. Three runs vote.' },
-  '4-1': { unit: 'sentence', units: 'framed sentences',
-    stages: [['Sentence', 'body prose with a stock frame', CD], ['Context', '2 sentences before, 1 after', CD], ['Lost?', 'what deleting it removes', HC], ['Verdict', '3 runs vote', CD]],
+  '4-1': { unit: 'sentence', units: 'candidate sentences', plain: true,
+    stages: [['Find it', '', CD], ['Read around it', '', CD], ['Delete it', '', HC], ['Anything lost?', '', CD]],
     how: [
-      ['Select the sentences', [[CD, 'Body prose of ≥4 words. Excluded: captions, appendix, ethics / reproducibility statements.'], [CD, 'Candidate → a stock frame: “This shows / confirms …”, “…, demonstrating / indicating that …”, “The key finding is”, “we verify”, “root cause”, “principled”, “informing future research”.'], [CD, 'No frame → PASS by rule (in the denominator, not shown).']]],
-      ['Cut out the context', [[CD, 'Two sentences before, one after.'], [CD, '“Fact, demonstrating that …” → the fact joins the context; only the framing clause is judged.']]],
-      ['Delete it: what is lost?', [[H, 'Answer: nothing · little · info · not applicable. Copy the words that carry the lost information.'], [H, 'Information → a number, name, condition, reason, mechanism, comparison, new claim, limitation. Re-labelling the context as a finding, confirmation or insight → not information.'], [H, 'Strength is not judged (1-2).']]],
-      ['Decide PASS / FAIL / U', [[CD, 'nothing → FAIL.'], [CD, 'little / info → copied words must occur in the sentence; ≤1 content word left after removing context and frame words → FAIL; otherwise → PASS.'], [CD, 'Three runs: FAIL needs a majority and no PASS; split runs → U.'], [CD, 'score = FAIL ÷ (FAIL + PASS) over all eligible sentences.']]]],
-    line: 'Code finds stock frames and cuts the context; Claude Haiku 4.5 runs the deletion test; code checks the copied words. Three runs vote.' },
+      ['', [[CD, 'Look for sentences that use stock phrases such as “This shows that…”, “The key finding is…”, or “We verify…”.']]],
+      ['', [[CD, 'Use the two preceding sentences and the following sentence.'], [CD, 'Judge only what the framing phrase adds, not information already stated nearby.']]],
+      ['', [[H, 'Ask one question: does deleting the phrase remove any actual information?'], [H, 'A number, condition, reason, mechanism, comparison, limitation, or new claim counts as information. Simply calling something a “finding” or “confirmation” does not.']]],
+      ['', [[CD, 'Nothing is lost → FAIL'], [CD, 'Information is lost → PASS'], [CD, 'Runs disagree → U']]]],
+    line: 'Delete the stock phrase, then check whether any information went with it.' },
   '4-2': { unit: 'term', units: 'terms',
     stages: [['Term', 'needs a meaning to be understood', CD], ['Used', 'where and how often', CD], ['Defined?', 'a sentence giving the meaning', QC], ['Verdict', '3 runs vote', CD]],
     how: [
@@ -645,9 +645,9 @@ List the choices that affect the conclusion: architecture, data selection, exclu
 For each, give the actual rationale, constraint, or comparison. "For efficiency" alone is not a reason.
 Do not invent alternatives that were never run; a value that is given but unexplained is the target here, not a missing value.`,
   '4-1': `# Fix · Generic Filler (4-1)
-Find each sentence or clause in a stock frame ("This shows / confirms that ...", ", demonstrating that ...", "The key finding is ...", "informing future research").
-Delete it and read the two sentences before and the one after. If nothing is lost, keep it deleted.
-If it should stay, replace it with what the number implies: the condition, the reason, or the limit. Swapping the frame word is not a fix.`,
+Look at each sentence that says "this shows that ...", "..., demonstrating that ...", "the key finding is ..." or "informing future research".
+Delete it and reread the paragraph. If nothing is missing, leave it out.
+If you keep it, say what the result means here: when it holds, why, or where it stops. Changing "shows" to "suggests" is not a fix.`,
   '4-2': `# Fix · Undefined Terms (4-2)
 For every term or abbreviation the intended reader cannot interpret from context, give its operation, object, or role where it first appears, or cite the definition.
 Expanding an acronym or swapping in another abstract word is not enough. If one thing has several names, pick one.`,
@@ -1215,30 +1215,31 @@ function cxView(u, step) {
   const fact = c.clause ? c.target.segs[0][0] : null, frame = c.clause ? c.target.segs[1][0] : null;
   const tgtSegs = c.clause ? [h('mark', { class: 'cx-e', text: fact }), h('mark', { class: 'cx-f', text: frame })] : cxSegs(c.target.segs, 'cx-f');
   const ctxLine = (b, lab) => h('p', { class: 'cx-c' }, h('span', { class: 'cx-lab', text: lab }), cut(b.text));
-  const lost = fail ? 'Lost: nothing. What is left still says it.' : (c.kept && c.kept.length ? 'Lost: ' + c.kept.join(', ') : 'Lost: something the context does not say');
-  if (step === 0) return h('div', {}, h('q', { class: 'mw-q' }, ...(c.clause ? [fact, h('mark', { class: 'cx-f', text: frame })] : tgtSegs)), h('small', { text: `${u.id} · ${u.sec} · red = the stock frame` }));
+  const lost = fail ? 'Nothing is missing. The rest still says it.' : (c.kept && c.kept.length ? 'Missing without it: ' + c.kept.join(', ') : 'Something goes missing without it.');
+  if (step === 0) return h('div', {}, h('q', { class: 'mw-q' }, ...(c.clause ? [fact, h('mark', { class: 'cx-f', text: frame })] : tgtSegs)), h('small', { text: `${u.id} · ${u.sec} · red: the part that is checked` }));
   if (step === 1) return c.clause
-    ? h('div', { class: 'cx-p' }, h('p', { class: 'cx-t' }, ...tgtSegs), h('small', { text: 'yellow = the fact, already stated · red = the clause that is judged' }))
+    ? h('div', { class: 'cx-p' }, h('p', { class: 'cx-t' }, ...tgtSegs), h('small', { text: 'yellow: the result · red: the part that is checked' }))
     : h('div', { class: 'cx-p' }, ...c.before.slice(-1).map(b => ctxLine(b, 'before')), h('p', { class: 'cx-t' }, h('span', { class: 'cx-lab', text: 'this one' }), ...tgtSegs), ...c.after.map(a => ctxLine(a, 'after')));
   if (c.clause) return h('div', { class: 'cx-p' }, h('p', { class: 'cx-t' }, fact, fail ? h('span', { class: 'cx-x', text: frame }) : h('mark', { class: 'cx-f', text: frame })),
-    h('small', { class: 'cx-verdict', text: lost }), u.judge_line ? h('small', { text: u.judge_line }) : null);
+    h('small', { class: 'cx-verdict', text: lost }));
   return h('div', { class: 'cx-p' }, ...c.before.slice(-1).map(b => ctxLine(b, 'before')),
     h('p', { class: 'cx-t' }, h('span', { class: 'cx-lab', text: fail ? 'deleted' : 'kept' }), fail ? h('span', { class: 'cx-x', text: c.target.segs.map(x => x[0]).join('') }) : h('span', {}, ...tgtSegs)),
-    h('small', { class: 'cx-verdict', text: lost }), u.judge_line ? h('small', { text: u.judge_line }) : null);
+    h('small', { class: 'cx-verdict', text: lost }));
 }
 function measureSteps(it) {
   // every step of the measurer, all of its rules, and what that step returned on one real paper
   const m = MEASURE[it.id];
   if (!m) return h('ol', { class: 'rs' }, ...(it.judge || []).map((t, k) => h('li', { class: 'rs-row' }, h('div', { class: 'rs-n' }, h('b', { text: String(k + 1) })), h('div', { class: 'rs-do' }, h('p', { text: t })))));
-  const whoTag = w => w === 'paper' ? null : h('span', { class: 'rs-who ' + (w === 'code' ? 'rule' : 'model'), text: w === 'code' ? 'rule' : w.includes('code') ? 'model + rule' : 'model' });
+  const plain = !!m.plain;
+  const whoTag = w => (plain || w === 'paper') ? null : h('span', { class: 'rs-who ' + (w === 'code' ? 'rule' : 'model'), text: w === 'code' ? 'rule' : w.includes('code') ? 'model + rule' : 'model' });
   const ex = m.stages.map(() => h('div', { class: 'rs-ex' }, h('span', { class: 'rs-wait', text: '…' })));
   const rows = m.stages.map(([title, sub, w], k) => h('li', { class: 'rs-row' + (k === m.stages.length - 1 ? ' last' : '') },
-    h('div', { class: 'rs-n' }, h('b', { text: String(k + 1) }), h('div', {}, h('p', { class: 'rs-t', text: title }), h('p', { class: 'rs-q', text: sub }), whoTag(w))),
-    h('div', { class: 'rs-do' }, ...(m.how[k] ? [h('p', { class: 'rs-ht', text: m.how[k][0] }), h('ul', {}, ...m.how[k][1].map(([ww, tt]) => h('li', {}, h('span', { class: 'rs-who sm ' + (ww === 'code' ? 'rule' : 'model'), text: ww === 'code' ? 'rule' : 'model' }), tt)))] : [])),
+    h('div', { class: 'rs-n' }, h('b', { text: String(k + 1) }), h('div', {}, h('p', { class: 'rs-t', text: title }), sub ? h('p', { class: 'rs-q', text: sub }) : null, whoTag(w))),
+    h('div', { class: 'rs-do' + (plain ? ' plain' : '') }, ...(m.how[k] ? [m.how[k][0] ? h('p', { class: 'rs-ht', text: m.how[k][0] }) : null, plain ? h('div', {}, ...m.how[k][1].map(([, tt]) => h('p', { text: tt }))) : h('ul', {}, ...m.how[k][1].map(([ww, tt]) => h('li', {}, h('span', { class: 'rs-who sm ' + (ww === 'code' ? 'rule' : 'model'), text: ww === 'code' ? 'rule' : 'model' }), tt)))] : [])),
     ex[k]));
   const pick = h('select', { class: 'rs-pick', 'aria-label': 'Which unit the example column follows' });
   const head = h('div', { class: 'rs-head' }, h('span', { class: 'rs-hl', text: 'Step' }), h('span', { class: 'rs-hl', text: 'Procedure' }), h('span', { class: 'rs-hl' }, 'Example: ', pick));
-  const score = h('p', { class: 'mw-score' });
+  const score = h('p', { class: 'mw-score' + (m.plain ? ' small' : '') });
   // a player: the steps run one after another on the chosen unit, each example appears when its step is reached
   const play = h('button', { type: 'button', class: 'rs-play', text: '▶ Play' });
   const box = h('div', { class: 'rs-wrap' }, h('div', { class: 'rs-top' }, h('p', { class: 'rs-line', text: m.line }), play), head, h('ol', { class: 'rs' }, ...rows), score);
@@ -1274,6 +1275,7 @@ function measureSteps(it) {
     const k0 = kd >= 0 ? kd : Math.max(0, U.findIndex(u => u.final === 'FAIL')); pick.value = k0; fill(k0);
     const c = { FAIL: 0, PASS: 0, UNRESOLVED: 0 }; U.forEach(u => { if (u.final in c) c[u.final]++; });
     const F = c.FAIL + (pre.FAIL || 0), P = c.PASS + (pre.PASS || 0), UU = c.UNRESOLVED + (pre.UNRESOLVED || 0), D = F + P;
+    if (m.plain) { score.replaceChildren(`Score = FAIL / (FAIL + PASS). ${data.meta.side} ${data.meta.paper}: ${F} / ${D} = ${D ? (F / D).toFixed(2) : '—'}` + (UU ? `, ${UU} U not counted.` : '.')); return; }
     score.replaceChildren(`${data.meta.side} ${data.meta.paper} · ${U.length} ${m.units} · score = FAIL ÷ (FAIL + PASS) = `, h('b', { text: `${F} ÷ ${D}` }), ' = ', h('b', { class: 'big', text: D ? (F / D).toFixed(2) : '—' }), UU ? ` · ${UU} U, not counted` : '');
   }).catch(() => ex.forEach(e => e.replaceChildren(h('span', { class: 'rs-wait', text: 'run data not loaded' }))));
   return box;
