@@ -77,14 +77,14 @@ const PIC = {
   '2-3': () => row([E.card('§3 · Method', inner.chip('Eq. 1', C.struct)), E.miss(C.struct, { left: true }), E.card('§4 · Experiments', inner.chip('ratio formula', C.struct))]),
   '3-1': () => row([E.chip('layer 12 of 32', C.art), E.miss(C.art), E.ask(['why 12?'])]),
   '4-1': () => row([E.para('§1 Introduction', 'this confirms the effectiveness …', C.struct)]),
-  '4-2': () => row([E.chip('retrieval rate', C.art), E.miss(C.art), E.ask(['= ?'])]),
+  '4-2': () => row([E.chip('attack sensitivity', C.art), E.miss(C.art), E.ask(['= ?'])]),
   '2-5': () => row([E.card('Abstract', inner.chip('+10.4 points', C.struct)), E.eq(), E.card('§5 · Conclusion', inner.chip('+10.4 points', C.struct))]),
   '4-4': () => row([E.card('§3 · Method', inner.chip('destroys saliency', C.struct)), E.eq(), E.card('§4 · Experiments', inner.chip('destroys saliency', C.struct))]),
   '4-5': () => row([E.card('Figure 1', inner.bars(), { lines: false }), E.miss(C.art), E.ask(['results, in a method figure?'])]),
   '1-3': () => row([E.card('§4 Results', inner.text(['median 1.0', 'signature per task']), { lines: false }), E.miss(C.art), E.ask(['one signature?'])]),
 };
 // what the pattern looks like, one line under each scene
-const CAP = { '2-5': 'the abstract again, at the end', '1-2': 'one setting tried, cost left out', '1-4': 'cited, related to nothing', '2-3': 'used later, never pointed back to', '3-1': 'a choice with no reason', '4-1': 'nicer words, nothing new', '4-2': 'a term with no meaning', '4-4': 'the same sentence, another section', '4-5': 'results and a key inside the diagram', '1-3': 'numbers only, not one case' };
+const CAP = { '2-5': 'the abstract again, at the end', '1-2': 'one setting tried, cost left out', '1-4': 'cited, related to nothing', '2-3': 'used later, never pointed back to', '3-1': 'a choice with no reason', '4-1': 'nicer words, nothing new', '4-2': 'a result in a term not yet explained', '4-4': 'the same sentence, another section', '4-5': 'results and a key inside the diagram', '1-3': 'numbers only, not one case' };
 // hero: a paper spine with the five kinds of broken connection
 function heroSvg() {
   const secs = [['Abstract', 4], ['Introduction', 42], ['Method', 80], ['Experiments', 118], ['Conclusion', 156]];
@@ -147,11 +147,11 @@ const ITEMS = [
     not: ['The sentence adds a why, a how far, a ruled-out alternative, or a what next.', 'The claim is too strong but still adds something (that is 1-2).'],
     fix: ['Delete it, or replace it with one of the four. “This indicates minimal interference between tasks.” → “So the drop in Section 5 is not caused by task interference.”', 'Not a fix: changing “shows” to “suggests”, re-adding the numbers, or inserting model and dataset names.'],
     borders: [['4-4', 'repeats another section, not the sentence right before'], ['1-2', 'too strong, not empty']] },
-  { id: '4-2', area: 4, name: 'Undefined Terms', what: 'A term the reader needs is never given a meaning.',
-    ex: { spec: 'semantic anchoring', specnote: 'No definition, equation, citation, or example says what semantic anchoring does.', src: 'AI paper · SciSlopBench FA0083 · §4 Experiments', pre: 'This occurs because LLaMA-3.1-8B-Instruct has a ', mark: 'low retrieval rate (<14%)', post: ', limiting the effectiveness of consensus-based validation.', note: '“Retrieval rate” explains the paper’s main negative result. It is never defined, and no table reports it.' },
-    judge: ['Fix the intended reader and field.', 'Can the meaning be recovered from context, equations, or a cited definition?', 'Several names for one thing is a naming inconsistency, logged separately.'],
-    not: ['Standard terms in their usual sense.', 'Meaning clear from an equation.'],
-    fix: ['Explain the operation, object, or role.', 'Not a fix: expanding an acronym; swapping in another abstract word.'] },
+  { id: '4-2', area: 4, name: 'Abrupt Terms', what: 'The paper reports a result in a term of its own before saying what the term means.',
+    ex: { spec: 'It cuts anchor drift by 41%.', specnote: 'Anchor drift is explained only in Section 3, after the reader has met the 41%.', src: 'AI paper · SciSlopBench FA0006 · §1 Introduction', pre: 'Demonstration that our method achieves 63% relative reduction in ', mark: 'attack sensitivity (Δ-FPR: 4.31% vs 11.71%)', post: ' while maintaining competitive F1 (72.13% vs 72.93%) …', note: 'Neither “attack sensitivity” nor Δ-FPR is explained here. What Δ-FPR measures is first said in a table caption in §4.' },
+    judge: ['Find the terms the paper made up, or uses in a sense of its own.', 'Find where the paper first says what each one means, in any words.', 'FAIL when the term first appears with a result number and is explained only in a later section, or never.'],
+    not: ['Standard terms, and names of existing methods or datasets.', 'A new term explained where it first appears, or later in the same section.', 'A method name previewed in the introduction without a result.'],
+    fix: ['Say what the term means where it first appears: what it refers to and, for a quantity, how it is computed.', 'Not a fix: expanding an acronym; moving the number elsewhere.'] },
   { id: '4-4', area: 4, name: 'Redundant Repetition', v1: 'Macro redundancy', what: 'Content is said again with no new information and no summary role.',
     ex: { spec: 'As Table 2 shows, our model beats all baselines on both datasets.', specnote: '§1 Introduction already says this in almost the same words. §4 adds nothing.', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments', pre: '', mark: 'These results demonstrate that the ratio formula does not remove positional bias---it destroys useful saliency signal.', post: '', note: 'The method section already states this conclusion with its numbers. The experiments section repeats it in the same words and drops the numbers.' },
     judge: ['Find the closest earlier sentence in another section, abstract included.', 'A near-copy counts: 8-word runs cover half the sentence, or cosine ≥ 0.95.', 'One repeat makes the section slop.'],
@@ -193,9 +193,10 @@ const DEF = {
     q: [{ pre: 'Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%), ', mark: 'demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.', post: '', src: 'AI paper · SciSlopBench FA0064 · §4 Experiments' },
         { pre: '', mark: 'This demonstrates that intelligent layer selection can substantially reduce computational cost with minimal accuracy loss.', post: '', src: 'Same paper · §4 Experiments, right after the accuracy and FA-budget numbers' }],
     note: 'Both come right after the numbers and say them again in vaguer words. Neither adds a why, a how far, a ruled-out alternative, or a what next.' },
-  '4-2': { what: 'The paper leans on a term it never defines.',
-    q: [{ pre: 'This occurs because LLaMA-3.1-8B-Instruct has a ', mark: 'low retrieval rate (<14%)', post: ', limiting the effectiveness of consensus-based validation.', src: 'AI paper · SciSlopBench FA0083 · §4 Experiments' }],
-    note: 'The paper’s main negative result is explained by this number. “Retrieval rate” is never defined and no table reports it, so the reader cannot tell what 14% is a share of.' },
+  '4-2': { what: 'The paper reports a result in a term of its own before it says what the term means.',
+    q: [{ pre: 'Demonstration that our method achieves 63% relative reduction in ', mark: 'attack sensitivity (Δ-FPR: 4.31% vs 11.71%)', post: ' while maintaining competitive F1 (72.13% vs 72.93%) and achieving the best recall (77.63%) on AgentRewardBench.', src: 'AI paper · SciSlopBench FA0006 · §1 Introduction' },
+        { pre: 'Best in bold, second-best underlined. ', mark: 'Δ-FPR measures attack sensitivity (FPR attacked − FPR unmodified)', post: '; lower is better.', src: 'Same paper · Table 1 caption, §4 Experiments' }],
+    note: 'The abstract and the introduction give the 63% first. What the number measures is said only in the caption of the main results table.' },
   '2-5': { what: 'The conclusion repeats the abstract.',
     q: [{ pre: '', mark: 'The method outperforms fixed periodic patterns by 10.4 percentage points and attention-based heuristics by 26.4 percentage points.', post: '', src: 'AI paper · SciSlopBench FA0064 · §5 Conclusion' },
         { pre: '', mark: 'NLL-guided selection outperforms the best periodic 1/4-FA pattern by 10.4 percentage points and attention-based heuristics by 26.4 percentage points.', post: '', src: 'Same paper · Abstract' }],
@@ -281,10 +282,10 @@ const PAGE = {
   left: [
     { h: 'Abstract', p: ['Cross-lingual retrieval models weight every token the same. We introduce a novel attention mechanism that improves performance on three benchmarks. ', A('g25', 'Our method consistently outperforms baselines across domains, with gains of up to 4 points.')], lines: 1 },
     { h: '1  Introduction', p: ['We propose a framework that learns token weights for cross-lingual retrieval. ', A('g44', 'Our model beats all baselines on both datasets.')], lines: 1 },
-    { p: [M('4-1'), ' ', G('g41', 'nicer words, nothing new')], lines: 1 },
+    { p: [M('4-1'), ' ', G('g41', 'nicer words, nothing new'), ' ', M('4-2')], lines: 1 },
     { h: '2  Related Work', p: ['Method A [3] uses contrastive pairs. ', M('1-4'), ' ', G('g14', 'B alone; ours vs B never said')], lines: 1 },
     { p: ['Prior studies established that update rule A converges under adaptive step sizes [12].'], lines: 1 },
-    { h: '3  Method', p: ['We apply ', M('4-2'), ' ', G('g42', 'definition'), ' before fusion and then project to the shared space. ', A('gloss', 'We add an alignment term: L = L_task + λ·L_align (Eq. 2).')], lines: 1 },
+    { h: '3  Method', p: [A('g42', 'Anchor drift is the share of queries whose top passage changes across languages.'), ' We then project to the shared space. ', A('gloss', 'We add an alignment term: L = L_task + λ·L_align (Eq. 2).')], lines: 1 },
     { fig: true, cap: [M('4-5'), ' Overview of the method. The diagram also carries an “Ours” tag, an accuracy and a ✓.'] },
   ],
   right: [
@@ -305,7 +306,7 @@ const FAIL = {
   '2-3': { to: 'gloss', label: 'Eq. 2 defines λ here · §4 never points back', miss: true },
   '3-1': { to: 'g31', label: 'excluded, no reason given' },
   '4-1': { to: 'g41', label: 'Repackages the result, adds nothing new' },
-  '4-2': { to: 'g42', label: 'never defined' },
+  '4-2': { to: 'g42', label: 'explained only here' },
   '2-5': { to: 'g25', label: 'the Abstract sentence, copied', eq: true, from: 'Abstract', at: '6 Conclusion' },
   '4-4': { to: 'g44', label: 'the same sentence as in §1', eq: true, from: '§1 Introduction', at: '§4.2 Results' },
   '4-5': { to: 'gfig', label: '“Ours”, a result and a ✓ inside the method figure' },
@@ -325,7 +326,7 @@ const GROUPS = [
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
 const SHORT = { '1-2': 'The paper claims more than its experiments can show.', '1-4': 'Cites a method much like its own, never says how it differs.',
   '2-3': 'Set up in one section, never pointed back to.', '3-1': 'A design choice with no reason given.',
-  '2-5': 'The conclusion only repeats the abstract.', '4-1': 'Says what was already shown in nicer words, and tells nothing new.', '4-2': 'A term that is never defined.', '4-4': 'The same sentence in two sections.', '4-5': 'The method figure carries what belongs in the text.', '1-3': 'Results, but not one concrete case shown.' };
+  '2-5': 'The conclusion only repeats the abstract.', '4-1': 'Says what was already shown in nicer words, and tells nothing new.', '4-2': 'A result given in a term the paper has not explained yet.', '4-4': 'The same sentence in two sections.', '4-5': 'The method figure carries what belongs in the text.', '1-3': 'Results, but not one concrete case shown.' };
 for (const it of ITEMS) it.short = SHORT[it.id];
 const BY_ID = Object.fromEntries(ITEMS.map(i => [i.id, i]));
 function renderPage() {
@@ -428,7 +429,7 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
 const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code', H45 = 'Haiku 4.5';
-const MV = '1107f45eg';   // bump with the run data so browsers do not keep an old measure/*.json
+const MV = '1107eg42';   // bump with the run data so browsers do not keep an old measure/*.json
 const MEASURE = {
 
   '1-2b': { unit: 'paper', units: 'papers', breadth: true,
@@ -491,14 +492,15 @@ const MEASURE = {
       ['', [[H45, 'It counts if it adds:'], [H45, [['WHY', 'Why did this happen?'], ['SCOPE', 'When does it hold, or fail?'], ['ALTERNATIVE', 'What explanation does it rule out?'], ['NEXT', 'What should we test or do next?']]], [H45, 'Just restating the result does not count.']]],
       ['', [[CD, 'Adds an interpretation → PASS'], [CD, 'Restates the result → FAIL']]]],
     line: 'After a result, does the sentence only repeat it, or add an interpretation?' },
-  '4-2': { unit: 'term', units: 'terms',
-    stages: [['Term', 'needs a meaning to be understood', CD], ['Used', 'where and how often', CD], ['Defined?', 'a sentence giving the meaning', QC], ['Verdict', '3 runs vote', CD]],
-    how: [
-      ['Collect the terms', [[CD, 'Abbreviations, hyphenated compounds used ≥2 times, quoted terms, names like Phase-0, two-word metrics (“X rate / score / ratio / margin”).'], [CD, 'Excluded: appendix-only terms, names right after a citation, names already in the table inventory.']]],
-      ['Locate each use', [[CD, 'Record the first use and every occurrence.']]],
-      ['Search for a definition', [[CD, 'Code first: parenthetical expansion (“Self-Recall Error (SRE)”) or a same-paragraph cue (“we call”, “is defined as”, “denotes”).'], [Q, 'Otherwise search the paper: defined here (id) · standard term · undefined · name variant.'], [Q, 'Still undefined: judge re-reads every use. Expanding an abbreviation, or “X is our X module”, is not a definition.']]],
-      ['Decide PASS / FAIL / NA', [[CD, 'Valid definition → PASS. Standard term or name → NA. Undefined after both passes → FAIL. Name variants recorded separately.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
-    line: 'Code finds the terms and easy definitions; Qwen2.5-32B searches for the rest and re-reads every use. Three runs vote.' },
+  '4-2': { unit: 'term', units: 'terms', plain: true,
+    stages: [['Find the paper’s own terms', '', H], ['Would a reader know it?', '', H], ['Where is it first explained?', '', H], ['Verdict', '', CD]],
+    ask: ['What do we evaluate?', 'When a term of the paper first appears with a result, has the reader been told what it means?'],
+    doc: [
+      [{ p: 'Read the paper and list the terms it made up, or uses in a sense of its own.' }, { ul: [['New names', 'concepts, stages, metrics, task types'], ['Private meanings', 'ordinary words used for one thing in this paper']] }, { s: 'Names of existing methods, models and datasets are not listed.' }],
+      [{ p: 'Without the paper, guess what each term means.' }, { ul: [['Standard term', 'the field already uses it this way'], ['Name', 'a method, model or dataset'], ['Unclear', 'a phrase or a new term']] }, { s: 'Standard term or name → NA' }],
+      [{ p: 'Find the first sentence that says what the term means, in any words.' }, { ul: [['At first use', 'the sentence itself, the two before, or the one after'], ['Later', 'a later section, a caption, the appendix']] }, { s: 'The quoted words must be in that sentence.' }],
+      [{ p: 'Look at the sentence where the term first appears.' }, { p: 'A result number (%, ×, a score) and no explanation until a later section, or none → FAIL' }, { p: 'Explained at first use or in the same section → PASS' }, { s: 'Score = FAIL / (FAIL + PASS)' }]],
+    how: [], line: 'Find the paper’s own terms, then check whether the first sentence that reports a result in them has been explained.' },
   '2-5': { unit: 'sentence', units: 'conclusion sentences', plain: true,
     stages: [['Take the conclusion', '', CD], ['Find its twin', '', CD], ['Copied?', '', CD], ['Count', '', CD]],
     how: [
@@ -636,9 +638,10 @@ Look at each sentence that says "this shows that ...", "..., demonstrating that 
 Delete it and reread the paragraph. If nothing is missing, leave it out.
 If you keep it, it must add one thing the text before it did not say: why (the mechanism), how far (scope or limit), what it rules out (an alternative explanation), or what follows (a decision for the next design or experiment).
 Changing "shows" to "suggests", re-adding the numbers, or inserting model and dataset names is not a fix.`,
-  '4-2': `# Fix · Undefined Terms (4-2)
-For every term or abbreviation the intended reader cannot interpret from context, give its operation, object, or role where it first appears, or cite the definition.
-Expanding an acronym or swapping in another abstract word is not enough. If one thing has several names, pick one.`,
+  '4-2': `# Fix · Abrupt Terms (4-2)
+List the terms this paper made up or uses in a sense of its own. For each, find the first sentence that reports a result in it (often in the abstract or the introduction).
+If the term is explained only later, or never, say what it means in that sentence or the one before: what it refers to and, for a quantity, how it is computed ("attack sensitivity, the rise in false positives under attack").
+Expanding an acronym, or moving the number out of the introduction, is not a fix.`,
   '2-5': `# Fix · Empty Conclusion (2-5)
 Compare each conclusion sentence with the abstract and the introduction. Where a sentence repeats one of them, delete it.
 In its place, say what the results mean together: what holds, where it stops, and what follows from it. Rewording the abstract is not a fix.`,
@@ -889,7 +892,7 @@ function srcParts(src) { const m = String(src || '').split(' · '); return [h('s
 const TREE = [['Argument graph', ['1-2']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4', '2-5']], ['Figure exposition', ['4-5']], ['Evidence gap', ['1-3']], [null, ['3-1', '4-1', '4-2']]];
 // results so far, on the 123 AI / human pairs; an item stays blank until its measure is final
 // 11-06: columns as in v1 Table 2 (PairAcc, AUROC, TPR at 5% FPR), from each item's saved per-paper scores (v2/verification/table_site_rows_1106.py)
-const RESULTS = { '1-4': { pa: '0.85', auc: '0.87', tpr: '0.59' }, '1-2': { pa: '0.88', auc: '0.88', tpr: '0.50' }, '2-3': { pa: '0.88', auc: '0.88', tpr: '0.00' }, '4-1': { pa: '0.82', auc: '0.82', tpr: '0.34' }, '4-4': { pa: '0.91', auc: '0.90', tpr: '0.29' }, '2-5': { pa: '0.91', auc: '0.90', tpr: '0.76' }, '1-3': { pa: '0.76', auc: '0.75', tpr: '0.00' }, '4-5': { pa: '0.91', auc: '0.90', tpr: '0.54' } };
+const RESULTS = { '4-2': { pa: '0.65', auc: '0.64', tpr: '0.31' }, '1-4': { pa: '0.85', auc: '0.87', tpr: '0.59' }, '1-2': { pa: '0.88', auc: '0.88', tpr: '0.50' }, '2-3': { pa: '0.88', auc: '0.88', tpr: '0.00' }, '4-1': { pa: '0.82', auc: '0.82', tpr: '0.34' }, '4-4': { pa: '0.91', auc: '0.90', tpr: '0.29' }, '2-5': { pa: '0.91', auc: '0.90', tpr: '0.76' }, '1-3': { pa: '0.76', auc: '0.75', tpr: '0.00' }, '4-5': { pa: '0.91', auc: '0.90', tpr: '0.54' } };
 $('#sm-res').replaceChildren(h('table', { class: 'res-tbl' },
   h('thead', {}, h('tr', {}, ...['Slop', 'PairAcc', 'AUROC', 'TPR@5%FPR'].map(t => h('th', { text: t })))),
   h('tbody', {}, ...GROUPS.flatMap(g => [h('tr', { class: 'res-g ' + g.cls }, h('td', { colspan: 4, text: g.title })),
