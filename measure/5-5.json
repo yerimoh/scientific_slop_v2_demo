@@ -1,0 +1,279 @@
+{
+ "meta": {
+  "item": "5-5",
+  "paper": "FA0221",
+  "side": "AI paper",
+  "title": "Persistent Demo-Pool Poisoning Attacks on Online LLM Log Parsers",
+  "n_runs": 1,
+  "pre": {},
+  "default": "FA0221",
+  "rate": {
+   "ai": "64%",
+   "hu": "14%",
+   "n_ai": 196,
+   "n_hu": 196,
+   "lead": "On the held-out half of the benchmark, ",
+   "what": "score 0.25 or more"
+  },
+  "source": "v2/slop_v2/build_site_formulaic.py (lexicon from DEV half of 390 HF pairs, numbers on TEST half)"
+ },
+ "units": [
+  {
+   "id": "FA0221",
+   "sec": "AI paper",
+   "text": "AI paper · FA0221 · Demo-pool poisoning of LLM log parsers",
+   "runs": [],
+   "final": "FAIL",
+   "final_reason": "score 0.56",
+   "s2": "",
+   "found": [],
+   "found_note": "",
+   "judge_line": "",
+   "steps": [
+    [
+     {
+      "stat": [
+       [
+        "25",
+        "reasoning sentences",
+        "abstract, introduction, method, conclusion"
+       ]
+      ]
+     }
+    ],
+    [
+     {
+      "stat": [
+       [
+        "11",
+        "with stock wording",
+        "advances, creates, critical, fundamental, introduces, maintains, reveal, systematic"
+       ]
+      ]
+     },
+     {
+      "quote": {
+       "sec": "Introduction",
+       "id": "S7",
+       "segs": [
+        [
+         "Log parsing is a ",
+         false
+        ],
+        [
+         "critical",
+         true
+        ],
+        [
+         " component of modern AIOps pipelines, enabling downstream tasks such as anomaly detection, root cause analysis, and incident triage […].",
+         false
+        ]
+       ]
+      }
+     },
+     {
+      "quote": {
+       "sec": "Introduction",
+       "id": "S17",
+       "segs": [
+        [
+         "In this paper, we present the first ",
+         false
+        ],
+        [
+         "systematic",
+         true
+        ],
+        [
+         " study of demo-pool poisoning attacks on online LLM log parsers.",
+         false
+        ]
+       ]
+      }
+     },
+     {
+      "quote": {
+       "sec": "Introduction",
+       "id": "S19",
+       "segs": [
+        [
+         "We identify a ",
+         false
+        ],
+        [
+         "fundamental",
+         true
+        ],
+        [
+         " security vulnerability in online LLM log parsers that use self-generated ICL: the monotonically growing demo pool ",
+         false
+        ],
+        [
+         "creates",
+         true
+        ],
+        [
+         " a persistent attack surface.",
+         false
+        ]
+       ]
+      }
+     },
+     {
+      "quote": {
+       "sec": "Conclusion",
+       "id": "S22",
+       "segs": [
+        [
+         "We identified a ",
+         false
+        ],
+        [
+         "fundamental",
+         true
+        ],
+        [
+         " security vulnerability in online LLM log parsers that use self-generated in-context learning.",
+         false
+        ]
+       ]
+      }
+     }
+    ],
+    [
+     {
+      "count": {
+       "rows": [
+        [
+         "Abstract",
+         "2 of 7",
+         "0.29"
+        ],
+        [
+         "Introduction",
+         "6 of 15",
+         "0.40"
+        ],
+        [
+         "Conclusion",
+         "3 of 3",
+         "1.00"
+        ]
+       ],
+       "total": "mean over sections = 0.56",
+       "verdict": "FAIL",
+       "hint": "FAIL at 0.25 or more"
+      }
+     }
+    ]
+   ]
+  },
+  {
+   "id": "2402.02160",
+   "sec": "Human pair",
+   "text": "Human pair · ICLPoison (2402.02160)",
+   "runs": [],
+   "final": "PASS",
+   "final_reason": "score 0.12",
+   "s2": "",
+   "found": [],
+   "found_note": "",
+   "judge_line": "",
+   "steps": [
+    [
+     {
+      "stat": [
+       [
+        "106",
+        "reasoning sentences",
+        "abstract, introduction, method, conclusion"
+       ]
+      ]
+     }
+    ],
+    [
+     {
+      "stat": [
+       [
+        "9",
+        "with stock wording",
+        "creating, emerged, ensures, explicit, introduces, minimal, preserving, robustness"
+       ]
+      ]
+     },
+     {
+      "quote": {
+       "sec": "Introduction",
+       "id": "S5",
+       "segs": [
+        [
+         "In-context learning (ICL) […] has ",
+         false
+        ],
+        [
+         "emerged",
+         true
+        ],
+        [
+         " as an important capability of large language models (LLMs).",
+         false
+        ]
+       ]
+      }
+     },
+     {
+      "quote": {
+       "sec": "Conclusion",
+       "id": "S100",
+       "segs": [
+        [
+         "This discovery emphasizes the urgent need for enhancing the ",
+         false
+        ],
+        [
+         "robustness",
+         true
+        ],
+        [
+         " of ICL implementations.",
+         false
+        ]
+       ]
+      }
+     }
+    ],
+    [
+     {
+      "count": {
+       "rows": [
+        [
+         "Abstract",
+         "1 of 5",
+         "0.20"
+        ],
+        [
+         "Introduction",
+         "3 of 27",
+         "0.11"
+        ],
+        [
+         "Method",
+         "4 of 64",
+         "0.06"
+        ],
+        [
+         "Conclusion",
+         "1 of 10",
+         "0.10"
+        ]
+       ],
+       "total": "mean over sections = 0.12",
+       "verdict": "PASS",
+       "hint": "FAIL at 0.25 or more"
+      }
+     }
+    ]
+   ]
+  }
+ ]
+}
