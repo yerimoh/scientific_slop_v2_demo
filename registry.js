@@ -98,11 +98,10 @@ const PIC = {
   '4-5': () => row([E.card('Figure 1', inner.bars(), { lines: false }), E.miss(C.art), E.ask(['L8 in the text?'])]),
   '5-1': () => row([E.chip('limits deployment flexibility', C.arg), E.miss(C.arg), E.ask(['where', 'does it fail?'])]),
   '5-2': () => row([E.chip('H2O prunes high-attn tokens', C.arg), E.clash(), E.card('H2O in §2', inner.text(['keeps them', 'same paper'], { bold0: true, mute1: true }), { lines: false })]),
-  '5-3': () => row([E.card('Table 4', inner.text(['AUROC 1.0 → 1.0', 'ASR 40.7 → 42.4']), { lines: false }), E.miss(C.arg), E.say('a fundamental trade-off', C.arg)]),
   '5-4': () => row([E.chip('0.3, "typically considered"', C.arg), E.miss(C.arg), E.ask(['by whom?', '[ ? ]'])]),
 };
 // what the pattern looks like, one line under each scene
-const CAP = { '1-1': 'a claim with nothing behind it', '1-2': 'claim wider than its evidence', '1-3': 'numbers only, no example', '1-4': 'cited, related to nothing', '2-1': 'the bad news never reaches the front', '2-3': 'used later, never pointed back to', '3-1': 'a choice with no reason', '4-1': 'delete it and nothing is lost', '4-2': 'a term with no meaning', '4-3': 'detail the reader never needs', '4-4': 'the same sentence, another section', '4-5': 'a result only the figure reports', '5-1': 'important, but never shown', '5-2': 'the contrast is not true', '5-3': 'nothing moved, yet it explains', '5-4': 'a source that is not there' };
+const CAP = { '1-1': 'a claim with nothing behind it', '1-2': 'claim wider than its evidence', '1-3': 'numbers only, no example', '1-4': 'cited, related to nothing', '2-1': 'the bad news never reaches the front', '2-3': 'used later, never pointed back to', '3-1': 'a choice with no reason', '4-1': 'delete it and nothing is lost', '4-2': 'a term with no meaning', '4-3': 'detail the reader never needs', '4-4': 'the same sentence, another section', '4-5': 'a result only the figure reports', '5-1': 'important, but never shown', '5-2': 'the contrast is not true', '5-4': 'a source that is not there' };
 // hero: a paper spine with the five kinds of broken connection
 function heroSvg() {
   const secs = [['Abstract', 4], ['Introduction', 42], ['Method', 80], ['Experiments', 118], ['Conclusion', 156]];
@@ -137,7 +136,7 @@ const ITEMS = [
     judge: ['Compare claim and support on four axes: scope, conditions, effect and direction, certainty.', 'Observed, statistical, or causal are three different claims.', 'A strong adjective by itself decides nothing.'],
     not: ['Scope clear from context.', 'A generalization stated as a hypothesis after the verified range.'],
     fix: ['State the evaluated range and the uncertainty.', 'Not a fix: deleting “significantly” while keeping “across domains”.'],
-    borders: [['1-1', 'no support at all'], ['5-3', 'observation turned into mechanism'], ['5-4', 'evidence described wrongly']] },
+    borders: [['1-1', 'no support at all'], ['5-4', 'evidence described wrongly']] },
   { id: '1-3', area: 1, name: 'Missing Examples', v1: 'Evidence gap', what: 'The reader needs a concrete case to see what a claim means, and none is shown.',
     ex: { spec: 'meaning reversals', specnote: 'Definitions and counts only. No input, reference, or output is ever shown.', src: 'AI paper · SciSlopBench FA0083 · §4 Experiments', pre: '', mark: 'We inject 20 poisoned demonstrations into the StrategyQA knowledge base', post: ' (9,251 entries total).', note: 'No poisoned demonstration, trigger context or target action is ever shown. The reader cannot tell what the attack makes the agent do.' },
     judge: ['Which claims or phenomena need an example?', 'Is a real input and output, an observed case, or a visualization given for it?', 'Relevance counts, not the number of examples.'],
@@ -205,19 +204,13 @@ const ITEMS = [
     judge: ['Map: the thing called important → its concrete problem → the reason to study it.', 'A theoretical question counts as a reason; practical cost is not required.', '“Crucial” and “pivotal” decide nothing.'],
     not: ['A brief recall of a known problem, then a concrete question.', 'Motivation given by the body or the cited literature.'],
     fix: ['Say which question or constraint is addressed and why it matters.', 'If motivation already exists, just delete the stock line.', 'Not a fix: swapping adjectives; inventing numbers.'],
-    borders: [['4-1', 'motivation exists elsewhere, the line is just empty'], ['3-1', 'the problem is clear, a design choice is not'], ['5-3', 'importance inferred from results']] },
+    borders: [['4-1', 'motivation exists elsewhere, the line is just empty'], ['3-1', 'the problem is clear, a design choice is not']] },
   { id: '5-2', area: 5, v1: 'Argument graph', name: 'Unsupported Comparisons', link: ['what the compared method actually does', 'the difference claimed'], what: 'A difference from other methods is claimed, and the target is unclear or the difference is not true.',
     ex: { spec: 'Unlike baselines A and B, which assign fixed weights to all inputs,', specnote: 'The paper’s own equations for A and B compute weights from the input too. The contrast does not hold.', src: 'AI paper · SciSlopBench FA0002 · §1 Introduction', pre: 'This is fundamentally different from attention-based methods like H2O, ', mark: 'which prune high-attention tokens', post: '; we prune tokens with low approximation error.', note: 'The paper’s own related work says H2O keeps the high-attention tokens and drops the rest. The contrast is with a method that does not exist.' },
     judge: ['Log the target, the compared property, and the claimed property; check each.', 'A structural difference is checked in the equations; a performance difference needs an evaluation.', 'The target may be named by citation, name, definition, or context.'],
     not: ['A structural difference confirmed by the equations.', 'A contrast with a standard setting that is clear from context.'],
     fix: ['Name the target and the property precisely, or withdraw the distinction and align the Abstract and conclusion.', 'Not a fix: deleting “unlike”; attaching unrelated citations.'],
     borders: [['1-4', 'the relation is never explained'], ['1-2', 'the difference holds but is inflated']] },
-  { id: '5-3', area: 5, v1: 'Argument graph', name: 'Unsupported Interpretations', link: ['the observed result', 'what it is said to mean'], what: 'A result is given a meaning, a cause or a mechanism, that nothing in the paper supports.',
-    ex: { spec: 'demonstrating that the model learns to align semantic structure across languages.', specnote: 'The table shows +1.8. Nothing checks alignment or rules out other causes.', src: 'AI paper · SciSlopBench FA0083 · §4 Experiments', pre: 'LDA detection remains perfect (AUROC=1.0) against the adaptive attack, while the attack’s effectiveness is unchanged (ASR 40.68% → 42.37%). ', mark: 'This robustness stems from a fundamental trade-off: reducing the uniqueness weight makes triggers less detectable but also reduces their retrieval effectiveness.', post: '', note: 'The sentence before it says neither side moved: detection stayed perfect and the attack stayed as effective. The trade-off is asserted against the paper’s own table.' },
-    judge: ['Separate the observation from the added interpretation.', 'What assumption or evidence does the step need, and is it anywhere in the paper?', 'Not measured directly is not a defect; sound inference is accepted.', 'Same standard for captions and conclusions.'],
-    not: ['A summary within the observed range.', 'A mechanism backed by another analysis.', 'A possibility marked as unverified.'],
-    fix: ['Limit the interpretation to what the results allow, or supply the support.', 'If it is withdrawn, fix the Abstract and Conclusion too.', 'Not a fix: “demonstrating” → “suggesting” with the same conclusion.'],
-    borders: [['1-2', 'same property, inflated'], ['1-1', 'no link to results at all']] },
   { id: '5-4', area: 5, v1: 'Argument graph', name: 'Misrepresented Evidence', link: ['the evidence as described', 'the actual source or experiments'], what: 'The paper says evidence exists, and the evidence does not say that.',
     ex: { spec: 'Prior studies established that update rule A converges under adaptive step sizes [12].', specnote: 'The theorem in [12] covers fixed step sizes only. Nothing extends it.', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments', pre: 'All values are well below ', mark: 'the 0.3 threshold typically considered indicative of meaningful positional bias.', post: '', note: 'No source for the threshold, and none for who considers it. The paper’s central diagnostic rests on it.' },
     judge: ['Check four things against the material: existence, content, scope, consensus.', '“Extensive”, “numerous”, and citation counts are not the criterion.', 'Source unreachable means undecidable, not a defect.'],
@@ -276,10 +269,6 @@ const DEF = {
     q: [{ pre: 'This is fundamentally different from attention-based methods like H2O, ', mark: 'which prune high-attention tokens', post: '; we prune tokens with low approximation error.', src: 'AI paper · SciSlopBench FA0002 · §1 Introduction' },
         { pre: 'H2O identifies “heavy hitter” tokens that consistently receive high attention scores and ', mark: 'retains only these tokens', post: ' plus recent context.', src: 'Same paper · §2 Related Work' }],
     note: 'H2O keeps the high-attention tokens; the introduction says it prunes them. The claimed difference is with a method that does not exist.' },
-  '5-3': { what: 'The paper gives a result a cause or a meaning that nothing in the paper tests.',
-    q: [{ pre: 'LDA detection remains perfect (AUROC=1.0) against the adaptive attack, while the attack’s effectiveness is ', mark: 'unchanged (ASR 40.68% → 42.37%)', post: '.', src: 'AI paper · SciSlopBench FA0083 · §4 Experiments' },
-        { pre: 'This robustness ', mark: 'stems from a fundamental trade-off', post: ': reducing the uniqueness weight makes triggers less detectable but also reduces their retrieval effectiveness.', src: 'Same paper · §4 Experiments, next sentence' }],
-    note: 'A trade-off means one side goes down when the other goes up. The sentence before says neither side moved, so the explanation is contradicted by the number it explains.' },
   '5-4': { what: 'The paper says a source or a standard backs a claim, and the source is not there or does not say that.',
     q: [{ pre: 'All values are well below the 0.3 threshold ', mark: 'typically considered', post: ' indicative of meaningful positional bias.', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments' }],
     note: '“Typically considered” points to a convention someone established. No citation is given here or anywhere in the paper, and the paper’s central diagnostic rests on this threshold.' },
@@ -297,9 +286,8 @@ const PRINCIPLES = [
 ];
 const CUES = [
   ['Importance words', 'crucial, pivotal, paramount, growing attention', ['5-1']],
-  ['Evaluative words', 'novel, robust, significantly, state-of-the-art', ['1-2', '5-3']],
+  ['Evaluative words', 'novel, robust, significantly, state-of-the-art', ['1-2']],
   ['Contrast frames', 'unlike …, rather than …, not X but Y', ['5-2']],
-  ['Interpretive tails', '…, demonstrating / highlighting / suggesting that …', ['5-3']],
   ['Evidence talk', 'it is well established that, extensive experiments show', ['5-4']],
   ['Rule of three', 'novel, efficient, and scalable', ['1-1', '1-2', '5-4']],
   ['Empty signposting', 'it is worth noting that, in summary, overall', ['4-1', '4-4']],
@@ -326,7 +314,7 @@ function hbars(rows, o = {}) { // rows: [label, value, {color, bold, note}]
   return `<svg class="v-chart" viewBox="0 0 ${W} ${H}" font-family="Inter, system-ui, sans-serif">${s}</svg>`;
 }
 const FINDINGS = [
-  { id: 'f1', q: 'How does AI slop differ from human poor writing?', a: 'Human and AI papers on the same 16 items, author hidden.',
+  { id: 'f1', q: 'How does AI slop differ from human poor writing?', a: 'Human and AI papers on the same 15 items, author hidden.',
     compare: 'Human-written papers and AI-generated papers. The judge never sees the author; the label is joined afterwards.',
     measure: 'The distribution of each item in each group: how often, how severe, and in what concrete form. Which slop is shared, which is AI’s alone.',
     v1: 'Six counting measures already pick the AI paper in 85.9% of 390 matched pairs; the best AI-text detector reaches 68.7%.',
@@ -366,7 +354,7 @@ const PAGE = {
     { h: '4  Experiments', sub: '4.1  Setup', p: [A('gqa', 'We evaluate on long-document QA.'), ' ', M('3-1'), ' ', G('g31', 'why? effect on the long-input claim?'), ' ', G('g11', 'no label-noise experiment')], lines: 1 },
     { p: ['After tokenization, ', M('4-3'), ' before training.'], lines: 1 },
     { sub: '4.2  Results', p: ['Table 3 ablates the alignment term. ', M('2-3')], lines: 1 },
-    { p: ['Adding the auxiliary loss improves BLEU by 1.8 points, ', M('5-3'), ' ', G('g53', 'no analysis of alignment')], lines: 1 },
+    { p: ['Adding the auxiliary loss improves BLEU by 1.8 points.'], lines: 1 },
     { p: ['Table 2 reports the main results. ', M('4-4')], lines: 1 },
     { sub: '4.3  Analysis', p: ['We find 31% ', M('1-3'), ' and 12% entity substitutions (Table 4). ', G('g13', 'no example input · output')], lines: 1 },
     { p: [A('gneg', 'The gain concentrates on sentences that contain negation (Table 5).')], lines: 1 },
@@ -390,15 +378,14 @@ const FAIL = {
   '4-5': { to: 'gfig', label: 'arrows and colors never explained' },
   '5-1': { to: 'g51', label: 'the problem is never named' },
   '5-2': { to: 'gab', label: 'A and B are input-dependent too' },
-  '5-3': { to: 'g53', label: 'nothing tests the alignment claim' },
   '5-4': { to: 'gref', label: '[12] covers fixed step sizes only' },
 };
 const PLANES = { structure: { title: 'Structure', q: 'Do the sections build on one another?' }, argument: { title: 'Argument', q: 'Are the claims and citations argued?' }, artifacts: { title: 'Artifacts', q: 'Can the method and the evidence be inspected?' } };
 const PLANE_OF = { '2-1': 'structure', '2-3': 'structure', '4-1': 'structure', '4-3': 'structure', '4-4': 'structure',
-  '1-1': 'argument', '1-2': 'argument', '1-4': 'argument', '5-1': 'argument', '5-2': 'argument', '5-3': 'argument', '5-4': 'argument',
+  '1-1': 'argument', '1-2': 'argument', '1-4': 'argument', '5-1': 'argument', '5-2': 'argument', '5-4': 'argument',
   '1-3': 'artifacts', '3-1': 'artifacts', '4-2': 'artifacts', '4-5': 'artifacts' };
 const PLANE_C = { structure: '#7E4E66', argument: '#E4959E', artifacts: '#56717B' };   // site planes: structure/artifacts in their deep shade so structure and argument separate
-// the page groups the sixteen items by the index's three planes; the 1-5 area numbers stay in the item ids
+// the page groups the fifteen items by the index's three planes; the 1-5 area numbers stay in the item ids
 const GROUPS = [
   { n: 1, key: 'structure', cls: 'p-structure', title: 'Structure', q: 'Do the sections build on one another?' },
   { n: 2, key: 'argument', cls: 'p-argument', title: 'Argument', q: 'Are the claims and citations argued?' },
@@ -408,7 +395,7 @@ for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g
 const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'The claim goes further than the evidence.', '1-3': 'Results, but not one example shown.', '1-4': 'Cited, but never related to this paper.',
   '2-1': 'The key finding is missing from the abstract.', '2-3': 'Set up in one section, never pointed back to.', '3-1': 'A design choice with no reason given.',
   '4-1': 'Says nothing about this paper.', '4-2': 'A term that is never defined.', '4-3': 'Detail that no result depends on.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
-  '5-1': 'Called important, but which problem?', '5-2': 'A claimed difference that does not hold.', '5-3': 'A result read as a mechanism never tested.', '5-4': 'The cited source says something else.' };
+  '5-1': 'Called important, but which problem?', '5-2': 'A claimed difference that does not hold.', '5-4': 'The cited source says something else.' };
 for (const it of ITEMS) it.short = SHORT[it.id];
 const BY_ID = Object.fromEntries(ITEMS.map(i => [i.id, i]));
 function renderPage() {
@@ -487,7 +474,7 @@ renderPage();
 const PAPER = (x, y, w, h, label, marks) => K.card(x, y, w, h, label) + K.lines(x + 3, y + 7, w - 6, 3, { gap: 3.2, last: .6 }) + (marks || []).map(([mx, my, mw, col]) => K.box(x + mx, y + my, mw, 2.6, { fc: col, ec: col, r: .8 })).join('');
 const PERSON = (x, y, col) => `<circle cx="${x}" cy="${y}" r="2.6" fill="${col}"/><path d="M${x - 4.6} ${y + 9.5} a4.6 4.6 0 0 1 9.2 0z" fill="${col}"/>`;
 const ROBOT = (x, y, col) => K.box(x - 3.4, y - 2.6, 6.8, 6, { fc: col, ec: col, r: 1 }) + `<rect x="${x - 2}" y="${y - 1}" width="1.4" height="1.4" fill="#fff"/><rect x="${x + .6}" y="${y - 1}" width="1.4" height="1.4" fill="#fff"/><line x1="${x}" y1="${y - 2.6}" x2="${x}" y2="${y - 4.5}" stroke="${col}" stroke-width=".8"/>` + K.box(x - 4.6, y + 4.4, 9.2, 5, { fc: col, ec: col, r: 1 });
-const MINI_CAP = {"f1": "Human and AI papers, same 16 items, author hidden", "f2": "Slop against review scores, year by year and venue by venue", "f3": "One paper, one human review and one AI review", "f4": "Each review remark matched to the slop it points at"};
+const MINI_CAP = {"f1": "Human and AI papers, same 15 items, author hidden", "f2": "Slop against review scores, year by year and venue by venue", "f3": "One paper, one human review and one AI review", "f4": "Each review remark matched to the slop it points at"};
 const MINI = {
   f1: () => `<img src="img/q1.png" alt="An AI paper that looks polished next to a human paper full of red marks">`,
   f2: () => `<img src="img/q2_v2.png" alt="Clean and sloppy AI papers, reviewers' star ratings, and the scores plotted by year and by venue">`,
@@ -632,14 +619,6 @@ const MEASURE = {
       ['Check the difference', [[Q, 'Judge reads all target sentences and the evidence: (1) does the paper’s own description of the target contradict the attributed property? (2) is a structural difference traceable to the method or the target description? (3) is a performance or cost difference shown under comparable conditions?'], [CD, 'Target is a table label → its results attached automatically.']]],
       ['Decide PASS / FAIL / U', [[CD, 'Contradiction → FAIL. Performance or cost difference without results, or under incomparable conditions → FAIL.'], [CD, 'Traceable structural difference → PASS; citation only → U. Unidentifiable target (“prior methods”) → FAIL.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS). Known over-detection on human papers (settings compared as methods).']]]],
     line: 'Code gathers every sentence about the target; Qwen2.5-32B checks the contrast against them and the results. Three runs vote.' },
-  '5-3': { unit: 'interpretation', units: 'interpretations',
-    stages: [['Interpretation', 'cause · mechanism · generalization · implication', CD], ['Observation', 'the result it reads from', Q], ['Support', 'beyond the result itself?', QC], ['Verdict', '3 runs vote', CD]],
-    how: [
-      ['Select the interpretations', [[CD, 'Candidates: Experiments, Conclusion and caption sentences with interpretation cues (demonstrating, indicating, suggesting, because, stems from, thus…); abstract / intro / method sentences with a mechanism cue. Not “We show that…” contribution lines.'], [Q, 'Type: restatement · scope summary · mechanism · cause · generalization · implication. One proposition across abstract, intro and conclusion = one unit.']]],
-      ['Locate the observation', [[Q, 'Point to observation ids (table rows or figure) and any support ids. Note hedging (may, we hypothesize).']]],
-      ['Check the support', [[Q, 'Judge reads the full observation rows and the support: (1) compatible with the numbers (no-change not read as change)? (2) does the support carry the inferential step, beyond restating? (3) immediate inference (removing X loses the gain, so X is needed)? (4) only a summary?']]],
-      ['Decide PASS / FAIL / NA', [[CD, 'Contradicts the observation → FAIL. Summary or restatement → NA.'], [CD, 'Support, immediate inference or citation → PASS. Unsupported but hedged everywhere → PASS. Otherwise, stated as fact → FAIL. Implications fail only on contradiction.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
-    line: 'Qwen2.5-32B locates the observation and the support, then judges whether the inferential step is carried. Three runs vote.' },
   '5-4': { unit: 'statement', units: 'evidence statements',
     stages: [['Describes', 'prior work · own scope · scale · consensus', CD], ['Checked against', 'the paper or the cited abstract', QC], ['Match?', 'consistent · contradicted · silent', Q], ['Verdict', '3 runs vote', CD]],
     how: [
@@ -779,11 +758,6 @@ Swapping adjectives, or inventing numbers to support importance, is not a fix.`,
 For every "unlike …" or "rather than …", name the compared method, the compared property, and the claimed difference.
 Verify a structural difference in the equations or method description; verify a performance difference with an evaluation.
 If the difference does not hold, withdraw it and align the Abstract and conclusion. Deleting "unlike" is not a fix.`,
-  '5-3': `# Fix · Unsupported Interpretations (5-3)
-Separate each result sentence into the observation and the added interpretation (cause, mechanism, meaning).
-State what assumption or evidence the step between them needs and whether the paper has it.
-If it does not, limit the interpretation to what the results allow, or mark it as a hypothesis, and fix the Abstract and Conclusion to match.
-Changing "demonstrating" to "suggesting" while keeping the conclusion is not a fix.`,
   '5-4': `# Fix · Misrepresented Evidence (5-4)
 For every sentence that says evidence exists ("prior work shows", "extensive experiments", "[12] established"), check existence, content, scope, and consensus against the actual source or experiment list.
 Describe what the support actually shows. If a support statement is withdrawn, recheck that the remaining claim is still supported.
@@ -944,7 +918,7 @@ function openHash() {
 document.addEventListener('click', e => { const a = e.target.closest('a[data-xref], a.ql, a.atile'); if (!a) return; e.preventDefault(); history.pushState({}, '', a.getAttribute('href')); openHash(); });
 addEventListener('hashchange', openHash);
 // ------------------------------------------------------------------ studio: the specimen page under a lens, one slop at a time, votes beside it
-const PAGE_ORDER = ['2-1', '1-2', '5-1', '4-1', '1-4', '5-4', '4-2', '5-2', '4-5', '3-1', '4-3', '2-3', '5-3', '4-4', '1-3', '1-1'];
+const PAGE_ORDER = ['2-1', '1-2', '5-1', '4-1', '1-4', '5-4', '4-2', '5-2', '4-5', '3-1', '4-3', '2-3', '4-4', '1-3', '1-1'];
 const tally = id => hub.votes[id] || { up: 0, down: 0 };
 const nCases = id => hub.cases.filter(c => c.item === id).length;
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
@@ -1019,8 +993,8 @@ function showFix(id) { const box = $('#sp-body .sp-fix'); if (box) { box.hidden 
 const clip = (t, n) => (t = String(t || '').replace(/\s+/g, ' ').trim()).length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t;
 const cap1 = t => t.charAt(0).toUpperCase() + t.slice(1);
 function srcParts(src) { const m = String(src || '').split(' · '); return [h('span', { class: 'snip-who', text: m[0] || '' }), h('span', { text: m.slice(1).join(' · ') })]; }
-// six v1 measures → sixteen slops, drawn as a hand-ruled tree; the caption under the page says what the chosen slop is
-const TREE = [['Argument graph', ['1-1', '1-2', '5-1', '5-2', '5-3', '5-4']], ['Evidence gap', ['1-3']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4']], ['Figure exposition', ['4-5']], [null, ['2-1', '3-1', '4-1', '4-2', '4-3']]];
+// six v1 measures → fifteen slops, drawn as a hand-ruled tree; the caption under the page says what the chosen slop is
+const TREE = [['Argument graph', ['1-1', '1-2', '5-1', '5-2', '5-4']], ['Evidence gap', ['1-3']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4']], ['Figure exposition', ['4-5']], [null, ['2-1', '3-1', '4-1', '4-2', '4-3']]];
 // results so far, on the 123 AI / human pairs; an item stays blank until its measure is final
 const RESULTS = { '2-3': { ai: '0.92', hu: '0.59', auc: '0.88', prec: '—' }, '4-4': { ai: '0.49', hu: '0.13', auc: '0.90', prec: '0.83' } };
 $('#sm-res').replaceChildren(h('table', { class: 'res-tbl' },
@@ -1075,7 +1049,7 @@ function renderStrip() {
     c.classList.toggle('on', on); c.setAttribute('aria-pressed', String(on));
     c.querySelector('.bk-r').textContent = String(i + 1).padStart(2, '0');
     c.querySelector('.bk-v').textContent = up ? '▲' + up : '';
-    c.querySelector('.bk-cv').textContent = `${String(i + 1).padStart(2, '0')} / 16 · ${up} ran into it`;
+    c.querySelector('.bk-cv').textContent = `${String(i + 1).padStart(2, '0')} / 15 · ${up} ran into it`;
     strip.append(c);
   });
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) for (const [el, y] of before) { const dy = y - el.offsetTop; if (dy) el.animate([{ transform: `translateY(${dy}px)` }, { transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.2,.7,.2,1)' }); }
