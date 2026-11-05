@@ -75,7 +75,7 @@ const PIC = {
       K.chip(xo, MID - 6.25, 'ours', { fc: C.arg, ec: C.arg, tc: '#fff', bold: true, w: ow, h: 9.5 }) +
       K.arrow([x0 + cw, MID - 6.5], [xo - .5, MID - 3], { color: C.arg, dashed: true, rad: -.1 }) + K.arrow([x0 + cw, MID + 3], [xo - .5, MID], { color: C.arg, dashed: true, rad: .1 }) + K.cross(x0 + cw + gap / 2, MID - 5.5) + K.cross(x0 + cw + gap / 2, MID + 2.5); },
   '2-3': () => row([E.card('§3 · Method', inner.chip('Eq. 1', C.struct)), E.miss(C.struct, { left: true }), E.card('§4 · Experiments', inner.chip('ratio formula', C.struct))]),
-  '4-1': () => row([E.para('§1 Introduction', 'this confirms the effectiveness …', C.struct)]),
+  '4-1': () => row([E.para('§1 Introduction', 'this confirms the effectiveness …', C.arg)]),
   '4-2': () => row([E.chip('attack sensitivity', C.art), E.miss(C.art), E.ask(['= ?'])]),
   '2-5': () => row([E.card('Abstract', inner.chip('+10.4 points', C.struct)), E.eq(), E.card('§5 · Conclusion', inner.chip('+10.4 points', C.struct))]),
   '4-4': () => row([E.card('§3 · Method', inner.chip('destroys saliency', C.struct)), E.eq(), E.card('§4 · Experiments', inner.chip('destroys saliency', C.struct))]),
@@ -301,7 +301,10 @@ const FAIL = {
   '1-3': { to: 'g13', label: 'counts only; no example anywhere, appendix included' },
 };
 const PLANES = { structure: { title: 'Structure', q: 'Do the sections build on one another?' }, argument: { title: 'Argument', q: 'Are the claims and citations argued?' }, artifacts: { title: 'Artifacts', q: 'Can the method and the evidence be inspected?' } };
-const PLANE_OF = { '2-3': 'structure', '2-5': 'structure', '4-1': 'structure', '4-4': 'structure',
+// within each area, the broadest definition first (Yerim 11-07)
+const ORDER = ['2-3', '4-4', '2-5', '1-2', '1-4', '4-1', '1-3', '4-5', '4-2'];
+ITEMS.sort((a, b) => ORDER.indexOf(a.id) - ORDER.indexOf(b.id));
+const PLANE_OF = { '2-3': 'structure', '2-5': 'structure', '4-1': 'argument', '4-4': 'structure',
   '1-2': 'argument', '1-4': 'argument',
   '1-3': 'artifacts', '4-2': 'artifacts', '4-5': 'artifacts' };
 const PLANE_C = { structure: '#7E4E66', argument: '#E4959E', artifacts: '#56717B' };   // site planes: structure/artifacts in their deep shade so structure and argument separate
@@ -794,7 +797,7 @@ function openHash() {
 document.addEventListener('click', e => { const a = e.target.closest('a[data-xref], a.ql, a.atile'); if (!a) return; e.preventDefault(); history.pushState({}, '', a.getAttribute('href')); openHash(); });
 addEventListener('hashchange', openHash);
 // ------------------------------------------------------------------ studio: the specimen page under a lens, one slop at a time, votes beside it
-const PAGE_ORDER = ['2-5', '4-1', '1-4', '4-2', '4-5', '1-2', '2-3', '4-4', '1-3'];
+const PAGE_ORDER = ORDER;
 const tally = id => hub.votes[id] || { up: 0, down: 0 };
 const nCases = id => hub.cases.filter(c => c.item === id).length;
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
