@@ -900,7 +900,7 @@ function renderPanel() {
   document.querySelectorAll('.ts').forEach(b => { b.classList.toggle('on', b.dataset.id === it.id); b.querySelector('.ts-v').textContent = tally(b.dataset.id).up ? '▲' + tally(b.dataset.id).up : ''; });
   $('#st-panel').className = 'cap st-panel ' + it.ar.cls;
   $('#sp-body').replaceChildren(h('div', { class: 'cap-in' },
-    h('div', { class: 'cap-t' }, h('b', { class: 'cap-n', text: it.name }), h('span', { class: 'cap-pl' }, h('i'), it.ar.title + (V1OF[it.id] ? ' · v1 ' + V1OF[it.id] : ' · new in v1.1'))),
+    h('div', { class: 'cap-t' }, h('b', { class: 'cap-n', text: it.name })),
     h('p', { class: 'cap-d', text: it.short }),
     it.parts ? h('div', { class: 'cap-parts' }, ...it.parts.map(p => h('p', { class: 'cap-pt' }, h('b', { text: p.name }), h('span', { text: p.what })))) : null,
     h('div', { class: 'cap-vs' },
