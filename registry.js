@@ -167,11 +167,11 @@ const ITEMS = [
     not: ['A standard setting with a source.', 'Minor settings that do not touch the core claims.'],
     fix: ['Give the real rationale, constraint, or comparison.', 'Not a fix: inventing alternatives that were never run.'] },
 
-  { id: '4-1', area: 4, name: 'Generic Filler', what: 'A sentence that repeats the result just reported, in vaguer words (“This shows that …”, “…, demonstrating that …”). Delete it and the paragraph says the same.',
+  { id: '4-1', area: 4, name: 'Generic Filler', what: 'A sentence that repackages what was already shown in nicer words and tells the reader nothing new.',
     ex: { spec: 'This confirms the effectiveness of our approach.', specnote: 'It only repeats “Our model beats all baselines.” Delete it and nothing is missing.', src: 'AI paper · SciSlopBench FA0064 · §4 Experiments', pre: 'Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%), ', mark: 'demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.', post: '', note: 'The first half gives the result. The marked half says the same thing in vaguer words.' },
-    judge: ['Delete the sentence. Does the paragraph still say the same thing?', 'Phrases like “this shows that” only pick candidates. They do not decide.'],
-    not: ['The sentence adds a condition, a cause or a limit.', 'The claim is too strong but still adds something (that is 1-2).'],
-    fix: ['Delete it, or say what the result means here: when it holds, why, or where it stops.', 'Not a fix: changing “shows” to “suggests”.'],
+    judge: ['Candidates are interpretive tails after a result or method (“…, highlighting …”, “This demonstrates that …”). The phrase list follows “Superficial analyses” in Wikipedia’s Signs of AI writing.', 'A candidate passes only if it adds one thing the text before it did not say: why (the mechanism), how far (scope or limit), what it rules out (an alternative explanation), or what follows (a decision for the next design or experiment). Otherwise FAIL.', 'The stock phrase only picks candidates. It does not decide.'],
+    not: ['The sentence adds a why, a how far, a ruled-out alternative, or a what next.', 'The claim is too strong but still adds something (that is 1-2).'],
+    fix: ['Delete it, or replace it with one of the four. “This indicates minimal interference between tasks.” → “So the drop in Section 5 is not caused by task interference.”', 'Not a fix: changing “shows” to “suggests”, re-adding the numbers, or inserting model and dataset names.'],
     borders: [['4-4', 'repeats another section, not the sentence right before'], ['1-2', 'too strong, not empty']] },
   { id: '4-2', area: 4, name: 'Undefined Terms', what: 'A term the reader needs is never given a meaning.',
     ex: { spec: 'semantic anchoring', specnote: 'No definition, equation, citation, or example says what semantic anchoring does.', src: 'AI paper · SciSlopBench FA0083 · §4 Experiments', pre: 'This occurs because LLaMA-3.1-8B-Instruct has a ', mark: 'low retrieval rate (<14%)', post: ', limiting the effectiveness of consensus-based validation.', note: '“Retrieval rate” explains the paper’s main negative result. It is never defined, and no table reports it.' },
@@ -358,7 +358,7 @@ const GROUPS = [
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
 const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'The paper claims more than its experiments can show.', '1-4': 'A cited work tied to no other work.',
   '2-1': 'The key finding is missing from the abstract.', '2-3': 'Set up in one section, never pointed back to.', '3-1': 'A design choice with no reason given.',
-  '2-5': 'The conclusion only repeats the abstract.', '4-1': 'Says the last result again, in vaguer words.', '4-2': 'A term that is never defined.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
+  '2-5': 'The conclusion only repeats the abstract.', '4-1': 'Repackages what was shown; tells nothing new.', '4-2': 'A term that is never defined.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
   '5-4': 'The cited source says something else.' };
 for (const it of ITEMS) it.short = SHORT[it.id];
 const BY_ID = Object.fromEntries(ITEMS.map(i => [i.id, i]));
@@ -690,7 +690,8 @@ Do not invent alternatives that were never run; a value that is given but unexpl
   '4-1': `# Fix · Generic Filler (4-1)
 Look at each sentence that says "this shows that ...", "..., demonstrating that ...", "the key finding is ..." or "informing future research".
 Delete it and reread the paragraph. If nothing is missing, leave it out.
-If you keep it, say what the result means here: when it holds, why, or where it stops. Changing "shows" to "suggests" is not a fix.`,
+If you keep it, it must add one thing the text before it did not say: why (the mechanism), how far (scope or limit), what it rules out (an alternative explanation), or what follows (a decision for the next design or experiment).
+Changing "shows" to "suggests", re-adding the numbers, or inserting model and dataset names is not a fix.`,
   '4-2': `# Fix · Undefined Terms (4-2)
 For every term or abbreviation the intended reader cannot interpret from context, give its operation, object, or role where it first appears, or cite the definition.
 Expanding an acronym or swapping in another abstract word is not enough. If one thing has several names, pick one.`,
