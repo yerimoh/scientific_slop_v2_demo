@@ -450,7 +450,7 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
 const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code';
-const MV = '1107a';   // bump with the run data so browsers do not keep an old measure/*.json
+const MV = '1107i';   // bump with the run data so browsers do not keep an old measure/*.json
 const MEASURE = {
   '1-1': { unit: 'claim', units: 'claims',
     stages: [['Claim', 'stated as fact', 'paper'], ['Needs', 'what would prove it?', Q], ['Found', 'in the paper?', QC], ['Verdict', '3 runs vote', CD]],
@@ -461,20 +461,22 @@ const MEASURE = {
       ['Decide PASS / FAIL / U', [[CD, 'Rules, in order: cited prior-work fact → PASS · procedure or definition → NA · supported or partial → PASS · unsupported, no valid evidence → FAIL.'], [CD, 'Unsupported, but its numbers appear in a table or only a figure supports it → human review (U).'], [CD, 'Three runs (1 greedy, 2 sampled). FAIL needs ≥2 FAIL votes and no PASS. Found in <2 runs or split → U.'], [CD, 'score = FAIL / (FAIL + PASS). U reported as coverage; NA excluded.']]]],
     line: 'Qwen2.5-32B reads; code checks every id, applies the rules and counts. Three runs vote; split votes stay U.' },
   '1-2b': { unit: 'paper', units: 'papers', breadth: true,
-    stages: [['Collect the results', '', CD], ['Count what was actually evaluated', '', H], ['Check each name', '', CD], ['Score', '', CD]],
+    stages: [['Collect the results', '', CD], ['Count the models and datasets', '', H], ['Check how broad the experiments are', '', CD], ['Score', '', CD]],
+    ask: ['What do we evaluate?', 'Was the paper tested on enough models and datasets?'],
     doc: [
-      [{ p: 'Start from the tables: every table with at least four numbers, appendix included.' }, { p: 'Then read the captions and the experiment text to see which models and datasets each result comes from.' }, { s: 'No experimental results → NA' }],
-      [{ l: 'Models', t: 'The models that produce the reported results. One model name is one model.' }, { l: 'Datasets', t: 'The benchmarks the results are reported on. Splits or subtasks of one benchmark count once.' }, { l: 'Do not count', t: 'The paper’s own method, baseline methods, ablations, training-only data.' }],
-      [{ p: 'A name counts only if it appears in a result table or in the experiment text.' }, { s: 'Names that appear only in related work are dropped.' }],
-      [{ p: 'More models, model families and datasets → a higher score, from 0 to 100.' }, { p: 'One model and one dataset → 0. Below 35 → FAIL.' }, { s: 'Each count is scored on a log scale, up to 8 models, 4 families, 16 datasets. Benchmark papers: datasets not scored.' }]],
+      [{ p: 'Find result tables in the main paper and appendix.' }, { p: 'Use their captions and experiment descriptions when needed.' }, { s: 'No experimental results → NA' }],
+      [{ p: 'Count the models, model families, and datasets with reported results.' }, { ul: [['Models', 'models that produced the results'], ['Model families', 'distinct families such as Qwen or Llama'], ['Datasets', 'benchmarks on which results are reported']] }, { s: 'Splits or subtasks of the same benchmark count once.' }],
+      [{ p: 'Fewer models and datasets mean the results were tested under more limited conditions.' }, { s: 'Do not count models or datasets that are only mentioned or used only for training.' }],
+      [{ p: 'More models and datasets tested → higher score.' }, { p: '1 model + 1 dataset → 0' }, { p: 'Below 35 → FAIL' }]],
     how: [], line: 'Find where the results are, then count the models and datasets behind them.' },
   '1-2d': { unit: 'paper', units: 'papers', cost: true,
-    stages: [['Extra compute?', '', H], ['Cost reported?', '', H], ['Evidence valid?', '', CD], ['Score', '', CD]],
+    stages: [['Find what the method adds', '', H], ['Look for the cost', '', H], ['Check the number', '', CD], ['Score', '', CD]],
+    ask: ['What do we evaluate?', 'If the method adds compute, does the paper report what it costs?'],
     doc: [
-      [{ p: 'Find anything the method adds that increases compute.' }, { l: 'Look for', list: ['extra model calls or forward passes', 'additional models or modules', 'training, sampling, search, voting or retrieval'] }, { s: 'Nothing added → NA' }],
-      [{ p: 'Look for a measured cost, or a comparison at the same compute budget.' }, { l: 'Count as cost', t: 'latency · runtime · FLOPs · memory · tokens · GPU hours · model or API calls' }, { l: 'Do not count', t: 'hardware specs, input size, accuracy, “efficient” without a number' }],
-      [{ p: 'The sentence or table must say what is measured and give a number.' }, { l: 'For example', list: ['“Latency: 1.8 s” ✓', '“requires additional compute” ✕', '“comes at a cost: accuracy drops 10.8%” ✕'] }],
-      [{ l: 'Cost reported or budget matched', t: '100' }, { l: 'Extra compute, neither reported', t: '0 → FAIL' }, { l: 'Nothing added', t: 'NA' }]],
+      [{ p: 'Read the method and find anything that increases compute.' }, { ul: [['Extra calls', 'more model calls or forward passes'], ['Extra parts', 'another model or module'], ['Extra steps', 'training, sampling, search, voting or retrieval']] }, { s: 'Nothing added → NA' }],
+      [{ p: 'Find where the paper reports what the method costs.' }, { ul: [['Measured cost', 'latency, runtime, FLOPs, memory, tokens, GPU hours or model calls'], ['Same-budget comparison', 'the method and the baseline run with the same compute']] }, { s: 'Hardware specs, input sizes and accuracy do not count.' }],
+      [{ p: 'A cost counts only if the paper says what is measured and gives a number.' }, { s: '“Latency: 1.8 s” counts. “Requires additional compute” does not.' }],
+      [{ p: 'Cost reported or same budget → 100' }, { p: 'Extra compute, no cost → 0 → FAIL' }, { p: 'Nothing added → NA' }]],
     how: [], line: 'Find methods that add compute, then check whether the paper reports that cost with a number.' },
   '1-2': { parts: ['1-2b', '1-2d'],
     line: 'Two checks, each scored 0–100. The slop score combines them.' },
@@ -1413,9 +1415,11 @@ function measureSteps(it) {
   if (m && m.parts) return partsView(BY_ID[it.id] || it);
   if (!m) return h('ol', { class: 'rs' }, ...(it.judge || []).map((t, k) => h('li', { class: 'rs-row' }, h('div', { class: 'rs-n' }, h('b', { text: String(k + 1) })), h('div', { class: 'rs-do' }, h('p', { text: t })))));
   const plain = !!m.plain, doc = m.doc;
-  const docBody = bs => bs.map(b => b.p ? h('p', { class: 'dc-p', text: b.p }) : b.list ? h('div', { class: 'dc-g' }, h('span', { class: 'dc-l', text: b.l }), h('ul', {}, ...b.list.map(t => h('li', { text: t }))))
+  const docBody = bs => bs.map(b => b.p ? h('p', { class: 'dc-p', text: b.p }) : b.ul ? h('ul', { class: 'dc-ul' }, ...b.ul.map(([l, t]) => h('li', {}, h('b', { text: l + ': ' }), t)))
+    : b.list ? h('div', { class: 'dc-g' }, h('span', { class: 'dc-l', text: b.l }), h('ul', {}, ...b.list.map(t => h('li', { text: t }))))
     : b.l ? h('div', { class: 'dc-g' }, h('span', { class: 'dc-l', text: b.l }), h('p', { text: b.t })) : b.s ? h('p', { class: 'dc-s', text: b.s }) : null);
-  const whoTag = w => (plain || (doc && !m.who) || w === 'paper') ? null : h('span', { class: 'rs-who ' + (w === 'code' ? 'rule' : 'model'), text: w === 'code' ? 'rule' : w.includes('code') ? 'model + rule' : 'model' });
+  const docWho = w => h('span', { class: 'dc-who ' + (w === 'code' ? 'rule' : 'llm'), text: w === 'code' ? 'Rule' : 'LLM (Haiku)' });
+  const whoTag = w => doc ? (w === 'paper' ? null : docWho(w)) : (plain || w === 'paper') ? null : h('span', { class: 'rs-who ' + (w === 'code' ? 'rule' : 'model'), text: w === 'code' ? 'rule' : w.includes('code') ? 'model + rule' : 'model' });
   const ex = m.stages.map(() => h('div', { class: 'rs-ex' }, h('span', { class: 'rs-wait', text: '…' })));
   const rows = m.stages.map(([title, sub, w], k) => h('li', { class: 'rs-row' + (k === m.stages.length - 1 ? ' last' : '') },
     h('div', { class: 'rs-n' }, h('b', { text: String(k + 1) }), h('div', {}, h('p', { class: 'rs-t', text: title }), sub ? h('p', { class: 'rs-q', text: sub }) : null, whoTag(w))),
@@ -1426,7 +1430,7 @@ function measureSteps(it) {
   const score = h('p', { class: 'mw-score' + (m.plain ? ' small' : '') });
   // a player: the steps run one after another on the chosen unit, each example appears when its step is reached
   const play = h('button', { type: 'button', class: 'rs-play', text: '▶ Play' });
-  const box = h('div', { class: 'rs-wrap' }, h('div', { class: 'rs-top' }, h('p', { class: 'rs-line', text: m.line }), play), head, h('ol', { class: 'rs' }, ...rows), score);
+  const box = h('div', { class: 'rs-wrap' + (doc ? ' doc' : '') }, h('div', { class: 'rs-top' }, m.ask ? h('div', { class: 'dc-ask' }, h('b', { text: m.ask[0] }), h('p', { text: m.ask[1] })) : h('p', { class: 'rs-line', text: m.line }), play), head, h('ol', { class: 'rs' }, ...rows), score);
   const seq = { s: -1, t: 0 };
   let XM = null;
   const setStep = k => { seq.s = k; if (XM) XM.step(k); rows.forEach((r, j) => { r.classList.toggle('done', j < k); r.classList.toggle('cur', j === k); r.classList.toggle('todo', j > k); });

@@ -83,18 +83,26 @@
     ],
     [
      {
-      "checks": [
+      "kv": [
        [
-        "Qwen2.5-VL-7B-Instruct",
-        true,
-        "T1 · §4 setup"
+        "Models",
+        "1",
+        true
        ],
        [
-        "VL-RewardBench",
-        true,
-        "T1 · T2 · §4 setup"
+        "Model families",
+        "1",
+        true
+       ],
+       [
+        "Datasets",
+        "1",
+        true
        ]
       ]
+     },
+     {
+      "line": "Every result comes from one model on one benchmark."
      }
     ],
     [
