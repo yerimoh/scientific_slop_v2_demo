@@ -386,7 +386,7 @@ const FAIL = {
   '4-1': { to: 'g41', label: 'says nothing about this paper' },
   '4-2': { to: 'g42', label: 'never defined' },
   '4-3': { self: true, label: 'no result depends on this' },
-  '4-4': { to: 'g44', label: 'the same sentence as in §1', eq: true },
+  '4-4': { to: 'g44', label: 'the same sentence as in §1', eq: true, from: '§1 Introduction', at: '§4.2 Results' },
   '4-5': { to: 'gfig', label: 'arrows and colors never explained' },
   '5-1': { to: 'g51', label: 'the problem is never named' },
   '5-2': { to: 'gab', label: 'A and B are input-dependent too' },
@@ -434,7 +434,7 @@ function sideCard(it) {
   return c;
 }
 function overEl() { let o = $('#spec-over'); if (!o) { o = h('div', { id: 'spec-over', class: 'spec-over' }); $('.spec-page-wrap').append(o); } return o; }
-function clearOver() { const o = $('#spec-over'); if (o) o.replaceChildren(); document.querySelectorAll('.pg.hot, .pa.hot').forEach(el => el.classList.remove('hot')); }
+function clearOver() { const o = $('#spec-over'); if (o) o.replaceChildren(); document.querySelectorAll('.pg.hot, .pa.hot').forEach(el => el.classList.remove('hot')); document.querySelectorAll('#spec-page .hlx').forEach(el => el.classList.remove('hlx', 'hl1', 'hl2')); }
 function drawOver(id) {
   // a reviewer's red pen: underline the sentence, loop where the reader checks, and write each note on its own line in the page
   // (notes are real lines inserted into the flow, so they never sit on top of text)
@@ -449,23 +449,30 @@ function drawOver(id) {
   const top = it.short.replace(/\.$/, ''), lab = (f.eq ? '= ' : '') + (f.label || ''), lab0 = lab.toLowerCase();
   const same = lab0 && (top.toLowerCase().includes(lab0) || lab0.includes(top.toLowerCase().slice(0, 18)));
   const mb = blockOf(mk);
+  if (f.eq && tg) {
+    // the same sentence in two sections: highlight the first place, then the copy, then join them
+    const tb = blockOf(tg);
+    tb.before(pnote('① ' + f.from + ': first said here', .1)); tg.classList.add('hlx', 'hl1');
+    mb.before(pnote('② ' + f.at + ': the same sentence again', 1.0)); mk.classList.add('hlx', 'hl2');
+  } else {
   if (!same) mb.before(pnote(top, .35));
   if (tg) { const tb = blockOf(tg); if (tb === mb) mb.after(pnote(lab, 1.3)); else if (tb.compareDocumentPosition(mb) & Node.DOCUMENT_POSITION_FOLLOWING) tb.after(pnote(lab, 1.3)); else tb.before(pnote(lab, 1.3)); }
   else if (lab) mb.after(pnote(lab, .9));
+  }
   // pen strokes, measured after the page has made room
   const wrap = $('.spec-page-wrap'); const wr = wrap.getBoundingClientRect(); const o = overEl();
   const rel = r => ({ l: r.left - wr.left, t: r.top - wr.top, r: r.right - wr.left, b: r.bottom - wr.top });
   const W = wrap.offsetWidth, mr = [...mk.getClientRects()].map(rel), m0 = mr[0], m1 = mr[mr.length - 1];
-  let g = mr.map((r, i) => squig(r.l, r.r, r.b + 2, .05 + i * .15)).join('');
+  let g = mr.map((r, i) => squig(r.l, r.r, r.b + 2, (f.eq ? 1.4 : .05) + i * .15)).join('');
   if (tg) {
     tg.classList.add('hot'); const tr = [...tg.getClientRects()].map(rel), t0 = tr[0], t1 = tr[tr.length - 1];
     const tl = Math.min(...tr.map(r => r.l)), trr = Math.max(...tr.map(r => r.r)), tt = t0.t, tb = t1.b, cx = (tl + trr) / 2, cy = (tt + tb) / 2;
-    g += loop(cx, cy, (trr - tl) / 2 + 5, (tb - tt) / 2 + 3, .8);
+    if (!f.eq) g += loop(cx, cy, (trr - tl) / 2 + 5, (tb - tt) / 2 + 3, .8);
     const sameCol = Math.abs(tl - Math.min(...mr.map(r => r.l))) < 120; let pts;
     if (sameCol) { const gx = Math.max(6, Math.min(tl, m0.l) - 16), sy = (m0.t + m0.b) / 2; pts = [[m0.l - 3, sy], [gx, sy - (sy - cy) * .2], [gx - 2, cy + (sy - cy) * .2], [tl - 5, cy]]; }
     else if (tl > m1.r) { const gx = (m1.r + tl) / 2, sy = (m1.t + m1.b) / 2; pts = [[m1.r + 3, sy], [gx, sy], [gx, cy], [tl - 5, cy]]; }
     else { const gx = (trr + m0.l) / 2, sy = (m0.t + m0.b) / 2; pts = [[m0.l - 3, sy], [gx, sy], [gx, cy], [trr + 5, cy]]; }
-    g += arrow(pts, .55);
+    g += arrow(pts, f.eq ? 1.7 : .55);
   }
   o.innerHTML = `<svg class="over-svg pen-over" width="${W}" height="${wrap.offsetHeight}" viewBox="0 0 ${W} ${wrap.offsetHeight}">${g}</svg>`;
 }
