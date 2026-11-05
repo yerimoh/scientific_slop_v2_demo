@@ -75,7 +75,7 @@ const QPOST = {
       ['Total', '226']]),
     h('p', { class: 'qa-cap', text: 'Data as of October 17, 2026.' }),
     h('h4', { text: 'Test' }),
-    h('p', { text: 'The remaining question is whether the same 9 slop measures separate AI papers from both human groups. We score all papers with authorship hidden.' }),
+    h('p', { text: 'The remaining question is whether the same 10 slop measures separate AI papers from both human groups. We score all papers with authorship hidden.' }),
     h('p', { text: 'If the gap between AI and well-written human papers disappears for poorly written human papers, scientific slop is largely capturing bad writing. If AI papers still show more slop, bad writing alone does not explain the difference.' }),
     qOut(),
     h('h4', { text: 'Result' }), h('p', { class: 'qa-none', text: 'v2 running.' })] },
@@ -88,7 +88,7 @@ const QPOST = {
     h('p', { class: 'qa-cap', text: 'Rejected vs. accepted AUROC inside each ICLR year, v1 index. 0.5 is chance.' }),
     h('p', { text: 'The trend is not monotonic: 2023 drops back to 0.54.' }),
     h('h4', { text: 'What v2 adds' }),
-    h('p', { text: 'Six counts can only say “more slop, lower score”. With 9 items we can ask which kind of slop goes with which dimension, for example whether overstated claims track soundness and undefined terms track presentation. The plan starts from ICLR 2027 submissions, then compares years and venues (NeurIPS, ICML, ACL).' }),
+    h('p', { text: 'Six counts can only say “more slop, lower score”. With 10 items we can ask which kind of slop goes with which dimension, for example whether overstated claims track soundness and undefined terms track presentation. The plan starts from ICLR 2027 submissions, then compares years and venues (NeurIPS, ICML, ACL).' }),
     h('h4', { text: 'Result' }), h('p', { class: 'qa-none', text: 'Not in yet.' })] },
   f3: { title: 'Does an AI reviewer let more slop through?', tag: 'not run yet', body: () => [
     h('p', { text: 'A growing share of reviews is written with an LLM, and some venues now use AI reviewers officially. If an AI reviewer goes easy on the failures an AI author makes, the two problems compound.' }),
