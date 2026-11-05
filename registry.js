@@ -870,10 +870,10 @@ const TREE = [['Argument graph', ['1-2']], ['Citation isolation', ['1-4']], ['Cr
 // 11-06: columns as in v1 Table 2 (PairAcc, AUROC, TPR at 5% FPR), from each item's saved per-paper scores (v2/verification/table_site_rows_1106.py)
 const RESULTS = { '4-2': { pa: '0.65', auc: '0.64', tpr: '0.31' }, '1-4': { pa: '0.85', auc: '0.87', tpr: '0.59' }, '1-2': { pa: '0.88', auc: '0.88', tpr: '0.50' }, '2-3': { pa: '0.88', auc: '0.88', tpr: '0.00' }, '4-1': { pa: '0.82', auc: '0.82', tpr: '0.34' }, '4-4': { pa: '0.91', auc: '0.90', tpr: '0.29' }, '2-5': { pa: '0.91', auc: '0.90', tpr: '0.76' }, '1-3': { pa: '0.76', auc: '0.75', tpr: '0.00' }, '4-5': { pa: '0.91', auc: '0.90', tpr: '0.54' } };
 $('#sm-res').replaceChildren(h('table', { class: 'res-tbl' },
-  h('thead', {}, h('tr', {}, ...['Slop', 'PairAcc', 'AUROC', 'TPR@5%FPR'].map(t => h('th', { text: t })))),
-  h('tbody', {}, ...GROUPS.flatMap(g => [h('tr', { class: 'res-g ' + g.cls }, h('td', { colspan: 4, text: g.title })),
+  h('thead', {}, h('tr', {}, ...['Slop', 'PairAcc', 'AUROC'].map(t => h('th', { text: t })))),
+  h('tbody', {}, ...GROUPS.flatMap(g => [h('tr', { class: 'res-g ' + g.cls }, h('td', { colspan: 3, text: g.title })),
     ...ITEMS.filter(i => i.plane === g.key).map(it => { const r = RESULTS[it.id] || {};
-      return h('tr', { class: RESULTS[it.id] ? 'has' : '' }, h('td', { text: it.name }), h('td', { text: r.pa || '' }), h('td', { text: r.auc || '' }), h('td', { text: r.tpr || '' })); })]))));
+      return h('tr', { class: RESULTS[it.id] ? 'has' : '' }, h('td', { text: it.name }), h('td', { text: r.pa || '' }), h('td', { text: r.auc || '' })); })]))));
 // the three areas, each in its own colour: Structure, Argument, Artifacts
 const TREE2 = GROUPS.map(g => [g, ITEMS.filter(i => i.plane === g.key).map(i => i.id)]);
 $('#tree-rows').replaceChildren(...TREE2.map(([g, ids]) => h('div', { class: 'tr ' + g.cls },
