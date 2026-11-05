@@ -1491,3 +1491,17 @@ mark.cx-e { color: inherit; background: rgba(255, 214, 10, .38); border-radius: 
 .eb-kv dd.bad { color: var(--ink); }
 .eb-img { margin: 0; } .eb-img img { display: block; width: 100%; height: auto; border: 1px solid var(--hair, #ddd); border-radius: 4px; background: #fff; }
 .eb-img figcaption { margin-top: 4px; }
+/* results table: folded under the slop list, opens on click */
+.tree details.sm-res { margin: 22px 0 0; max-width: none; border-top: 1px solid var(--line); padding-top: 10px; }
+.sm-res summary { cursor: pointer; list-style: none; display: flex; align-items: baseline; gap: 8px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.sm-res summary::-webkit-details-marker { display: none; }
+.sm-res summary::after { content: '↓'; margin-left: auto; color: var(--ink-3); }
+.sm-res[open] summary::after { content: '↑'; }
+.sm-res summary span { font-weight: 400; font-size: 12px; color: var(--ink-3); }
+.sm-res summary:hover { color: var(--ink); }
+.tree .res-tbl { margin-top: 8px; font-size: 13px; }
+.tree .res-tbl th:not(:first-child), .tree .res-tbl td:not(:first-child) { width: 48px; padding-left: 8px; }
+.tree .res-tbl td:first-child { padding-right: 4px; }
+.tree .res-tbl tr.res-g td { padding-top: 10px; }
+.tree .res-tbl th { font-size: 11.5px; } .tree .res-tbl th:not(:first-child), .tree .res-tbl td:not(:first-child) { width: 44px; padding-left: 6px; }
+.tree .res-tbl { table-layout: fixed; width: 100%; } .tree .res-tbl th:not(:first-child), .tree .res-tbl td:not(:first-child) { width: 52px; padding-left: 4px; padding-right: 2px; } .tree .res-tbl tr.res-g td { width: auto; }
