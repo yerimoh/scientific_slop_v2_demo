@@ -135,11 +135,11 @@ const ITEMS = [
     not: ['A benchmark paper (dataset count not scored), or a study of one named model by design (model count not scored).', 'A method that adds no compute: cost part not scored.'],
     fix: ['Run a second model or dataset; report runtime, tokens, FLOPs or memory for the method and the baseline.', 'Not a fix: more seeds on the same setting; saying “efficient” without a number.'],
     borders: [['1-1', 'no support at all'], ['5-4', 'evidence described wrongly']] },
-  { id: '1-4', area: 1, name: 'Unclear Links to Prior Work', v1: 'Citation isolation', what: 'Prior work is cited, but how it relates to this study is never said.',
-    ex: { spec: 'We propose C.', specnote: 'Does C follow A or B? Which limitation does it address? What differs? Not said.', src: 'AI paper · SciSlopBench FA0280 · §2 Related Work', pre: 'SparseVLM introduces text-aware sparsification that conditions token selection on the input query, and ', mark: 'FEATHER revisits pruning strategies with improved layer selection.', post: '', note: 'The paragraph lists eight pruning methods and never says how this paper relates to any of them. FEATHER also picks layers, which is this paper’s whole idea.' },
-    judge: ['Does the citing passage explain the role of that work?', 'Relations among prior works are logged apart from relations to this study.', 'Judge when a relation needed to place the study is missing.'],
-    not: ['Citations for background facts or standard tools.', 'The relation explained in another paragraph.'],
-    fix: ['Explain the actual difference, inheritance, or limitation.', 'Not a fix: adding “Unlike prior work”; deleting citations.'] },
+  { id: '1-4', area: 1, name: 'Unclear Links to Prior Work', v1: 'Citation isolation', what: 'A cited work gets a sentence of its own and is tied to no other work.',
+    ex: { spec: 'Method B [7] adds a memory module.', specnote: 'One work, one sentence. Nothing ties B to A [3] or to any other work.', src: 'AI paper · SciSlopBench FA0280 · §2 Related Work', pre: '', mark: 'Token Merging (ToMe) [cite], originally designed for Vision Transformers, has also been adapted for VLM acceleration.', post: '', note: 'ToMe stands alone: no other pruning method in the sentence, no link to the one before it. 5 of this paper’s 14 citing sentences are like this (0.36); its human pair scores 0.21.' },
+    judge: ['Units: citing sentences in the introduction and related work.', 'Woven: cites two or more works, names another work, or links to the previous work by a relational cue.', 'Otherwise isolated. A relation only to this paper does not make it woven.'],
+    not: ['Two or more works cited in one sentence.', 'Citations outside the introduction and related work.'],
+    fix: ['Say how the work relates to the others around it: extends, differs from, same family as.', 'Not a fix: piling extra citations into the sentence.'] },
 
   { id: '2-1', area: 2, name: 'Buried Findings', what: 'The body’s key finding never reaches the Abstract or Introduction.',
     ex: { spec: 'a novel attention mechanism that improves performance', specnote: '§4.2 shows the gain comes almost entirely from sentences with negation. The front matter never says so.', src: 'AI paper · SciSlopBench FA0002 · §4 Experiments', pre: 'On Multi-Query, ', mark: 'we achieve 70% reduction but with larger accuracy loss (3.65% vs. 12.10%)', post: ', indicating that distributed-information tasks inherently require higher cache coverage.', note: 'The abstract reports only the favorable task (46% cache reduction, 93% of accuracy kept). The accuracy collapse on the other task never reaches it.' },
@@ -199,10 +199,10 @@ const DEF = {
     q: [{ pre: 'We use ', mark: 'Qwen2.5-VL-7B-Instruct as the judge model', post: ', deployed via vLLM with tensor parallelism across 2 GPUs using bfloat16 precision.', src: 'AI paper · SciSlopBench FA0043 · §4 Experiments' },
         { pre: 'We propose ', mark: 'a two-pass architecture', post: ' where the judge first generates its own answer using only trusted inputs, then uses this uncontaminated reference when evaluating candidates.', src: 'Same paper · §3 Method' }],
     note: 'One judge model on one benchmark (VL-RewardBench), and the defense doubles the model calls per example. The paper reports the accuracy it costs, never the compute.' },
-  '1-4': { what: 'The paper cites related work and never says how its own work differs from it.',
-    q: [{ pre: 'SparseVLM introduces text-aware sparsification that conditions token selection on the input query, and ', mark: 'FEATHER revisits pruning strategies with improved layer selection.', post: '', src: 'AI paper · SciSlopBench FA0280 · §2 Related Work' },
-        { pre: 'Our approach is straightforward: ', mark: 'extract attention weights from layer 12', post: ' (out of 32 LLM layers in InternVL2.5-8B) and apply MIS selection directly without any debiasing.', src: 'Same paper · §3 Method' }],
-    note: 'FEATHER’s contribution is choosing the layer, and choosing the layer is this paper’s whole method. The related-work paragraph lists FEATHER with seven other methods and never says what this paper does differently.' },
+  '1-4': { what: 'The paper introduces a cited work in a sentence of its own and never ties it to another work.',
+    q: [{ pre: '', mark: 'Token Merging (ToMe) [cite], originally designed for Vision Transformers, has also been adapted for VLM acceleration.', post: '', src: 'AI paper · SciSlopBench FA0280 · §2 Related Work' },
+        { pre: '', mark: 'FastV [cite] pioneered training-free pruning by selecting tokens based on attention scores from shallow layers', post: ', but suffers from significant performance degradation on spatially-sensitive tasks.', src: 'Same paper · §2 Related Work' }],
+    note: 'Each sentence names one method and says what it does. Neither says how it relates to the other pruning methods in the paragraph.' },
   '2-1': { what: 'The results have a bad side, and the abstract tells only the good side.',
     q: [{ pre: 'On RULER long-context benchmarks, our method achieves ', mark: '46% cache reduction on Variable Tracking while preserving 93% baseline accuracy', post: ' (16.52% vs. 17.72%).', src: 'AI paper · SciSlopBench FA0002 · Abstract' },
         { pre: 'On Multi-Query, we achieve 70% reduction but with ', mark: 'larger accuracy loss (3.65% vs. 12.10%)', post: ', indicating that distributed-information tasks inherently require higher cache coverage.', src: 'Same paper · §4 Experiments' }],
@@ -302,7 +302,7 @@ const PAGE = {
     { h: 'Abstract', p: ['Cross-lingual retrieval models weight every token the same. We introduce ', M('2-1'), ' on three benchmarks. Our method consistently outperforms baselines across domains, with gains of up to 4 points.'], lines: 1 },
     { h: '1  Introduction', p: ['We propose a framework that learns token weights for cross-lingual retrieval. ', A('g44', 'Our model beats all baselines on both datasets.')], lines: 1 },
     { p: [M('4-1'), ' ', G('g41', 'delete it: nothing is lost')], lines: 1 },
-    { h: '2  Related Work', p: ['Method A [3] uses contrastive pairs; method B [7] adds a memory module. ', M('1-4'), ' ', G('g14', 'follows A or B? what differs?')], lines: 1 },
+    { h: '2  Related Work', p: ['Method A [3] uses contrastive pairs. ', M('1-4'), ' ', G('g14', 'B next to A, tied to nothing')], lines: 1 },
     { p: [M('5-4')], lines: 1 },
     { h: '3  Method', p: ['We apply ', M('4-2'), ' ', G('g42', 'definition'), ' before fusion and then project to the shared space. ', A('gloss', 'We add an alignment term: L = L_task + λ·L_align (Eq. 2).')], lines: 1 },
     { fig: true, cap: [M('4-5'), ' Solid and dashed arrows; blue, green, and orange blocks.'] },
@@ -321,7 +321,7 @@ const PAGE = {
 const FAIL = {
   '1-1': { to: 'g11', label: 'no label-noise experiment anywhere in §4' },
   '1-2': { to: 'gqa', label: 'one encoder, one benchmark; the extra pass is never timed' },
-  '1-4': { to: 'g14', label: 'the relation to A and B is never stated' },
+  '1-4': { to: 'g14', label: 'B gets its own sentence; how it relates to A is never said' },
   '2-1': { to: 'gneg', label: 'this finding never reaches the Abstract' },
   '2-3': { to: 'gloss', label: 'Eq. 2 defines λ here · §4 never points back', miss: true },
   '3-1': { to: 'g31', label: 'excluded, no reason given' },
@@ -343,7 +343,7 @@ const GROUPS = [
   { n: 3, key: 'artifacts', cls: 'p-artifacts', title: 'Artifacts', q: 'Can the method and the evidence be inspected?' },
 ];
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
-const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'One model or one dataset, or an added cost never reported.', '1-4': 'Cited, but never related to this paper.',
+const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'One model or one dataset, or an added cost never reported.', '1-4': 'A cited work tied to no other work.',
   '2-1': 'The key finding is missing from the abstract.', '2-3': 'Set up in one section, never pointed back to.', '3-1': 'A design choice with no reason given.',
   '4-1': 'Says the last result again, in vaguer words.', '4-2': 'A term that is never defined.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
   '5-4': 'The cited source says something else.' };
@@ -476,14 +476,14 @@ const MEASURE = {
     line: 'Claude Haiku lists what the method adds and where its cost is reported; code checks every quote against the paper.' },
   '1-2': { parts: ['1-2b', '1-2d'],
     line: 'Two parts, scored 0–100 each. Overstated Claims = the mean of evaluation breadth (1-2b) and cost reporting (1-2d); a part that does not apply is left out.' },
-  '1-4': { unit: 'cited work', units: 'cited works',
-    stages: [['Cited work', 'one citation key', 'paper'], ['Role', 'what it is to this paper', Q], ['Relation', 'stated in a sentence?', QC], ['Verdict', '3 runs vote', CD]],
+  '1-4': { unit: 'sentence', units: 'citing sentences',
+    stages: [['Sentence', 'a citing sentence in the introduction or related work', CD], ['Other works', 'cited or named in it', CD], ['Woven?', 'two works, a named work, or a relational cue', CD], ['Verdict', 'rule, one run', CD]],
     how: [
-      ['Select the citations', [[CD, 'Collect each citation key’s sentences and bib title.'], [CD, 'Units: Related Work citations, experimental baselines, intro citations with a limitation or contrast.'], [CD, 'Excluded: lists of 3+ works in one sentence, surveys, tutorials, datasets, tools, metrics.']]],
-      ['Assign a role', [[Q, 'Role: built on · related method · baseline · dataset, metric or tool · background fact.'], [Q, 'Point to sentences that state the relation to this paper.'], [CD, 'Add candidates: first-person or contrast sentences in the citing paragraph (“these methods…, we instead…”), first-person sentences naming the work.']]],
-      ['Recognise a relation', [[Q, 'Judge reads each candidate: does it relate the work to this paper, or only describe this method?'], [CD, 'Requires the first person or the method name. “Unlike prior work,” alone does not count.']]],
-      ['Decide PASS / FAIL / NA', [[CD, 'Relation sentence → PASS. Baseline compared in a first-person sentence → PASS.'], [CD, 'No relation sentence → FAIL. Survey or background citation → NA.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
-    line: 'Qwen2.5-32B assigns each cited work a role and finds the sentence relating it to this paper; code requires the first person or the method name. Three runs vote.' },
+      ['Collect the sentences', [[CD, 'Introduction and related-work sentences with at least one citation.'], [CD, 'Other sections: not checked.']]],
+      ['Find the other works', [[CD, 'Citation keys in the sentence.'], [CD, 'Names of other cited works outside the citation, e.g. “FastV” from “FastV [x]” elsewhere in the paper.']]],
+      ['Check: woven?', [[CD, 'Two or more works cited → woven.'], [CD, 'Another work named → woven.'], [CD, 'Opens with a relational cue (“Similarly,”, “Building on this,”) right after a citing sentence, or ties the work to others by a cue (“unlike these methods”) → woven.'], [CD, 'A relation only to this paper (“we”, “our”) does not count.'], [CD, 'No model judgment.']]],
+      ['Decide PASS / FAIL', [[CD, 'Isolated → FAIL. Woven → PASS.'], [CD, 'score = FAIL ÷ citing sentences.'], [CD, 'Fewer than 8 citing sentences → score flagged weak.'], [CD, 'Deterministic: one run.']]]],
+    line: 'Code only (v1 citation isolation). A citing sentence fails when it cites one work and ties it to no other work.' },
   '2-1': { unit: 'finding', units: 'findings',
     stages: [['Finding', 'a key result in the body', Q], ['Shown in', 'the table or sentence', CD], ['Up front?', 'abstract and intro', Q], ['Verdict', '3 runs vote', CD]],
     how: [
@@ -651,8 +651,8 @@ Two checks.
 2. Missing Cost Accounting: list what the method adds that costs compute (extra calls, passes, modules, training stages, sampling). Report the cost for the method and the baseline with numbers (runtime, tokens, FLOPs, memory, calls), or compare at a matched budget.
 More seeds on the same setting, or calling the method "efficient" without a number, is not a fix.`,
   '1-4': `# Fix · Unclear Links to Prior Work (1-4)
-For every cited work that the study builds on, differs from, or compares against, write one sentence that says the relation: what this study follows, which limitation it addresses, or what it does differently.
-Adding "unlike prior work" without the relation, or deleting citations, is not a fix.`,
+For every sentence in the introduction and related work that cites one work on its own, say how that work relates to the others around it: what it extends, how it differs, or which family it belongs to.
+Piling more citations into the sentence without the relation is not a fix.`,
   '2-1': `# Fix · Buried Findings (2-1)
 Identify the key findings of the body from the research question and the main results, including the condition under which each holds.
 Check the Abstract and Introduction: if a key finding or its condition is missing, add it in one sentence.
@@ -919,13 +919,13 @@ function srcParts(src) { const m = String(src || '').split(' · '); return [h('s
 const TREE = [['Argument graph', ['1-1', '1-2', '5-4']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4']], ['Figure exposition', ['4-5']], [null, ['2-1', '3-1', '4-1', '4-2']]];
 // results so far, on the 123 AI / human pairs; an item stays blank until its measure is final
 // 11-06: columns as in v1 Table 2 (PairAcc, AUROC, TPR at 5% FPR), from each item's saved per-paper scores (v2/verification/table_site_rows_1106.py)
-const RESULTS = { '1-2': { pa: '0.88', auc: '0.88', tpr: '0.50' }, '2-3': { pa: '0.88', auc: '0.88', tpr: '0.00' }, '4-1': { pa: '0.82', auc: '0.82', tpr: '0.34' }, '4-4': { pa: '0.91', auc: '0.90', tpr: '0.29' } };
+const RESULTS = { '1-4': { pa: '0.79', auc: '0.78', tpr: '0.44' }, '1-2': { pa: '0.88', auc: '0.88', tpr: '0.50' }, '2-3': { pa: '0.88', auc: '0.88', tpr: '0.00' }, '4-1': { pa: '0.82', auc: '0.82', tpr: '0.34' }, '4-4': { pa: '0.91', auc: '0.90', tpr: '0.29' } };
 $('#sm-res').replaceChildren(h('table', { class: 'res-tbl' },
   h('thead', {}, h('tr', {}, ...['Slop', 'PairAcc', 'AUROC', 'TPR@5%FPR'].map(t => h('th', { text: t })))),
   h('tbody', {}, ...GROUPS.flatMap(g => [h('tr', { class: 'res-g ' + g.cls }, h('td', { colspan: 4, text: g.title })),
     ...ITEMS.filter(i => i.plane === g.key).map(it => { const r = RESULTS[it.id] || {};
       return h('tr', { class: RESULTS[it.id] ? 'has' : '' }, h('td', {}, h('span', { class: 'res-id', text: it.id }), it.name), h('td', { text: r.pa || '' }), h('td', { text: r.auc || '' }), h('td', { text: r.tpr || '' })); })]))),
-  h('p', { class: 'res-note', text: 'Same measures as Table 2 of the v1 paper. PairAcc: share of AI–human pairs where the AI paper scores worse (ties count half). AUROC: every AI paper against every human paper. TPR@5%FPR: share of AI papers above the score that only 5% of human papers exceed; a paper tied at that score is not counted, so 2-3, where many human papers take the top score, gets 0. 1-2 = mean of its two parts: 1-2b Narrow Evaluation alone 0.96 / 0.96 / 0.79, 1-2d Missing Cost Accounting alone 0.59 / 0.62 / 0.00. Pairs: 1-2 and 4-1 the 143 FARS pairs of the released SciSlopBench (1-2: 131 where the human paper has a result table); 4-4 123 pairs; 2-3 115 pairs (8 human sources have missing input files). Blank rows are not measured yet.' }));
+  h('p', { class: 'res-note', text: 'Same measures as Table 2 of the v1 paper. PairAcc: share of AI–human pairs where the AI paper scores worse (ties count half). AUROC: every AI paper against every human paper. TPR@5%FPR: share of AI papers above the score that only 5% of human papers exceed; a paper tied at that score is not counted, so 2-3, where many human papers take the top score, gets 0. 1-2 = mean of its two parts: 1-2b Narrow Evaluation alone 0.96 / 0.96 / 0.79, 1-2d Missing Cost Accounting alone 0.59 / 0.62 / 0.00. Pairs: 1-4 is v1 Citation isolation from the released SciSlopBench scores, 336 of the 390 pairs (both papers scored); 1-2 and 4-1 the 143 FARS pairs of the released SciSlopBench (1-2: 131 where the human paper has a result table); 4-4 123 pairs; 2-3 115 pairs (8 human sources have missing input files). Blank rows are not measured yet.' }));
 // the three areas, each in its own colour: Structure, Argument, Artifacts
 const TREE2 = GROUPS.map(g => [g, ITEMS.filter(i => i.plane === g.key).map(i => i.id)]);
 $('#tree-rows').replaceChildren(...TREE2.map(([g, ids]) => h('div', { class: 'tr ' + g.cls },
