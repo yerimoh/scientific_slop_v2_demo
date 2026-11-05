@@ -462,7 +462,7 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
 const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code';
-const MV = '1106h';   // bump with the run data so browsers do not keep an old measure/*.json
+const MV = '1106m';   // bump with the run data so browsers do not keep an old measure/*.json
 const MEASURE = {
   '1-1': { unit: 'claim', units: 'claims',
     stages: [['Claim', 'stated as fact', 'paper'], ['Needs', 'what would prove it?', Q], ['Found', 'in the paper?', QC], ['Verdict', '3 runs vote', CD]],
@@ -1339,6 +1339,25 @@ function figCost(f) {
   return stepFig(out, f.caps, f.aria, 268);
 }
 const FIGS = { breadth: figBreadth, cost: figCost };
+
+// 1-2 parts: the example column is built from small blocks per step (measure/<id>.json units[].steps), so every step shows its own result
+const segQ = segs => segs.map(([t, on]) => on ? h('mark', { class: 'pv-m', text: t }) : t);
+function blkView(b) {
+  if (b.quote) return h('div', { class: 'pv' }, h('span', { class: 'pv-sec' }, h('b', { text: b.quote.sec }), ' · ' + b.quote.id), h('q', { class: 'mw-q' }, ...segQ(b.quote.segs)), b.quote.note ? h('small', { class: 'eb-n', text: b.quote.note }) : null);
+  if (b.table) { const t = b.table;
+    return h('div', { class: 'eb-tab' }, h('p', { class: 'eb-cap' }, h('b', { text: t.id + ' ' }), ...segQ(t.caption)),
+      h('table', {}, h('tr', {}, ...t.cols.map(c => h('th', { text: c })), t.ghost ? h('th', { class: 'eb-ghost', text: t.ghost }) : null),
+        ...t.rows.map(r => h('tr', {}, ...r.map(c => h('td', { text: c })), t.ghost ? h('td', { class: 'eb-ghost', text: '✕' }) : null))),
+      t.note ? h('small', { class: 'eb-n', text: t.note }) : null); }
+  if (b.chips) return h('div', { class: 'eb-chips' }, h('span', { class: 'eb-l', text: b.chips.label }), h('span', { class: 'eb-cs' }, ...b.chips.items.map(c => h('span', { class: 'eb-ch' + (c.no ? ' no' : ''), title: c.why || '' }, h('span', { class: 'eb-ct', text: c.t }), c.why ? h('i', { text: c.why }) : null))));
+  if (b.pipe) return h('div', { class: 'eb-pipe' }, h('span', { class: 'eb-l', text: b.pipe.label }), h('span', { class: 'eb-ps' }, ...b.pipe.boxes.flatMap((x, i) => [i ? h('span', { class: 'eb-ar', text: '↓' }) : null, h('span', { class: 'eb-pb' + (x.add ? ' add' : ''), text: x.t })]).filter(Boolean), b.pipe.note ? h('b', { class: 'eb-pn' + (b.pipe.bad ? ' bad' : ''), text: b.pipe.note }) : null));
+  if (b.checks) return h('ul', { class: 'eb-chk' }, ...b.checks.map(([t, ok, where]) => h('li', { class: ok ? 'y' : 'n' }, h('span', { class: 'eb-mk', text: ok ? '✓' : '✕' }), h('b', { text: t }), h('small', { text: where }))));
+  if (b.count) { const c = b.count;
+    return h('div', { class: 'eb-cnt' }, h('table', {}, ...c.rows.map(([l, n, v]) => h('tr', {}, h('td', { text: l }), h('td', { class: 'n', text: n }), h('td', { class: 'v' + (+v ? '' : ' z'), text: v })))),
+      h('p', { class: 'eb-tot' }, c.total, ' → ', h('b', { class: 'v-' + (c.verdict === 'PASS' ? 'P' : 'F'), text: c.verdict })), c.hint ? h('small', { class: 'eb-n', text: c.hint }) : null); }
+  if (b.line) return h('p', { class: 'eb-line', text: b.line });
+  return null;
+}
 // 4-1: the passage around a framed sentence, so the reader can see what deleting it loses
 const cxSegs = (segs, cls) => segs.map(([t, on]) => on ? h('mark', { class: cls, text: t }) : t);
 function cxView(u, step) {
@@ -1437,7 +1456,7 @@ function measureSteps(it) {
     const VW = { FAIL: 'slop', PASS: 'fine', UNRESOLVED: 'open', NOT_APPLICABLE: 'n/a' };
     pick.replaceChildren(...U.map((u, k) => h('option', { value: k, text: `${VW[u.final]} · ${u.text.slice(0, 48)}…` })));
     const sh = t => t.length > 140 ? t.slice(0, 138).replace(/\s+\S*$/, '') + '…' : t;
-    const fill = k => { const u = U[k]; const vals = u.ctx ? [cxView(u, 0), cxView(u, 1), cxView(u, 2), null] : u.ci ? [ciView(u, 0), ciView(u, 1), ciView(u, 2), null] : [
+    const fill = k => { const u = U[k]; const vals = u.steps ? u.steps.map(bs => h('div', { class: 'eb' }, ...bs.map(blkView))) : u.ctx ? [cxView(u, 0), cxView(u, 1), cxView(u, 2), null] : u.ci ? [ciView(u, 0), ciView(u, 1), ciView(u, 2), null] : [
       u.pair ? pairQ(u.pair.later, 'later') : u.segs ? h('div', { class: 'pv' }, h('span', { class: 'pv-sec' }, h('b', { text: u.sec }), ' · ' + u.id), h('q', { class: 'mw-q' }, ...u.segs.map(([t, on]) => on ? h('mark', { class: 'pv-m', text: t }) : t))) : h('div', {}, h('q', { class: 'mw-q', text: sh(u.text) }), h('small', { text: [u.id, u.sec].filter(Boolean).join(' · ') })),
       u.pair ? pairQ(u.pair.earlier, 'earlier') : h('div', {}, h('span', { text: u.s2 || '—' })),
       h('div', {}, u.found.length ? h('span', { class: 'mw-ids' }, ...u.found.map(x => h('code', { text: x }))) : h('span', { class: 'mw-none', text: 'nothing' }), u.found_note ? h('small', { text: tidyNote(u.found_note) }) : null, u.judge_line ? h('small', { text: tidyNote(u.judge_line) }) : null),

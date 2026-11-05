@@ -10,89 +10,229 @@
   "P": 0,
   "U": 0,
   "NA": 0,
-  "default": "S2.045",
+  "default": "FA0043",
   "cost": 0,
   "source": "v2/runs/m12d_v14_hf_full/AI_FA0043.json (m12d_v14.py, Claude Haiku 4.5, 11-06)"
  },
  "units": [
   {
-   "id": "S2.045",
-   "sec": "§3 Method",
+   "id": "FA0043",
+   "sec": "whole paper",
    "kind": "added part · inference",
-   "text": "We propose a two-pass architecture where the judge first generates its own answer using only trusted inputs, then uses this uncontaminated reference when evaluating candidates.",
-   "s2": "Cost reports: none. Matched-budget comparisons: none.",
+   "text": "FA0043: the defense adds a second model call",
+   "s2": "",
    "found": [],
-   "found_note": "S2.053 names “additional compute” with no number. S3.089 “comes at a cost” is accuracy (78.35% → 67.52%), not compute.",
-   "judge_line": "Condition C has the same two passes, but nothing is compared with the single-pass baseline at the same number of calls.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "one extra model call per example, no cost number, no matched budget → cost 0 → FAIL",
-   "segs": [
+   "final_reason": "cost 0 → FAIL",
+   "steps": [
     [
-     "We propose ",
-     false
+     {
+      "pipe": {
+       "label": "Baseline (Condition A)",
+       "boxes": [
+        {
+         "t": "judge"
+        }
+       ],
+       "note": "1 call"
+      }
+     },
+     {
+      "pipe": {
+       "label": "The defense (Condition B)",
+       "boxes": [
+        {
+         "t": "Pass 1: self-answer",
+         "add": true
+        },
+        {
+         "t": "Pass 2: judge"
+        }
+       ],
+       "note": "+1 call per example",
+       "bad": true
+      }
+     },
+     {
+      "quote": {
+       "sec": "§3 Method",
+       "id": "S2.045",
+       "segs": [
+        [
+         "We propose ",
+         false
+        ],
+        [
+         "a two-pass architecture",
+         true
+        ],
+        [
+         " where the judge first generates its own answer using only trusted inputs, then uses this uncontaminated reference when evaluating candidates.",
+         false
+        ]
+       ]
+      }
+     }
     ],
     [
-     "a two-pass architecture",
-     true
+     {
+      "chips": {
+       "label": "Looked for",
+       "items": [
+        {
+         "t": "tokens",
+         "no": true
+        },
+        {
+         "t": "latency",
+         "no": true
+        },
+        {
+         "t": "runtime",
+         "no": true
+        },
+        {
+         "t": "number of calls",
+         "no": true
+        },
+        {
+         "t": "FLOPs",
+         "no": true
+        },
+        {
+         "t": "API cost",
+         "no": true
+        }
+       ]
+      }
+     },
+     {
+      "line": "Haiku finds no sentence or table that measures any of these, and no comparison at the same number of calls."
+     }
     ],
     [
-     " where the judge first generates its own answer using only trusted inputs, then uses this uncontaminated reference when evaluating candidates.",
-     false
+     {
+      "table": {
+       "id": "T1",
+       "caption": [
+        [
+         "Main experimental results on ",
+         false
+        ],
+        [
+         "VL-RewardBench",
+         true
+        ],
+        [
+         " (N=1,247) with ",
+         false
+        ],
+        [
+         "Qwen2.5-VL-7B-Instruct",
+         true
+        ],
+        [
+         ".",
+         false
+        ]
+       ],
+       "cols": [
+        "",
+        "CleanAcc",
+        "ASR_cond"
+       ],
+       "rows": [
+        [
+         "A · baseline",
+         "78.35",
+         "91.33"
+        ],
+        [
+         "B · defense",
+         "67.52",
+         "29.33"
+        ],
+        [
+         "C · control",
+         "67.76",
+         "33.37"
+        ]
+       ],
+       "ghost": "cost?",
+       "note": "The main table reports accuracy and attack success only. There is no cost column for either condition."
+      }
+     },
+     {
+      "quote": {
+       "sec": "§3 Method",
+       "id": "S2.053",
+       "segs": [
+        [
+         "To isolate the effect of information isolation from other factors (e.g., two-pass prompting, ",
+         false
+        ],
+        [
+         "additional compute",
+         true
+        ],
+        [
+         "), we evaluate three conditions.",
+         false
+        ]
+       ],
+       "note": "Names the extra compute, but gives no number."
+      }
+     },
+     {
+      "quote": {
+       "sec": "§4 Experiments",
+       "id": "S3.089",
+       "segs": [
+        [
+         "However, this defense ",
+         false
+        ],
+        [
+         "comes at a cost",
+         true
+        ],
+        [
+         ": clean accuracy drops from 78.35% to 67.52%, a 10.8 percentage-point trade-off.",
+         false
+        ]
+       ],
+       "note": "A cost in accuracy, not in compute."
+      }
+     }
+    ],
+    [
+     {
+      "count": {
+       "rows": [
+        [
+         "added calls",
+         "",
+         "+1"
+        ],
+        [
+         "cost measured",
+         "",
+         "0"
+        ],
+        [
+         "matched budget",
+         "",
+         "0"
+        ]
+       ],
+       "total": "cost score = 0 / 100",
+       "verdict": "FAIL",
+       "hint": "A token or time column for A and B in T1 (e.g. “B uses 2× the tokens of A”) would give 100 → PASS."
+      }
+     }
     ]
    ]
   }
- ],
- "fig": {
-  "kind": "cost",
-  "aria": "FA0043: the single-pass baseline and the two-pass defense, the added call marked; the main table has no cost column; two cost words in the text are not measured costs.",
-  "base": {
-   "label": "CONDITION A · BASELINE · 1 MODEL CALL",
-   "boxes": [
-    "image + query + 2 answers",
-    "judge → verdict"
-   ]
-  },
-  "method": {
-   "label": "CONDITION B · THE DEFENSE · 2 MODEL CALLS",
-   "boxes": [
-    "image + query",
-    "Pass 1: self-answer",
-    "Pass 2: judge vs self-answer"
-   ],
-   "added": [
-    1
-   ]
-  },
-  "hand0": "+1 call / example",
-  "table": {
-   "title": "T1 · MAIN RESULTS",
-   "cols": [
-    "Condition",
-    "CleanAcc",
-    "ASR",
-    "ASR_cond"
-   ],
-   "ghost": "tokens / time?"
-  },
-  "hand1": "never measured",
-  "mentions": [
-   {
-    "id": "S2.053",
-    "text": "“additional compute”",
-    "why": "no number"
-   },
-   {
-    "id": "S3.089",
-    "text": "“comes at a cost”",
-    "why": "accuracy, not compute"
-   }
-  ],
-  "caps": [
-   "The baseline judges in one call. The defense adds Pass 1 before the judgment: one more model call for every example.",
-   "Is that extra call measured anywhere? The result tables report accuracy and attack success only: no tokens, time or number of calls.",
-   "Two sentences say “compute” or “cost”, but neither measures what the defense costs to run.",
-   "Something is added and its cost is never reported → cost 0 → FAIL."
-  ]
- }
+ ]
 }

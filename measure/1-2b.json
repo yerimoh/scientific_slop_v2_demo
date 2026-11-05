@@ -10,7 +10,7 @@
   "P": 0,
   "U": 0,
   "NA": 0,
-  "default": "S3.072",
+  "default": "FA0043",
   "breadth": 0.0,
   "axes": {
    "model": 0.0,
@@ -22,127 +22,189 @@
  },
  "units": [
   {
-   "id": "S3.072",
-   "sec": "§4 Experiments · model axis",
-   "kind": "model axis · 3 result tables (T1–T3)",
-   "text": "We use Qwen2.5-VL-7B-Instruct as the judge model, deployed via vLLM with tensor parallelism across 2 GPUs using bfloat16 precision.",
-   "s2": "Models: Qwen2.5-VL-7B-Instruct (family Qwen2.5-VL). Nothing else is run as the judge.",
-   "found": [
-    "T1",
-    "S3.072",
-    "S3.080"
-   ],
-   "found_note": "1 model, 1 family → log₂ 1 = 0",
-   "judge_line": "",
+   "id": "FA0043",
+   "sec": "whole paper",
+   "kind": "model axis + dataset axis",
+   "text": "FA0043: one judge model on one benchmark",
+   "s2": "",
+   "found": [],
    "runs": [],
    "final": "FAIL",
-   "final_reason": "model axis 0 · dataset axis 0 → breadth 0 < 35 → FAIL",
-   "segs": [
+   "final_reason": "breadth 0 < 35 → FAIL",
+   "steps": [
     [
-     "We use ",
-     false
+     {
+      "table": {
+       "id": "T1",
+       "caption": [
+        [
+         "Main experimental results on ",
+         false
+        ],
+        [
+         "VL-RewardBench",
+         true
+        ],
+        [
+         " (N=1,247) with ",
+         false
+        ],
+        [
+         "Qwen2.5-VL-7B-Instruct",
+         true
+        ],
+        [
+         ".",
+         false
+        ]
+       ],
+       "cols": [
+        "",
+        "CleanAcc",
+        "ASR",
+        "ASR_cond"
+       ],
+       "rows": [
+        [
+         "A · baseline",
+         "78.35",
+         "91.90",
+         "91.33"
+        ],
+        [
+         "B · defense",
+         "67.52",
+         "45.07",
+         "29.33"
+        ],
+        [
+         "C · control",
+         "67.76",
+         "47.88",
+         "33.37"
+        ]
+       ],
+       "note": "The main result table. Its caption already names the one model and the one benchmark."
+      }
+     },
+     {
+      "quote": {
+       "sec": "§4 Experiments",
+       "id": "S3.072",
+       "segs": [
+        [
+         "We use ",
+         false
+        ],
+        [
+         "Qwen2.5-VL-7B-Instruct",
+         true
+        ],
+        [
+         " as the judge model, deployed via vLLM with tensor parallelism across 2 GPUs using bfloat16 precision.",
+         false
+        ]
+       ]
+      }
+     }
     ],
     [
-     "Qwen2.5-VL-7B-Instruct",
-     true
+     {
+      "chips": {
+       "label": "Models",
+       "items": [
+        {
+         "t": "Qwen2.5-VL-7B-Instruct",
+         "why": "family Qwen2.5-VL"
+        }
+       ]
+      }
+     },
+     {
+      "chips": {
+       "label": "Datasets",
+       "items": [
+        {
+         "t": "VL-RewardBench",
+         "why": "3 categories, one benchmark"
+        }
+       ]
+      }
+     },
+     {
+      "chips": {
+       "label": "Not counted",
+       "items": [
+        {
+         "t": "Isolated Solve-Then-Judge",
+         "no": true,
+         "why": "the paper’s own method"
+        },
+        {
+         "t": "single-pass judging",
+         "no": true,
+         "why": "a baseline method"
+        }
+       ]
+      }
+     }
     ],
     [
-     " as the judge model, deployed via vLLM with tensor parallelism across 2 GPUs using bfloat16 precision.",
-     false
-    ]
-   ]
-  },
-  {
-   "id": "S3.069",
-   "sec": "§4 Experiments · dataset axis",
-   "kind": "dataset axis · 3 result tables (T1–T3)",
-   "text": "We evaluate on VL-RewardBench, a challenging benchmark for vision-language generative reward models containing 1,247 pairwise preference examples across three categories: …",
-   "s2": "Datasets: VL-RewardBench. Its three categories (General, Hallucination, Reasoning) stay inside the one benchmark.",
-   "found": [
-    "T1",
-    "T2",
-    "S3.069",
-    "S3.080",
-    "S3.093"
-   ],
-   "found_note": "1 dataset → log₂ 1 = 0",
-   "judge_line": "",
-   "runs": [],
-   "final": "FAIL",
-   "final_reason": "model axis 0 · dataset axis 0 → breadth 0 < 35 → FAIL",
-   "segs": [
-    [
-     "We evaluate on ",
-     false
+     {
+      "checks": [
+       [
+        "Qwen2.5-VL-7B-Instruct",
+        true,
+        "T1 caption · S3.072 · S3.080"
+       ],
+       [
+        "VL-RewardBench",
+        true,
+        "T1 and T2 captions · S3.069 · S3.093"
+       ]
+      ]
+     },
+     {
+      "line": "Both names are in the result tables, so both count. No other model or dataset appears in any result."
+     }
     ],
     [
-     "VL-RewardBench",
-     true
-    ],
-    [
-     ", a challenging benchmark for vision-language generative reward models containing 1,247 pairwise preference examples across three categories: …",
-     false
+     {
+      "count": {
+       "rows": [
+        [
+         "models",
+         "1",
+         "0"
+        ],
+        [
+         "families",
+         "1",
+         "0"
+        ],
+        [
+         "model axis",
+         "",
+         "0"
+        ],
+        [
+         "datasets",
+         "1",
+         "0"
+        ],
+        [
+         "dataset axis",
+         "",
+         "0"
+        ]
+       ],
+       "total": "breadth = (0 + 0) ÷ 2 = 0 / 100, below 35",
+       "verdict": "FAIL",
+       "hint": "Two models from two families and four datasets would give 46 → PASS."
+      }
+     }
     ]
    ]
   }
- ],
- "fig": {
-  "kind": "breadth",
-  "aria": "FA0043 drawn as three result tables and the setup text; one model and one dataset are pulled out, found in the tables, and counted.",
-  "sheets": [
-   {
-    "id": "T1",
-    "title": "T1 · main results",
-    "kind": "table"
-   },
-   {
-    "id": "T2",
-    "title": "T2 · per category",
-    "kind": "table"
-   },
-   {
-    "id": "T3",
-    "title": "T3 · attack variants",
-    "kind": "table"
-   },
-   {
-    "id": "S3",
-    "title": "§4 Setup",
-    "kind": "text"
-   }
-  ],
-  "hand0": "result tables T1–T3 + setup text",
-  "models": [
-   {
-    "name": "Qwen2.5-VL-7B-Instruct",
-    "at": [
-     "T1",
-     "S3"
-    ]
-   }
-  ],
-  "datasets": [
-   {
-    "name": "VL-RewardBench",
-    "at": [
-     "T1",
-     "T2",
-     "S3"
-    ]
-   }
-  ],
-  "mlabel": "1 model · 1 family",
-  "dlabel": "1 dataset",
-  "axes": {
-   "model": 0.0,
-   "dataset": 0.0
-  },
-  "breadth": 0.0,
-  "caps": [
-   "The input: the three result tables (T1–T3) and the setup text in §4. Related work is not read.",
-   "Haiku pulls out the names: one judge model and one benchmark. The defense itself and the single-pass baseline are methods, not models.",
-   "Each name is looked up in the tables and the setup text. Both are there, so both count.",
-   "1 model, 1 family, 1 dataset: both axes are 0, so the breadth is 0 → FAIL."
-  ]
- }
+ ]
 }
