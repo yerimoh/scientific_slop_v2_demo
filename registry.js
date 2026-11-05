@@ -189,7 +189,7 @@ const ITEMS = [
     fix: ['Remove content with no role; keep what reproduction needs.', 'Not a fix: cutting reproduction detail to shorten.'],
     borders: [['4-4', 'the same content again'], ['4-1', 'empty rather than extra']] },
   { id: '4-4', area: 4, name: 'Redundant Repetition', v1: 'Macro redundancy', what: 'Content is said again with no new information and no summary role.',
-    ex: { spec: 'As Table 2 shows, our model beats all baselines on both datasets.', specnote: 'Almost the same words as the earlier sentence. Nothing new.', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments', pre: '', mark: 'These results demonstrate that the ratio formula does not remove positional bias---it destroys useful saliency signal.', post: '', note: 'The method section already states this conclusion with its numbers. The experiments section repeats it in the same words and drops the numbers.' },
+    ex: { spec: 'As Table 2 shows, our model beats all baselines on both datasets.', specnote: '§1 Introduction already says this in almost the same words. §4 adds nothing.', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments', pre: '', mark: 'These results demonstrate that the ratio formula does not remove positional bias---it destroys useful saliency signal.', post: '', note: 'The method section already states this conclusion with its numbers. The experiments section repeats it in the same words and drops the numbers.' },
     judge: ['Find the closest earlier sentence in another section, abstract included.', 'A near-copy counts: 8-word runs cover half the sentence, or cosine ≥ 0.90.', 'One repeat makes the section slop.'],
     not: ['The abstract and the conclusion (not scored).', 'The same point in new words with new content.'],
     fix: ['Cut it, or put the missing analysis there.', 'Not a fix: paraphrase.'],
@@ -354,7 +354,7 @@ const PAGE = {
   title: 'Adaptive Token Weighting for Cross-Lingual Retrieval', authors: 'A. Author · B. Author · C. Author',
   left: [
     { h: 'Abstract', p: ['Cross-lingual retrieval models weight every token the same. We introduce ', M('2-1'), ' on three benchmarks. ', M('1-2'), ', with gains of up to 4 points.'], lines: 1 },
-    { h: '1  Introduction', p: [M('5-1'), ' ', G('g51', 'which problem? what fails?'), ' We propose a new framework to tackle this critical problem.'], lines: 1 },
+    { h: '1  Introduction', p: [M('5-1'), ' ', G('g51', 'which problem? what fails?'), ' We propose a new framework to tackle this critical problem. ', A('g44', 'Our model beats all baselines on both datasets.')], lines: 1 },
     { p: [M('4-1'), ' ', G('g41', 'delete it: nothing is lost')], lines: 1 },
     { h: '2  Related Work', p: ['Method A [3] uses contrastive pairs; method B [7] adds a memory module. ', A('gab', 'Both compute their weights w = f(x) from the input.'), ' ', M('1-4'), ' ', G('g14', 'follows A or B? what differs?')], lines: 1 },
     { p: [M('5-4')], lines: 1 },
@@ -367,7 +367,7 @@ const PAGE = {
     { p: ['After tokenization, ', M('4-3'), ' before training.'], lines: 1 },
     { sub: '4.2  Results', table: true },
     { p: ['Adding the auxiliary loss improves BLEU by 1.8 points, ', M('5-3'), ' ', G('g53', 'no analysis of alignment')], lines: 1 },
-    { p: [A('g44', 'Table 2 shows our model beats all baselines on both datasets.'), ' ', M('4-4')], lines: 1 },
+    { p: ['Table 2 reports the main results. ', M('4-4')], lines: 1 },
     { sub: '4.3  Analysis', p: ['We find 31% ', M('1-3'), ' and 12% entity substitutions (Table 4). ', G('g13', 'no example input · output')], lines: 1 },
     { p: [A('gneg', 'The gain concentrates on sentences that contain negation (Table 5).')], lines: 1 },
     { h: '5  Discussion', p: ['Beyond accuracy, ', M('1-1'), ' and transfers to new domains.'], lines: 1 },
@@ -386,7 +386,7 @@ const FAIL = {
   '4-1': { to: 'g41', label: 'says nothing about this paper' },
   '4-2': { to: 'g42', label: 'never defined' },
   '4-3': { self: true, label: 'no result depends on this' },
-  '4-4': { to: 'g44', label: 'same content again', eq: true },
+  '4-4': { to: 'g44', label: 'the same sentence as in §1', eq: true },
   '4-5': { to: 'gfig', label: 'arrows and colors never explained' },
   '5-1': { to: 'g51', label: 'the problem is never named' },
   '5-2': { to: 'gab', label: 'A and B are input-dependent too' },
@@ -407,7 +407,7 @@ const GROUPS = [
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
 const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'The claim goes further than the evidence.', '1-3': 'Results, but not one example shown.', '1-4': 'Cited, but never related to this paper.',
   '2-1': 'The key finding is missing from the abstract.', '2-3': 'Refers to something the reader cannot locate.', '3-1': 'A design choice with no reason given.',
-  '4-1': 'Says nothing about this paper.', '4-2': 'A term that is never defined.', '4-3': 'Detail that no result depends on.', '4-4': 'The same content said twice.', '4-5': 'Figure arrows and colors never explained.',
+  '4-1': 'Says nothing about this paper.', '4-2': 'A term that is never defined.', '4-3': 'Detail that no result depends on.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
   '5-1': 'Called important, but which problem?', '5-2': 'A claimed difference that does not hold.', '5-3': 'A result read as a mechanism never tested.', '5-4': 'The cited source says something else.' };
 for (const it of ITEMS) it.short = SHORT[it.id];
 const BY_ID = Object.fromEntries(ITEMS.map(i => [i.id, i]));
@@ -649,6 +649,9 @@ function measurePanel(it) {
   fetch('measure/' + it.id + '.json').then(r => r.json()).then(data => buildFlow(m, data, wrap)).catch(() => wrap.replaceChildren(h('p', { class: 'ms-loading', text: 'The run data could not be loaded.' })));
   return wrap;
 }
+// 4-4: a sentence pair shown whole, section on top, the words both sentences share marked
+const pairQ = (p, role) => h('div', { class: 'pv' }, h('span', { class: 'pv-sec' + (role === 'earlier' ? ' e' : '') }, h('b', { text: p.sec }), ' · ' + p.id + (role === 'earlier' ? ' · earlier' : ' · later')),
+  h('q', { class: 'mw-q' }, ...p.segs.map(([t, on]) => on ? h('mark', { class: 'pv-m', text: t }) : t)));
 function buildFlow(m, data, wrap) {
   // a worked example on one real paper: every unit it checked, and for the chosen one the steps from question to verdict
   const U = data.units, n = U.length, pre = data.meta.pre || {};
@@ -658,8 +661,8 @@ function buildFlow(m, data, wrap) {
   const who = w => w === 'paper' ? null : h('span', { class: 'mw-who', text: w.startsWith('Qwen') ? (w.includes('code') ? 'model + code' : 'model') : w === 'code' ? 'rule' : w });
   const short = t => t.length > 150 ? t.slice(0, 148).replace(/\s+\S*$/, '') + '…' : t;
   const answer = (k, u) => [
-    () => h('div', {}, h('q', { class: 'mw-q', text: short(u.text) }), h('small', { text: [u.id, u.sec, u.kind].filter(Boolean).join(' · ') })),
-    () => h('div', {}, h('span', { text: u.s2 || '—' })),
+    () => u.pair ? h('div', {}, pairQ(u.pair.later, 'later'), h('small', { text: u.kind })) : h('div', {}, h('q', { class: 'mw-q', text: short(u.text) }), h('small', { text: [u.id, u.sec, u.kind].filter(Boolean).join(' · ') })),
+    () => u.pair ? pairQ(u.pair.earlier, 'earlier') : h('div', {}, h('span', { text: u.s2 || '—' })),
     () => h('div', {}, u.found.length ? h('span', { class: 'mw-ids' }, ...u.found.map(id => h('code', { text: id }))) : h('span', { class: 'mw-none', text: 'nothing' }), u.found_note ? h('small', { text: tidyNote(u.found_note) }) : null, u.judge_line ? h('small', { text: tidyNote(u.judge_line) }) : null),
     () => h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: tidyNote(u.final_reason) }) : null),
   ][k]();
@@ -1264,8 +1267,8 @@ function measureSteps(it) {
     pick.replaceChildren(...U.map((u, k) => h('option', { value: k, text: `${VW[u.final]} · ${u.text.slice(0, 48)}…` })));
     const sh = t => t.length > 140 ? t.slice(0, 138).replace(/\s+\S*$/, '') + '…' : t;
     const fill = k => { const u = U[k]; const vals = [
-      h('div', {}, h('q', { class: 'mw-q', text: sh(u.text) }), h('small', { text: [u.id, u.sec].filter(Boolean).join(' · ') })),
-      h('div', {}, h('span', { text: u.s2 || '—' })),
+      u.pair ? pairQ(u.pair.later, 'later') : h('div', {}, h('q', { class: 'mw-q', text: sh(u.text) }), h('small', { text: [u.id, u.sec].filter(Boolean).join(' · ') })),
+      u.pair ? pairQ(u.pair.earlier, 'earlier') : h('div', {}, h('span', { text: u.s2 || '—' })),
       h('div', {}, u.found.length ? h('span', { class: 'mw-ids' }, ...u.found.map(x => h('code', { text: x }))) : h('span', { class: 'mw-none', text: 'nothing' }), u.found_note ? h('small', { text: tidyNote(u.found_note) }) : null, u.judge_line ? h('small', { text: tidyNote(u.judge_line) }) : null),
       h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: tidyNote(u.final_reason) }) : null)];
       ex.forEach((e, j) => e.replaceChildren(vals[j] || h('span', { text: '—' }))); };

@@ -21,12 +21,58 @@
    "runs": [],
    "final": "FAIL",
    "final_reason": "3 repeats in this section → slop section",
-   "s2": "earlier A04 (Abstract): “Our deep-layer attention pruning achieves 66.32% grounding accuracy on RefCOCO benchmarks, surpassing D²Pruner by +11.29 points while retaining 92% of no-pruning performance---all without offline calibration.”",
+   "s2": "earlier A04 (Abstract): “Our deep-layer attention pruning achieves 66.32% grounding accuracy on RefCOCO benchmarks, surpassing D²Pruner by +11.29 points while retaining 92% of no-pruning performance—all without offline calibration.”",
    "found": [
     "A04"
    ],
    "found_note": "8-word runs cover 71% of the sentence · cosine 0.97",
-   "judge_line": "Also repeats: S0.007 ← A01 (cosine 0.99), S0.014 ← A03 (69% covered)."
+   "judge_line": "Also repeats: S0.007 ← A01 (cosine 0.99), S0.014 ← A03 (69% covered).",
+   "pair": {
+    "later": {
+     "id": "S0.012",
+     "sec": "Introduction",
+     "segs": [
+      [
+       "We demonstrate that",
+       false
+      ],
+      [
+       " deep-layer attention pruning achieves 66.32% grounding accuracy on RefCOCO benchmarks, surpassing",
+       true
+      ],
+      [
+       " the state-of-the-art",
+       false
+      ],
+      [
+       " D²Pruner by +11.29 points while retaining 92% of no-pruning",
+       true
+      ],
+      [
+       " performance.",
+       false
+      ]
+     ]
+    },
+    "earlier": {
+     "id": "A04",
+     "sec": "Abstract",
+     "segs": [
+      [
+       "Our",
+       false
+      ],
+      [
+       " deep-layer attention pruning achieves 66.32% grounding accuracy on RefCOCO benchmarks, surpassing D²Pruner by +11.29 points while retaining 92% of no-pruning",
+       true
+      ],
+      [
+       " performance—all without offline calibration.",
+       false
+      ]
+     ]
+    }
+   }
   },
   {
    "id": "",
@@ -45,31 +91,111 @@
    "id": "S2.043",
    "sec": "Method",
    "kind": "32 sentences · 0 repeats",
-   "text": "Prior work has identified that attention-based pruning can fail catastrophically on spatially-sensitive tasks like visual grounding, even when it succeeds on coarse-grained VQA xxcitexx .",
+   "text": "Prior work has identified that attention-based pruning can fail catastrophically on spatially-sensitive tasks like visual grounding, even when it succeeds on coarse-grained VQA [cite].",
    "runs": [],
    "final": "PASS",
    "final_reason": "closest pair is below both bars → fine section",
-   "s2": "earlier S0.003 (Introduction): “Existing pruning methods face a fundamental challenge: attention-based importance scoring, while computationally convenient, can fail catastrophically on spatially-sensitive tasks like visual grounding xxcitexx .”",
+   "s2": "earlier S0.003 (Introduction): “Existing pruning methods face a fundamental challenge: attention-based importance scoring, while computationally convenient, can fail catastrophically on spatially-sensitive tasks like visual grounding [cite].”",
    "found": [
     "S0.003"
    ],
    "found_note": "8-word runs cover 38% · cosine 0.82 (needs ≥50% or ≥0.90)",
-   "judge_line": "Same topic, reworded with new content: not a repeat."
+   "judge_line": "Same topic, reworded with new content: not a repeat.",
+   "pair": {
+    "later": {
+     "id": "S2.043",
+     "sec": "Method",
+     "segs": [
+      [
+       "Prior work has identified that attention-based pruning",
+       false
+      ],
+      [
+       " can fail catastrophically on spatially-sensitive tasks like visual grounding,",
+       true
+      ],
+      [
+       " even when it succeeds on coarse-grained VQA [cite].",
+       false
+      ]
+     ]
+    },
+    "earlier": {
+     "id": "S0.003",
+     "sec": "Introduction",
+     "segs": [
+      [
+       "Existing pruning methods face a fundamental challenge: attention-based importance scoring, while computationally convenient,",
+       false
+      ],
+      [
+       " can fail catastrophically on spatially-sensitive tasks like visual grounding",
+       true
+      ],
+      [
+       " [cite].",
+       false
+      ]
+     ]
+    }
+   }
   },
   {
    "id": "S3.105",
    "sec": "Experiments",
    "kind": "34 sentences · 2 repeats",
-   "text": "These results demonstrate that the ratio formula does not remove positional bias---it destroys useful saliency signal.",
+   "text": "These results demonstrate that the ratio formula does not remove positional bias—it destroys useful saliency signal.",
    "runs": [],
    "final": "FAIL",
    "final_reason": "2 repeats in this section → slop section",
-   "s2": "earlier S2.051 (Method): “Consequently, the ratio formula in Equation 3 does not remove positional bias---it destroys useful saliency signal, resulting in only 13.24% grounding accuracy compared to 38.70% with raw attention at the same layer.”",
+   "s2": "earlier S2.051 (Method): “Consequently, the ratio formula in Equation 3 does not remove positional bias—it destroys useful saliency signal, resulting in only 13.24% grounding accuracy compared to 38.70% with raw attention at the same layer.”",
    "found": [
     "S2.051"
    ],
    "found_note": "8-word runs cover 56% of the sentence",
-   "judge_line": "Also repeats: S3.091 ← A04 (cosine 0.90)."
+   "judge_line": "Also repeats: S3.091 ← A04 (cosine 0.90).",
+   "pair": {
+    "later": {
+     "id": "S3.105",
+     "sec": "Experiments",
+     "segs": [
+      [
+       "These results demonstrate that",
+       false
+      ],
+      [
+       " the ratio formula does not remove positional bias—it destroys useful saliency signal.",
+       true
+      ]
+     ]
+    },
+    "earlier": {
+     "id": "S2.051",
+     "sec": "Method",
+     "segs": [
+      [
+       "Consequently,",
+       false
+      ],
+      [
+       " the ratio formula",
+       true
+      ],
+      [
+       " in Equation 3",
+       false
+      ],
+      [
+       " does not remove positional bias—it destroys useful saliency signal,",
+       true
+      ],
+      [
+       " resulting in only 13.24% grounding accuracy compared to 38.70% with raw attention at the same layer.",
+       false
+      ]
+     ]
+    }
+   }
   }
  ]
 }
