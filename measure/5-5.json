@@ -8,8 +8,8 @@
   "pre": {},
   "default": "FA0221",
   "rate": {
-   "ai": "64%",
-   "hu": "14%",
+   "ai": "72%",
+   "hu": "26%",
    "n_ai": 196,
    "n_hu": 196,
    "lead": "On the held-out half of the benchmark, ",
@@ -46,8 +46,8 @@
       "stat": [
        [
         "11",
-        "with stock wording",
-        "advances, creates, critical, fundamental, introduces, maintains, reveal, systematic"
+        "with a set phrase or stock word",
+        "advances, creates, critical, fundamental, introduces, is a critical, maintains, reveal"
        ]
       ]
      },
@@ -57,11 +57,11 @@
        "id": "S7",
        "segs": [
         [
-         "Log parsing is a ",
+         "Log parsing ",
          false
         ],
         [
-         "critical",
+         "is a critical",
          true
         ],
         [
@@ -174,7 +174,7 @@
    "text": "Human pair · ICLPoison (2402.02160)",
    "runs": [],
    "final": "PASS",
-   "final_reason": "score 0.12",
+   "final_reason": "score 0.13",
    "s2": "",
    "found": [],
    "found_note": "",
@@ -195,9 +195,9 @@
      {
       "stat": [
        [
-        "9",
-        "with stock wording",
-        "creating, emerged, ensures, explicit, introduces, minimal, preserving, robustness"
+        "11",
+        "with a set phrase or stock word",
+        "creating, emerged, ensures, explicit, instead of, introduces, minimal, preserving"
        ]
       ]
      },
@@ -258,8 +258,8 @@
         ],
         [
          "Method",
-         "4 of 64",
-         "0.06"
+         "6 of 64",
+         "0.09"
         ],
         [
          "Conclusion",
@@ -267,7 +267,7 @@
          "0.10"
         ]
        ],
-       "total": "mean over sections = 0.12",
+       "total": "mean over sections = 0.13",
        "verdict": "PASS",
        "hint": "FAIL at 0.25 or more"
       }

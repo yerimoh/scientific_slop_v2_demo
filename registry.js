@@ -84,7 +84,7 @@ const PIC = {
   '1-3': () => row([E.card('§4 Results', inner.text(['median 1.0', 'signature per task']), { lines: false }), E.miss(C.art), E.ask(['one signature?'])]),
 };
 // what the pattern looks like, one line under each scene
-const CAP = { '5-5': 'the same stock words, section after section', '2-5': 'the abstract again, at the end', '1-2': 'one setting tried, cost left out', '1-4': 'cited, related to nothing', '2-3': 'used later, never pointed back to', '4-1': 'nicer words, nothing new', '4-2': 'a result in a term not yet explained', '4-4': 'the same sentence, another section', '4-5': 'results and a key inside the diagram', '1-3': 'numbers only, not one case' };
+const CAP = { '5-5': 'set phrases where the reasons go', '2-5': 'the abstract again, at the end', '1-2': 'one setting tried, cost left out', '1-4': 'cited, related to nothing', '2-3': 'used later, never pointed back to', '4-1': 'nicer words, nothing new', '4-2': 'a result in a term not yet explained', '4-4': 'the same sentence, another section', '4-5': 'results and a key inside the diagram', '1-3': 'numbers only, not one case' };
 // hero: a paper spine with the five kinds of broken connection
 function heroSvg() {
   const secs = [['Abstract', 4], ['Introduction', 42], ['Method', 80], ['Experiments', 118], ['Conclusion', 156]];
@@ -157,11 +157,11 @@ const ITEMS = [
     judge: ['Applies to papers with a result table in the main text.', 'Search the whole paper, appendix included, for one shown case: a prompt, input or output in a box or code block; a caption announcing an example, a case or a failure; a long quotation outside the related work.', 'One case anywhere closes the gap.'],
     not: ['A paper with no result table (theory, position).', 'A case shown only in the appendix still counts as shown.'],
     fix: ['Show a real case from the experiment records (an input, the output, a failure) and point to it where the result is interpreted. If none was kept, say so there.', 'Not a fix: an invented example presented as an observation.'] },
-  { id: '5-5', area: 5, name: 'Formulaic Reasoning', what: 'The paper argues in stock wording. Every section calls its problem critical, its study systematic, its finding fundamental, whatever the claim.',
+  { id: '5-5', area: 5, name: 'Formulaic Reasoning', what: 'The paper fills the steps of its argument with set phrases. Why the problem matters, how the method differs, what a finding means: each step gets a phrase such as “plays a crucial role”, “a fundamental challenge”, “rather than” or “broader implications”, and the reason is not there.',
     ex: { spec: 'Token weighting is a critical component of retrieval, and we present the first systematic study of it.', specnote: 'The conclusion says it again: a fundamental limitation, a systematic study. The words carry the claim; the reasons are not there.', src: '', pre: '', mark: '', post: '', note: '' },
-    judge: ['Read the abstract, introduction, method and conclusion.', 'Mark the sentences that lean on stock wording: critical, fundamental, systematic, rigorous, reveals, broader implications.', 'Score each section by its share of such sentences and average the sections.'],
-    not: ['A word used for its plain meaning once, with the reason next to it.', 'Related work, experiments, and result readings after a number (those are 4-1).'],
-    fix: ['Replace the word with the reason: what fails without it, what the study covers, what the finding rules out.', 'Not a fix: swapping in a synonym.'],
+    judge: ['Read the abstract, introduction, method and conclusion.', 'Mark the sentences that fill a step of the argument with a set phrase: “plays a crucial role”, “a fundamental challenge”, “rather than”, “broader implications”, or a stock word such as systematic or rigorous.', 'Score each section by its share of such sentences and average the sections.'],
+    not: ['A phrase used once, with the reason right next to it.', 'Related work, experiments, and result readings after a number (those are 4-1).'],
+    fix: ['Replace the phrase with the reason: what fails without it, what the study covers, what the finding rules out.', 'Not a fix: swapping in another phrase.'],
     borders: [['4-1', 'a result reading that adds nothing'], ['1-2', 'a claim larger than the evidence']] },
   { id: '4-5', area: 4, name: 'Unclear Figures', v1: 'Figure exposition', what: 'The method figure carries what belongs in the text: settings, results, a legend, a thesis.',
     ex: { spec: 'Overview of the proposed framework.', specnote: 'Besides the method, the diagram holds an “Ours” tag, an accuracy number and a check mark.', src: 'AI paper · SciSlopBench FA0280 · Figure 1, text inside the figure', pre: 'Key Insight: Deeper Layers = Better Token Selection · Accuracy ', mark: 'L2 55% · L4 39% · L8 69% · L12 66%', post: '', note: '' },
@@ -205,10 +205,10 @@ const DEF = {
     q: [{ pre: 'Among tasks with failures, ', mark: 'the median number of unique execution signatures is 1.0', post: ', validating ESR’s premise that failure modes cluster strongly.', src: 'AI paper · SciSlopBench FA0163 · §3 Experiments, Analysis' },
         { pre: '', mark: 'An example of Self-Debugging prompting for text-to-SQL generation.', post: ' The SQL query, explanation and feedback are all predicted by the model.', src: 'Human pair · Self-Debug (Chen et al., 2023) · figure caption, §4' }],
     note: 'The method is built on execution signatures and a failure bank. The paper reports counts of both and never prints one signature, one failing test or one program. Its human pair, which is also its baseline, prints the full prompt, the model’s query and its feedback.' },
-  '5-5': { what: 'The paper argues in stock wording. Every section calls its problem critical, its study systematic, its finding fundamental, whatever the claim.',
+  '5-5': { what: 'The paper fills the steps of its argument with set phrases. Why the problem matters, how the method differs, what a finding means: each step gets a phrase such as “plays a crucial role”, “a fundamental challenge”, “rather than” or “broader implications”, and the reason is not there.',
     q: [{ pre: 'We identify a ', mark: 'fundamental security vulnerability', post: ' in online LLM log parsers that use self-generated ICL: the monotonically growing demo pool creates a persistent attack surface.', src: 'AI paper · SciSlopBench FA0221 · §1 Introduction' },
         { pre: 'We identified a ', mark: 'fundamental security vulnerability', post: ' in online LLM log parsers that use self-generated in-context learning.', src: 'Same paper · Conclusion' }],
-    note: 'The introduction opens with “a critical component” and “the first systematic study”, and the same “fundamental vulnerability” closes the paper. In its reasoning sections, 11 of 25 sentences lean on such words. The human paper on the same attack uses them in 9 of 106.' },
+    note: 'Why the problem matters is “a critical component”; what the paper adds is “the first systematic study”; what it found is “a fundamental vulnerability”, said again in the conclusion. 11 of its 25 reasoning sentences rest on such phrases. The human paper on the same attack has 11 in 106.' },
   '4-5': { what: 'The method figure carries what belongs in the text: settings, results, a legend, a thesis. The method itself gets harder to follow.',
     q: [{ pre: 'Key Insight: Deeper Layers = Better Token Selection · Accuracy ', mark: 'L2 55% · L4 39% · L8 69% · L12 66%', post: '', src: 'AI paper · SciSlopBench FA0280 · Figure 1, text inside the figure' },
         { pre: '', mark: 'Legend: = Visual Token · = Vision Encoder · = LLM Decoder · = Selection Module', post: '', src: 'Same figure · bottom right' }],
@@ -310,7 +310,7 @@ const FAIL = {
   '4-4': { to: 'g44', label: 'the same sentence as in §1', eq: true, from: '§1 Introduction', at: '§4.2 Results' },
   '4-5': { to: 'gfig', label: '“Ours”, a result and a ✓ inside the method figure' },
   '1-3': { to: 'g13', label: 'counts only; no example anywhere, appendix included' },
-  '5-5': { to: 'g55', label: 'critical, systematic, fundamental: the same stock words again' },
+  '5-5': { to: 'g55', label: '“fundamental” again, still no reason' },
 };
 const PLANES = { structure: { title: 'Structure', q: 'Do the sections build on one another?' }, argument: { title: 'Argument', q: 'Are the claims and citations argued?' }, artifacts: { title: 'Artifacts', q: 'Can the method and the evidence be inspected?' } };
 // within each area, the broadest definition first (Yerim 11-07)
@@ -327,7 +327,7 @@ const GROUPS = [
   { n: 3, key: 'artifacts', cls: 'p-artifacts', title: 'Artifacts', q: 'Can the method and the evidence be inspected?' },
 ];
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
-const SHORT = { '5-5': 'Calls a point critical or fundamental instead of giving the reason.', '1-2': 'The paper claims more than its experiments can show.', '1-4': 'Cites a method much like its own, never says how it differs.',
+const SHORT = { '5-5': 'Set phrases fill the argument where the reasons should be.', '1-2': 'The paper claims more than its experiments can show.', '1-4': 'Cites a method much like its own, never says how it differs.',
   '2-3': 'Set up in one section, never pointed back to.',
   '2-5': 'The conclusion only repeats the abstract.', '4-1': 'Says what was already shown in nicer words, and tells nothing new.', '4-2': 'A result given in a term the paper has not explained yet.', '4-4': 'The same sentence in two sections.', '4-5': 'The method figure carries what belongs in the text.', '1-3': 'Results, but not one concrete case shown.' };
 for (const it of ITEMS) it.short = SHORT[it.id];
@@ -432,7 +432,7 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
 const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code', H45 = 'Haiku 4.5';
-const MV = '1107ten55b';   // bump with the run data so browsers do not keep an old measure/*.json
+const MV = '1107ten55c';   // bump with the run data so browsers do not keep an old measure/*.json
 const MEASURE = {
 
   '1-2b': { unit: 'paper', units: 'papers', breadth: true,
@@ -526,11 +526,11 @@ const MEASURE = {
       [{ p: 'At least one actual example → PASS' }, { p: 'Numbers only → FAIL' }]],
     how: [], line: 'Does the paper only say 87.6%, or does it also show what the model actually produced?' },
   '5-5': { unit: 'paper', units: 'papers', paper: true,
-    stages: [['Take the reasoning sections', '', CD], ['Mark stock wording', '', CD], ['Score', '', CD]],
-    ask: ['What do we evaluate?', 'Does the paper carry its reasoning with the same stock words, section after section?'],
+    stages: [['Take the reasoning sections', '', CD], ['Mark set phrases', '', CD], ['Score', '', CD]],
+    ask: ['What do we evaluate?', 'Does the paper fill its argument (why it matters, how it differs, what it means) with set phrases instead of reasons?'],
     doc: [
       [{ p: 'Take the abstract, introduction, method and conclusion.' }, { ul: [['Left out', 'related work, experiments'], ['Also left out', 'result readings after a number (4-1 checks those)']] }],
-      [{ p: 'Mark each sentence that uses a stock word.' }, { ul: [['Stock words', 'critical, fundamental, systematic, rigorous, sophisticated, reveals, creates, addresses, broader, insights …'], ['Where the list comes from', 'words AI papers use far more than their human pairs, picked on half of the pairs and checked on the other half']] }],
+      [{ p: 'Mark each sentence that fills a step of the argument with a set phrase.' }, { ul: [['Why it matters', 'plays a crucial role, is critical, is essential, of paramount importance'], ['What the problem is', 'a fundamental challenge, a key bottleneck, remains open'], ['How it differs', 'rather than, instead of, as opposed to'], ['What it means', 'broader implications, an important step toward'], ['Stock words', 'fundamental, systematic, rigorous, sophisticated, reveals, creates, addresses, insights …']] }, { s: 'Kept: phrases and words AI papers use at least 1.5 times as often as their human pairs, picked on half of the pairs and checked on the other half. “Not only … but also” and “to ensure” are common in both, so they are not counted.' }],
       [{ p: 'For each section: marked sentences ÷ sentences.' }, { p: 'Average the sections.' }, { p: '0.25 or more → FAIL' }, { s: 'A short paper and a long one are scored the same way.' }]],
     how: [], line: 'Count, section by section, the sentences that carry their point with stock words.' },
   '4-5': { unit: 'figure', units: 'method figures', kinds: true,
@@ -658,8 +658,8 @@ Find one real case in the experiment records behind the main result: an input, t
 Show it verbatim (a box or a listing) with where it came from, and point to it where the result is interpreted.
 If the records hold no case, do not invent one. Say there that no individual case was kept or inspected.`,
   '5-5': `# Fix · Formulaic Reasoning (5-5)
-Find the sentences in the abstract, introduction, method and conclusion that lean on stock words (critical, fundamental, systematic, rigorous, reveals, broader implications).
-For each, write the reason the word stands in for: what fails without this, what the study covers, what the finding rules out. Keep the word only if the reason is next to it.
+Find the sentences in the abstract, introduction, method and conclusion that fill a step of the argument with a set phrase (plays a crucial role, a fundamental challenge, rather than, broader implications) or a stock word (systematic, rigorous, reveals).
+For each, write the reason the phrase stands in for: what fails without this, what the study covers, what the finding rules out. Keep the phrase only if the reason is next to it.
 Swapping in a synonym is not a fix.`,
   '4-5': `# Fix · Unclear Figures (4-5)
 Read the method figure and list every element that is not a component of the method or a connection between components: a legend, Ours / Baseline tags, experimental settings or results, check or cross marks, a "Key insight" box, numbered stage headers.
@@ -900,8 +900,8 @@ function srcParts(src) { const m = String(src || '').split(' · '); return [h('s
 const TREE = [['Argument graph', ['1-2']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4', '2-5']], ['Figure exposition', ['4-5']], ['Evidence gap', ['1-3']], [null, ['4-1', '4-2', '5-5']]];
 // results so far, on the 123 AI / human pairs; an item stays blank until its measure is final
 // 11-06: columns as in v1 Table 2 (PairAcc, AUROC, TPR at 5% FPR), from each item's saved per-paper scores (v2/verification/table_site_rows_1106.py)
-// 5-5: FARS pairs of the held-out half (72), stock-word list picked on the other half (v2/slop_v2/build_site_formulaic.py)
-const RESULTS = { '5-5': { pa: '0.92', auc: '0.90', tpr: '' }, '4-2': { pa: '0.65', auc: '0.64', tpr: '0.31' }, '1-4': { pa: '0.85', auc: '0.87', tpr: '0.59' }, '1-2': { pa: '0.88', auc: '0.88', tpr: '0.50' }, '2-3': { pa: '0.88', auc: '0.88', tpr: '0.00' }, '4-1': { pa: '0.82', auc: '0.82', tpr: '0.34' }, '4-4': { pa: '0.91', auc: '0.90', tpr: '0.29' }, '2-5': { pa: '0.91', auc: '0.90', tpr: '0.76' }, '1-3': { pa: '0.76', auc: '0.75', tpr: '0.00' }, '4-5': { pa: '0.91', auc: '0.90', tpr: '0.54' } };
+// 5-5: FARS pairs of the held-out half (72), phrase/word list picked on the other half (v2/slop_v2/build_site_formulaic.py)
+const RESULTS = { '5-5': { pa: '0.89', auc: '0.89', tpr: '' }, '4-2': { pa: '0.65', auc: '0.64', tpr: '0.31' }, '1-4': { pa: '0.85', auc: '0.87', tpr: '0.59' }, '1-2': { pa: '0.88', auc: '0.88', tpr: '0.50' }, '2-3': { pa: '0.88', auc: '0.88', tpr: '0.00' }, '4-1': { pa: '0.82', auc: '0.82', tpr: '0.34' }, '4-4': { pa: '0.91', auc: '0.90', tpr: '0.29' }, '2-5': { pa: '0.91', auc: '0.90', tpr: '0.76' }, '1-3': { pa: '0.76', auc: '0.75', tpr: '0.00' }, '4-5': { pa: '0.91', auc: '0.90', tpr: '0.54' } };
 $('#sm-res').replaceChildren(h('table', { class: 'res-tbl' },
   h('thead', {}, h('tr', {}, ...['Slop', 'PairAcc', 'AUROC'].map(t => h('th', { text: t })))),
   h('tbody', {}, ...GROUPS.flatMap(g => [h('tr', { class: 'res-g ' + g.cls }, h('td', { colspan: 3, text: g.title })),
