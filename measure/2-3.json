@@ -54,5 +54,136 @@
    "found_note": "An equation counts as used wherever it is pointed to, its own section included.",
    "judge_line": ""
   }
- ]
+ ],
+ "map": {
+  "aria": "FA0280 drawn as five sections. Only Method, Experiments and Equation 1 are checked. All seven pointers stay inside their own section; Experiments reuses the formula and the Introduction reports the result, both without a pointer.",
+  "sections": [
+   {
+    "id": "s1",
+    "title": "§1 Intro"
+   },
+   {
+    "id": "s2",
+    "title": "§2 Related"
+   },
+   {
+    "id": "s3",
+    "title": "§3 Method"
+   },
+   {
+    "id": "s4",
+    "title": "§4 Experiments"
+   },
+   {
+    "id": "s5",
+    "title": "§5 Conclusion"
+   }
+  ],
+  "comps": [
+   {
+    "id": "eq1",
+    "in": "s3",
+    "label": "Eq. 1"
+   },
+   {
+    "id": "f1",
+    "in": "s3",
+    "label": "Fig. 1"
+   },
+   {
+    "id": "t1",
+    "in": "s4",
+    "label": "Tab. 1"
+   },
+   {
+    "id": "t2",
+    "in": "s4",
+    "label": "Tab. 2"
+   },
+   {
+    "id": "t3",
+    "in": "s4",
+    "label": "Tab. 3"
+   },
+   {
+    "id": "f2",
+    "in": "s4",
+    "label": "Fig. 2"
+   },
+   {
+    "id": "f3",
+    "in": "s4",
+    "label": "Fig. 3"
+   }
+  ],
+  "pointers": [
+   {
+    "from": "s3",
+    "to": "eq1",
+    "fx": 14
+   },
+   {
+    "from": "s3",
+    "to": "f1",
+    "fx": 40
+   },
+   {
+    "from": "s4",
+    "to": "t1",
+    "fx": 30
+   },
+   {
+    "from": "s4",
+    "to": "t2",
+    "fx": 46
+   },
+   {
+    "from": "s4",
+    "to": "t3",
+    "fx": 62
+   },
+   {
+    "from": "s4",
+    "to": "f2",
+    "fx": 20
+   },
+   {
+    "from": "s4",
+    "to": "f3",
+    "fx": 80
+   }
+  ],
+  "missing": [
+   {
+    "from": "s4",
+    "to": "s3",
+    "note": "§4 writes the formula out again"
+   },
+   {
+    "from": "s1",
+    "to": "s4",
+    "note": "§1 reports 66.32%, no pointer to §4"
+   }
+  ],
+  "units": [
+   {
+    "id": "s3",
+    "final": "FAIL"
+   },
+   {
+    "id": "s4",
+    "final": "FAIL"
+   },
+   {
+    "id": "eq1",
+    "final": "PASS"
+   }
+  ],
+  "caps": [
+   "Units: §3, §4 and Eq. 1. Intro, related work, conclusion, figures and tables are not checked.",
+   "7 pointers found. Every one stays inside its own section.",
+   "§3 and §4: no pointer from another section ✕ · Eq. 1: pointed to in §3 ✓",
+   "2 FAIL ÷ 3 units = 0.67"
+  ]
+ }
 }

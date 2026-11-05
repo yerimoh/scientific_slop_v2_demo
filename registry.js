@@ -1248,6 +1248,89 @@ let rgCur = RG_ORDER[0].id;
 $('#rg-idx').replaceChildren(...GROUPS.map(g => h('div', { class: 'rg-g ' + g.cls }, h('p', { class: 'rg-gt' }, g.title, h('span', { text: ' · ' + g.q })),
   ...ITEMS.filter(i => i.plane === g.key).map(it => h('a', { class: 'rg-i', href: '#' + it.id, 'data-id': it.id, 'data-xref': it.id }, h('i'), it.name)))));
 const tidyNote = t => t && t.replace(/^runs disagree: \[.*\]$/, 'split vote → U').replace(/^unit extracted in only (\d)\/3 runs \(unstable unit\)$/, 'found in $1 of 3 runs → U').replace(/^the model pointed only at the claim sentence itself; a sentence is not evidence for itself$/, 'only the claim itself was cited as evidence').replace(/\(background_uncited; [^)]*\)/, '').replace(/^judge: scope consistent · source no source$/, 'judge: scope consistent · no source').replace(/: True\b/g, ': yes').replace(/: False\b/g, ': no');
+// 2-3 (and any item whose run data carries a `map`): the paper drawn as sheets, redrawn as the step player advances
+// step 0 = which parts are units, 1 = the pointers the parser found, 2 = used or not (with the uses that carry no pointer), 3 = verdicts
+function xmap(map) {
+  const W = 600, SW = 100, GAP = 20, SY = 92, SH = 136, NS = map.sections.length;
+  const sx = i => 10 + i * (SW + GAP) + (5 - NS) * (SW + GAP) / 2;
+  const S = {}; map.sections.forEach((sec, i) => { S[sec.id] = { ...sec, x: sx(i), y: SY, w: SW, h: SH }; });
+  const P = {};   // component boxes
+  for (const sec of map.sections) {
+    const cs = map.comps.filter(c => c.in === sec.id), b = S[sec.id];
+    const perRow = cs.length > 2 ? 3 : 2, cw = perRow === 3 ? 26 : 40, gx = (SW - perRow * cw) / (perRow + 1);
+    cs.forEach((c, k) => { const r = Math.floor(k / perRow), last = cs.length - r * perRow; let col = k % perRow; if (perRow === 3 && last === 2 && r > 0) col = col ? 2 : 0;   // a short last row sits at the edges so its pointers can come in from the margins
+      P[c.id] = { ...c, x: b.x + gx + col * (cw + gx), y: b.y + 84 + r * 24, w: cw, h: 17, row: r }; });
+  }
+  const U = {}; map.units.forEach((u, i) => { U[u.id] = { ...u, i }; });
+  const at = id => S[id] || P[id];
+  const g = (m, inner, cls = '') => `<g data-m="${m}" class="${cls}">${inner}</g>`;
+  const ink = '#3A3D42', hair = '#C9CDD1', st = C.struct, red = '#D93A3A', ok = C.ok;
+  let out = '';
+  // sheets
+  for (const sec of map.sections) {
+    const b = S[sec.id], unit = !!U[sec.id];
+    let lines = ''; for (let i = 0; i < 6; i++) lines += `<line x1="${b.x + 10}" y1="${b.y + 30 + i * 8.5}" x2="${b.x + b.w - 10 - (i === 5 ? 34 : (i * 7) % 18)}" y2="${b.y + 30 + i * 8.5}" stroke="${hair}" stroke-width="2.2" stroke-linecap="round"/>`;
+    out += `<g class="xm-sheet${unit ? ' unit' : ' skip'}" data-u="${unit ? U[sec.id].i : ''}"><rect class="xm-paper" x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" rx="3"/>` +
+      `<text x="${b.x + 9}" y="${b.y + 16}" class="xm-tt">${esc(sec.title)}</text>${lines}` +
+      (unit ? '' : `<text x="${b.x + b.w / 2}" y="${b.y + b.h / 2 + 22}" class="xm-skipt" text-anchor="middle">not checked</text>`) + `</g>`;
+  }
+  for (const c of Object.values(P)) {
+    const unit = !!U[c.id];
+    out += `<g class="xm-comp${unit ? ' unit' : ' skip'}" data-u="${unit ? U[c.id].i : ''}"><rect x="${c.x}" y="${c.y}" width="${c.w}" height="${c.h}" rx="3"/><text x="${c.x + c.w / 2}" y="${c.y + c.h / 2 + .5}" text-anchor="middle" dominant-baseline="central">${esc(c.label)}</text></g>`;
+  }
+  // step 1: unit frames
+  let frames = '';
+  for (const u of map.units) { const b = at(u.id); frames += `<rect class="xm-frame" x="${b.x - 3}" y="${b.y - 3}" width="${b.w + 6}" height="${b.h + 6}" rx="5"/>`; }
+  out += g(0, frames);
+  // step 2: the pointers the parser found (solid, drawn like a pen)
+  let ptr = '';
+  for (const p of map.pointers) {
+    const f = S[p.from], t = at(p.to), x0 = f.x + (p.fx || 18), y0 = f.y + 66;
+    if (t.row) {   // second row: come down the sheet margin and enter from the side
+      const leftSide = t.x + t.w / 2 < f.x + f.w / 2, mx = leftSide ? f.x + 4 : f.x + f.w - 4, x1 = leftSide ? t.x - 1 : t.x + t.w + 1, y1 = t.y + t.h / 2;
+      ptr += `<path class="pen" pathLength="1" d="M${x0} ${y0} C${mx} ${y0} ${mx} ${y1} ${x1 + (leftSide ? -3 : 3)} ${y1}" stroke="${st}"/><circle cx="${x1 + (leftSide ? -2 : 2)}" cy="${y1}" r="2.2" fill="${st}"/>`;
+    } else {
+      const x1 = t.x + t.w / 2, y1 = t.y - 1, cx = (x0 + x1) / 2 + (x1 > x0 ? -6 : 6), cy = Math.min(y0, y1) - 6;
+      ptr += `<path class="pen" pathLength="1" d="M${x0} ${y0} Q${cx} ${cy} ${x1} ${y1 - 3}" stroke="${st}"/><circle cx="${x1}" cy="${y1 - 2}" r="2.2" fill="${st}"/>`;
+    }
+  }
+  out += g(1, ptr);
+  // step 3: uses with no pointer (red dashed arcs above the sheets) + used / not used marks
+  let miss = '';
+  map.missing.forEach((m, k) => {
+    const f = at(m.from), t = at(m.to), x0 = f.x + f.w / 2, x1 = t.x + t.w / 2, y = SY - 4, top = SY - 30 - k * 32, left = k === 0;
+    const xm = (x0 + x1) / 2;
+    miss += `<path d="M${x0} ${y} C${x0} ${top} ${x1} ${top} ${x1} ${y - 4}" fill="none" stroke="${red}" stroke-width="1.8" stroke-dasharray="5 4"/>` +
+      `<path d="M${x1 - 4} ${y - 10} L${x1} ${y - 3} L${x1 + 4} ${y - 10}" fill="none" stroke="${red}" stroke-width="1.8" stroke-linecap="round"/>` +
+      `<g transform="translate(${xm} ${top + 6})"><circle r="7" fill="${red}"/><path d="M-3 -3L3 3M-3 3L3 -3" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></g>` +
+      `<text class="xm-hand" x="${left ? xm - 12 : xm + 12}" y="${top + 6}" text-anchor="${left ? 'end' : 'start'}" dominant-baseline="central">${esc(m.note)}</text>`;
+  });
+  let marks = '';
+  for (const u of map.units) {
+    const b = at(u.id), used = u.final === 'PASS', x = b.x + b.w + 1, y = b.y - 1;
+    marks += `<g transform="translate(${x} ${y})"><circle r="8" fill="${used ? ok : red}" stroke="#fff" stroke-width="1.5"/>` +
+      (used ? `<path d="M-3.6 0L-1 2.8L3.8 -3" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>` : `<path d="M-3 -3L3 3M-3 3L3 -3" stroke="#fff" stroke-width="2" stroke-linecap="round"/>`) + `</g>`;
+  }
+  out += g(2, miss + marks);
+  // step 4: verdict stamps under each unit
+  let stamps = '';
+  for (const u of map.units) {
+    const b = at(u.id), pass = u.final === 'PASS', y = S[u.id] ? b.y + b.h + 16 : b.y + b.h + 12;
+    stamps += `<text class="xm-stamp ${pass ? 'p' : 'f'}" x="${b.x + b.w / 2}" y="${y}" text-anchor="middle">${pass ? 'PASS' : 'FAIL'}</text>`;
+  }
+  out += g(3, stamps);
+  const svg = h('div', { class: 'xm-fig', html: `<svg viewBox="0 0 ${W} 262" role="img" aria-label="${esc(map.aria || 'The paper as sheets, with the pointers between its parts')}">${out}</svg>` });
+  const cap = h('p', { class: 'xm-cap' });
+  const el = h('figure', { class: 'xm' }, svg, cap);
+  const step = k => {
+    el.dataset.s = k;
+    el.querySelectorAll('[data-m]').forEach(n => n.classList.toggle('on', +n.dataset.m <= k));
+    const c = map.caps[Math.max(0, Math.min(k, map.caps.length - 1))] || '';
+    cap.replaceChildren(h('span', { class: 'xm-n', text: String(Math.max(0, k) + 1) }), h('span', { text: c }));
+  };
+  const sel = i => el.querySelectorAll('[data-u]').forEach(n => n.classList.toggle('sel', n.dataset.u !== '' && +n.dataset.u === i));
+  return { el, step, sel };
+}
 function measureSteps(it) {
   // every step of the measurer, all of its rules, and what that step returned on one real paper
   const m = MEASURE[it.id];
@@ -1265,7 +1348,8 @@ function measureSteps(it) {
   const play = h('button', { type: 'button', class: 'rs-play', text: '▶ Play' });
   const box = h('div', { class: 'rs-wrap' }, h('div', { class: 'rs-top' }, h('p', { class: 'rs-line', text: m.line }), play), head, h('ol', { class: 'rs' }, ...rows), score);
   const seq = { s: -1, t: 0 };
-  const setStep = k => { seq.s = k; rows.forEach((r, j) => { r.classList.toggle('done', j < k); r.classList.toggle('cur', j === k); r.classList.toggle('todo', j > k); });
+  let XM = null;
+  const setStep = k => { seq.s = k; if (XM) XM.step(k); rows.forEach((r, j) => { r.classList.toggle('done', j < k); r.classList.toggle('cur', j === k); r.classList.toggle('todo', j > k); });
     score.classList.toggle('shown', k >= rows.length - 1); };
   const stop = () => { clearTimeout(seq.t); seq.t = 0; play.textContent = '↻ Replay'; };
   const run = () => { clearTimeout(seq.t); play.textContent = '❚❚ Playing'; setStep(-1);
@@ -1277,7 +1361,9 @@ function measureSteps(it) {
   const seen = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { seen.disconnect(); run(); } }, { threshold: .25 });
   requestAnimationFrame(() => seen.observe(box));
   fetch('measure/' + it.id + '.json').then(r => r.json()).then(data => {
-    const U = data.units, pre = data.meta.pre || {}; if (!U.length) { ex.forEach(e => e.replaceChildren(h('span', { class: 'rs-wait', text: 'no units in this paper' }))); return; }
+    const U = data.units, pre = data.meta.pre || {};
+    if (data.map) { XM = xmap(data.map); box.insertBefore(XM.el, head); XM.step(seq.s < 0 ? rows.length - 1 : seq.s); }
+    if (!U.length) { ex.forEach(e => e.replaceChildren(h('span', { class: 'rs-wait', text: 'no units in this paper' }))); return; }
     const VW = { FAIL: 'slop', PASS: 'fine', UNRESOLVED: 'open', NOT_APPLICABLE: 'n/a' };
     pick.replaceChildren(...U.map((u, k) => h('option', { value: k, text: `${VW[u.final]} · ${u.text.slice(0, 48)}…` })));
     const sh = t => t.length > 140 ? t.slice(0, 138).replace(/\s+\S*$/, '') + '…' : t;
@@ -1286,7 +1372,7 @@ function measureSteps(it) {
       u.pair ? pairQ(u.pair.earlier, 'earlier') : h('div', {}, h('span', { text: u.s2 || '—' })),
       h('div', {}, u.found.length ? h('span', { class: 'mw-ids' }, ...u.found.map(x => h('code', { text: x }))) : h('span', { class: 'mw-none', text: 'nothing' }), u.found_note ? h('small', { text: tidyNote(u.found_note) }) : null, u.judge_line ? h('small', { text: tidyNote(u.judge_line) }) : null),
       h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: tidyNote(u.final_reason) }) : null)];
-      ex.forEach((e, j) => e.replaceChildren(vals[j] || h('span', { text: '—' }))); };
+      ex.forEach((e, j) => e.replaceChildren(vals[j] || h('span', { text: '—' }))); if (XM && data.map.units[k]) XM.sel(k); };
     pick.addEventListener('change', () => { fill(+pick.value); run(); });
     const k0 = Math.max(0, U.findIndex(u => u.final === 'FAIL')); pick.value = k0; fill(k0);
     const c = { FAIL: 0, PASS: 0, UNRESOLVED: 0 }; U.forEach(u => { if (u.final in c) c[u.final]++; });

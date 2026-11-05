@@ -1291,3 +1291,30 @@ body::after { display: none; }
 .res-tbl tr.res-g td { color: var(--ac); }
 .res-note { margin: 8px 0 0; font-size: 12.5px; color: var(--ink-3); line-height: 1.5; }
 @media (max-width: 600px) { .res-tbl { font-size: 13px; } .res-tbl th, .res-tbl td { padding-left: 8px; } .res-tbl .res-id { display: none; } }
+
+/* 2-3 paper map: the sheets of one real paper, redrawn as the step player advances (xmap in registry.js) */
+.xm { margin: 4px 0 10px; padding: 14px 14px 10px; border-radius: 14px; background: var(--soft); border: 1px solid var(--line); }
+.xm-fig svg { display: block; width: 100%; height: auto; font-family: Inter, Lato, system-ui, sans-serif; overflow: visible; }
+.xm .xm-paper { fill: #fff; stroke: #C9CDD1; stroke-width: 1; transition: opacity .45s; }
+.xm .xm-tt { font-size: 10.5px; font-weight: 700; fill: #3A3D42; }
+.xm .xm-skipt { font-family: "Caveat", cursive; font-size: 15px; font-weight: 700; fill: #8a9096; opacity: 0; transition: opacity .45s; }
+.xm .xm-comp rect { fill: #fff; stroke: #9aa0a6; stroke-width: 1; transition: fill .4s, stroke .4s, opacity .45s; }
+.xm .xm-comp text { font-size: 9.5px; font-weight: 600; fill: #3A3D42; transition: fill .4s; }
+.xm .xm-sheet, .xm .xm-comp { transition: opacity .45s; }
+/* from step 1 on: what is not a unit fades, units get the structure colour */
+.xm:not([data-s="-1"]) .skip { opacity: .32; }
+.xm:not([data-s="-1"]) .xm-sheet.skip .xm-skipt { opacity: 1; }
+.xm:not([data-s="-1"]) .xm-comp.unit rect { fill: #95627A; stroke: #95627A; }
+.xm:not([data-s="-1"]) .xm-comp.unit text { fill: #fff; }
+.xm .xm-frame { fill: none; stroke: #95627A; stroke-width: 2.2; }
+.xm [data-m] { opacity: 0; transition: opacity .5s; }
+.xm [data-m].on { opacity: 1; }
+.xm path.pen { fill: none; stroke-width: 1.6; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset .9s ease-out; }
+.xm .on path.pen { stroke-dashoffset: 0; }
+.xm .xm-hand { font-family: "Caveat", cursive; font-size: 17px; font-weight: 700; fill: #D93A3A; paint-order: stroke; stroke: var(--soft); stroke-width: 5px; }
+.xm .xm-stamp { font-family: var(--mono, ui-monospace, monospace); font-size: 12px; font-weight: 800; letter-spacing: .06em; }
+.xm .xm-stamp.f { fill: #D93A3A; } .xm .xm-stamp.p { fill: #3F9A5A; }
+.xm .sel .xm-paper, .xm .xm-comp.sel rect { stroke: #D93A3A; stroke-width: 2.4; }
+.xm-cap { display: flex; gap: 10px; align-items: baseline; margin: 6px 2px 0; font-size: 15px; line-height: 1.45; color: var(--ink); min-height: 2.9em; }
+.xm-n { flex: none; display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: var(--surface); font-size: 12px; font-weight: 700; transform: translateY(-1px); }
+@media (prefers-reduced-motion: reduce) { .xm *, .xm path.pen { transition: none !important; } }
