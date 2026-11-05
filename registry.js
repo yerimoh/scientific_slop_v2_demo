@@ -478,14 +478,14 @@ const MEASURE = {
     how: [], line: 'Find methods that add compute, then check whether the paper reports that cost with a number.' },
   '1-2': { parts: ['1-2b', '1-2d'],
     line: 'Two checks, each scored 0–100. The slop score combines them.' },
-  '1-4': { unit: 'citation', units: 'citations',
+  '1-4': { unit: 'citation', units: 'citations', who: true,
     stages: [['Find citations', '', CD], ['Connected to other work?', '', CD], ['Connected to this paper?', '', CD], ['Is it a method?', '', CD]],
     doc: [
       [{ p: 'Start with citations in the Introduction and Related Work.' }, { l: 'Collect', t: 'Sentences that cite at least one work.' }, { s: 'Other sections are not checked.' }],
       [{ p: 'Check the sentence and the one before it.' }, { l: 'Connected if', list: ['it cites multiple works together', 'it names another cited work', 'it continues a comparison from the previous sentence'] }, { s: 'Yes → PASS · No → continue' }],
       [{ p: 'Look for any comparison or use elsewhere in the paper.' }, { l: 'Connected if the paper', list: ['compares against it', 'uses it', 'builds on it', 'explicitly contrasts with it'] }, { s: 'Yes → PASS · No → continue' }],
       [{ p: 'We only flag isolated methods.' }, { l: 'Do not flag', t: 'Surveys · benchmarks · datasets · factual citations' }, { s: 'Method → FAIL' }]],
-    how: [], line: 'A cited method is isolated when the paper mentions it alone and never explains how it relates to other work or to the current paper.' },
+    how: [], line: 'A cited method is isolated when the paper mentions it alone and never explains how it relates to other work or to the current paper. All four steps are rules; no model is used.' },
   '2-3': { unit: 'component', units: 'components',
     stages: [['Component', 'a method / experiment section or a numbered equation', CD], ['Pointers', 'where the paper points to it', CD], ['Used?', 'section: from another section · equation: anywhere', CD], ['Verdict', 'rule, one run', CD]],
     how: [
@@ -1415,7 +1415,7 @@ function measureSteps(it) {
   const plain = !!m.plain, doc = m.doc;
   const docBody = bs => bs.map(b => b.p ? h('p', { class: 'dc-p', text: b.p }) : b.list ? h('div', { class: 'dc-g' }, h('span', { class: 'dc-l', text: b.l }), h('ul', {}, ...b.list.map(t => h('li', { text: t }))))
     : b.l ? h('div', { class: 'dc-g' }, h('span', { class: 'dc-l', text: b.l }), h('p', { text: b.t })) : b.s ? h('p', { class: 'dc-s', text: b.s }) : null);
-  const whoTag = w => (plain || doc || w === 'paper') ? null : h('span', { class: 'rs-who ' + (w === 'code' ? 'rule' : 'model'), text: w === 'code' ? 'rule' : w.includes('code') ? 'model + rule' : 'model' });
+  const whoTag = w => (plain || (doc && !m.who) || w === 'paper') ? null : h('span', { class: 'rs-who ' + (w === 'code' ? 'rule' : 'model'), text: w === 'code' ? 'rule' : w.includes('code') ? 'model + rule' : 'model' });
   const ex = m.stages.map(() => h('div', { class: 'rs-ex' }, h('span', { class: 'rs-wait', text: '…' })));
   const rows = m.stages.map(([title, sub, w], k) => h('li', { class: 'rs-row' + (k === m.stages.length - 1 ? ' last' : '') },
     h('div', { class: 'rs-n' }, h('b', { text: String(k + 1) }), h('div', {}, h('p', { class: 'rs-t', text: title }), sub ? h('p', { class: 'rs-q', text: sub }) : null, whoTag(w))),
