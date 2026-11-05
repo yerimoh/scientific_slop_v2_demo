@@ -143,17 +143,17 @@
   {
    "id": "S3.105",
    "sec": "Experiments",
-   "kind": "34 sentences · 2 repeats",
+   "kind": "34 sentences · 1 repeat",
    "text": "These results demonstrate that the ratio formula does not remove positional bias—it destroys useful saliency signal.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "2 repeats in this section → slop section",
+   "final_reason": "1 repeat in this section → slop section",
    "s2": "earlier S2.051 (Method): “Consequently, the ratio formula in Equation 3 does not remove positional bias—it destroys useful saliency signal, resulting in only 13.24% grounding accuracy compared to 38.70% with raw attention at the same layer.”",
    "found": [
     "S2.051"
    ],
    "found_note": "8-word runs cover 56% of the sentence",
-   "judge_line": "Also repeats: S3.091 ← A04 (cosine 0.90).",
+   "judge_line": "S3.091 ← A04 (cosine 0.904) stays below 0.95: not counted.",
    "pair": {
     "later": {
      "id": "S3.105",
