@@ -449,6 +449,7 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
 const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code';
+const MV = '1106e';   // bump with the run data so browsers do not keep an old measure/*.json
 const MEASURE = {
   '1-1': { unit: 'claim', units: 'claims',
     stages: [['Claim', 'stated as fact', 'paper'], ['Needs', 'what would prove it?', Q], ['Found', 'in the paper?', QC], ['Verdict', '3 runs vote', CD]],
@@ -564,7 +565,7 @@ function measurePanel(it) {
   const m = MEASURE[it.id];
   if (m.parts) return partsView(it);
   const wrap = h('div', { class: 'ms' }, h('p', { class: 'ms-loading', text: 'Loading…' }));
-  fetch('measure/' + it.id + '.json').then(r => r.json()).then(data => buildFlow(m, data, wrap)).catch(() => wrap.replaceChildren(h('p', { class: 'ms-loading', text: 'The run data could not be loaded.' })));
+  fetch('measure/' + it.id + '.json?v=' + MV).then(r => r.json()).then(data => buildFlow(m, data, wrap)).catch(() => wrap.replaceChildren(h('p', { class: 'ms-loading', text: 'The run data could not be loaded.' })));
   return wrap;
 }
 // 4-4: a sentence pair shown whole, section on top, the words both sentences share marked
@@ -1249,6 +1250,32 @@ function cxView(u, step) {
     h('p', { class: 'cx-t' }, h('span', { class: 'cx-lab', text: fail ? 'deleted' : 'kept' }), fail ? h('span', { class: 'cx-x', text: c.target.segs.map(x => x[0]).join('') }) : h('span', {}, ...tgtSegs)),
     h('small', { class: 'cx-verdict', text: lost }));
 }
+// 1-4: the citing sentences of intro and related work as a list, and one sentence with the three weaving checks
+function ciMap(cm) {
+  const rows = cm.rows.map((r, i) => h('li', { class: 'ci-r ' + (r.final === 'PASS' ? 'p' : 'f'), 'data-u': i },
+    h('span', { class: 'ci-sec', text: r.sec }),
+    h('span', { class: 'ci-s', text: r.short.replace(/\s+\S*$/, '') + '…' }),
+    h('span', { class: 'ci-w' }, ...r.names.flatMap((n, j) => j ? [h('i', { class: 'ci-tie', text: '—' }), h('b', { class: 'ci-ch', text: n })] : [h('b', { class: 'ci-ch', text: n })]),
+      r.n < 2 ? h('i', { class: 'ci-no', text: '✕ tied to nothing' }) : null),
+    h('span', { class: 'ci-st', text: r.final })));
+  const cap = h('p', { class: 'xm-cap' });
+  const el = h('figure', { class: 'ci' }, h('ol', { class: 'ci-list' }, ...rows), cap);
+  const step = k => { el.dataset.s = k; const c = cm.caps[Math.max(0, Math.min(k, cm.caps.length - 1))] || '';
+    cap.replaceChildren(h('span', { class: 'xm-n', text: String(Math.max(0, k) + 1) }), h('span', { text: c })); };
+  const sel = i => el.querySelectorAll('.ci-r').forEach(n => n.classList.toggle('sel', +n.dataset.u === i));
+  return { el, step, sel };
+}
+function ciView(u, step) {
+  const c = u.ci, segs = c.segs.map(([t, on]) => on ? h('mark', { class: 'cx-f', text: t }) : t);
+  const chips = c.names.length ? c.names.map(n => h('b', { class: 'ci-ch', text: n })) : [h('b', { class: 'ci-ch', text: u.kind })];
+  if (step === 0) return h('div', {}, h('q', { class: 'mw-q' }, ...segs), h('small', { text: `${u.sec} · red: the citations` }));
+  if (step === 1) return h('div', { class: 'cx-p' }, h('p', { class: 'ci-w' }, ...chips), h('small', { text: c.checks[0][2] + ' · ' + c.checks[1][2] }));
+  if (step === 2) return h('div', { class: 'cx-p' },
+    c.before ? h('p', { class: 'cx-c' }, h('span', { class: 'cx-lab', text: c.before_cites ? 'before · cites' : 'before' }), c.before.length > 160 ? c.before.slice(0, 158).replace(/\s+\S*$/, '') + ' …' : c.before) : null,
+    h('p', { class: 'cx-t' }, h('span', { class: 'cx-lab', text: 'this one' }), ...segs),
+    h('ul', { class: 'ci-chk' }, ...c.checks.map(([q, ok, note]) => h('li', { class: ok ? 'y' : 'n' }, h('span', { class: 'ci-mk', text: ok ? '✓' : '✕' }), h('b', { text: q }), ' ', h('small', { text: note })))));
+  return null;
+}
 // 1-2: one tab per part, each a full step panel on its own run data, and the combined score under both
 function partsView(it) {
   const m = MEASURE[it.id], parts = it.parts || m.parts.map(id => ({ id, name: id }));
@@ -1256,7 +1283,7 @@ function partsView(it) {
   const comb = h('p', { class: 'pt-comb' }, h('span', { class: 'rs-wait', text: '…' }));
   const show = k => { tabs.querySelectorAll('button').forEach((b, j) => { b.classList.toggle('on', j === k); b.setAttribute('aria-selected', String(j === k)); }); panel.replaceChildren(measureSteps({ id: parts[k].id, judge: [] })); };
   parts.forEach((p, k) => tabs.append(h('button', { type: 'button', role: 'tab', onclick: () => show(k) }, h('span', { class: 'pt-id', text: p.id }), h('b', { text: p.name }), p.what ? h('span', { class: 'pt-w', text: p.what }) : null)));
-  Promise.all(parts.map(p => fetch('measure/' + p.id + '.json').then(r => r.json()))).then(([b, d]) => {
+  Promise.all(parts.map(p => fetch('measure/' + p.id + '.json?v=' + MV).then(r => r.json()))).then(([b, d]) => {
     const B = b.meta.breadth, Cs = d.meta.cost, S = (B + Cs) / 2;
     comb.replaceChildren(h('span', { class: 'pt-cl', text: `${b.meta.side} ${b.meta.paper} · ${it.name || 'combined'}` }),
       'evaluation breadth ', h('b', { text: B.toFixed(1) }), ' + cost reporting ', h('b', { text: String(Cs) }), ' → (', B.toFixed(1), ' + ', String(Cs), ') ÷ 2 = ', h('b', { class: 'big', text: S.toFixed(1) }), ' / 100 · slop score 1 − ', S.toFixed(1), '/100 = ', h('b', { class: 'v-F', text: (1 - S / 100).toFixed(2) }));
@@ -1295,20 +1322,21 @@ function measureSteps(it) {
   setStep(rows.length - 1);
   const seen = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { seen.disconnect(); run(); } }, { threshold: .25 });
   requestAnimationFrame(() => seen.observe(box));
-  fetch('measure/' + it.id + '.json').then(r => r.json()).then(data => {
+  fetch('measure/' + it.id + '.json?v=' + MV).then(r => r.json()).then(data => {
     const U = data.units, pre = data.meta.pre || {};
     if (data.map) { XM = xmap(data.map); box.insertBefore(XM.el, head); XM.step(seq.s < 0 ? rows.length - 1 : seq.s); }
+    if (data.cimap) { XM = ciMap(data.cimap); box.insertBefore(XM.el, head); XM.step(seq.s < 0 ? rows.length - 1 : seq.s); }
     if (!U.length) { ex.forEach(e => e.replaceChildren(h('span', { class: 'rs-wait', text: 'no units in this paper' }))); return; }
     const VW = { FAIL: 'slop', PASS: 'fine', UNRESOLVED: 'open', NOT_APPLICABLE: 'n/a' };
     pick.replaceChildren(...U.map((u, k) => h('option', { value: k, text: `${VW[u.final]} · ${u.text.slice(0, 48)}…` })));
     const sh = t => t.length > 140 ? t.slice(0, 138).replace(/\s+\S*$/, '') + '…' : t;
-    const fill = k => { const u = U[k]; const vals = u.ctx ? [cxView(u, 0), cxView(u, 1), cxView(u, 2), null] : [
+    const fill = k => { const u = U[k]; const vals = u.ctx ? [cxView(u, 0), cxView(u, 1), cxView(u, 2), null] : u.ci ? [ciView(u, 0), ciView(u, 1), ciView(u, 2), null] : [
       u.pair ? pairQ(u.pair.later, 'later') : h('div', {}, h('q', { class: 'mw-q', text: sh(u.text) }), h('small', { text: [u.id, u.sec].filter(Boolean).join(' · ') })),
       u.pair ? pairQ(u.pair.earlier, 'earlier') : h('div', {}, h('span', { text: u.s2 || '—' })),
       h('div', {}, u.found.length ? h('span', { class: 'mw-ids' }, ...u.found.map(x => h('code', { text: x }))) : h('span', { class: 'mw-none', text: 'nothing' }), u.found_note ? h('small', { text: tidyNote(u.found_note) }) : null, u.judge_line ? h('small', { text: tidyNote(u.judge_line) }) : null),
       h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: tidyNote(u.final_reason) }) : null)];
-      if (u.ctx) vals[3] = h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: tidyNote(u.final_reason) }) : null);
-      ex.forEach((e, j) => e.replaceChildren(vals[j] || h('span', { text: '—' }))); if (XM && data.map.units[k]) XM.sel(k); };
+      if (u.ctx || u.ci) vals[3] = h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: tidyNote(u.final_reason) }) : null);
+      ex.forEach((e, j) => e.replaceChildren(vals[j] || h('span', { text: '—' }))); if (XM && (data.cimap || data.map.units[k])) XM.sel(k); };
     pick.addEventListener('change', () => { fill(+pick.value); run(); });
     const kd = data.meta.default ? U.findIndex(u => u.id === data.meta.default) : -1;
     const k0 = kd >= 0 ? kd : Math.max(0, U.findIndex(u => u.final === 'FAIL')); pick.value = k0; fill(k0);

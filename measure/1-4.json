@@ -10,217 +10,913 @@
   "U": 0,
   "NA": 0,
   "pre": {},
-  "source": "v1 citation isolation (site/demo/engine/measures.py); = SciSlopBench scislop_citation 0.357"
+  "default": "c9",
+  "source": "v1 citation isolation (site/demo/engine/measures.py) = SciSlopBench scislop_citation 0.357"
  },
  "units": [
   {
-   "id": "",
+   "id": "c1",
    "sec": "§1 Introduction",
-   "kind": "cites 2 works",
+   "kind": "2 works",
    "text": "Vision-language models (VLMs) have achieved remarkable progress on multimodal understanding tasks by processing images as sequences of visual tokens within large language model decoders [cite].",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven → PASS",
-   "s2": "cited here: 2 works cited",
-   "found": [
-    "Chen2023InternVS",
-    "Liu2023VisualIT"
-   ],
-   "found_note": "two or more works cited together",
-   "judge_line": ""
+   "final_reason": "woven: two or more works cited",
+   "s2": "2 works cited",
+   "found": [],
+   "found_note": "woven: two or more works cited",
+   "judge_line": "",
+   "ci": {
+    "before": null,
+    "before_cites": false,
+    "segs": [
+     [
+      "Vision-language models (VLMs) have achieved remarkable progress on multimodal understanding tasks by processing images as sequences of visual tokens within large language model decoders ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      ".",
+      false
+     ]
+    ],
+    "names": [],
+    "checks": [
+     [
+      "two or more works cited",
+      true,
+      "2 works cited"
+     ],
+     [
+      "another work named",
+      false,
+      "no other work’s name in the sentence"
+     ],
+     [
+      "relational cue",
+      false,
+      "no “Similarly,” / “Building on this,” / “unlike these”"
+     ]
+    ],
+    "first_person": false
+   }
   },
   {
-   "id": "",
+   "id": "c2",
    "sec": "§1 Introduction",
-   "kind": "cites 2 works",
+   "kind": "2 works",
    "text": "Visual token pruning—selectively retaining only the most relevant tokens—has emerged as a promising solution for efficient VLM inference [cite].",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven → PASS",
-   "s2": "cited here: 2 works cited",
-   "found": [
-    "Jin2024EfficientML",
-    "Shinde2025ASO"
-   ],
-   "found_note": "two or more works cited together",
-   "judge_line": ""
+   "final_reason": "woven: two or more works cited",
+   "s2": "2 works cited",
+   "found": [],
+   "found_note": "woven: two or more works cited",
+   "judge_line": "",
+   "ci": {
+    "before": "However, this approach creates significant computational bottlenecks: a single high-resolution image can produce hundreds of visual tokens, leading to quadratic scaling in attention computation and substantial memory overhead from key-value caches.",
+    "before_cites": false,
+    "segs": [
+     [
+      "Visual token pruning—selectively retaining only the most relevant tokens—has emerged as a promising solution for efficient VLM inference ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      ".",
+      false
+     ]
+    ],
+    "names": [],
+    "checks": [
+     [
+      "two or more works cited",
+      true,
+      "2 works cited"
+     ],
+     [
+      "another work named",
+      false,
+      "no other work’s name in the sentence"
+     ],
+     [
+      "relational cue",
+      false,
+      "no “Similarly,” / “Building on this,” / “unlike these”"
+     ]
+    ],
+    "first_person": false
+   }
   },
   {
-   "id": "",
+   "id": "c3",
    "sec": "§1 Introduction",
-   "kind": "cites 2 works",
+   "kind": "2 works",
    "text": "Existing pruning methods face a fundamental challenge: attention-based importance scoring, while computationally convenient, can fail catastrophically on spatially-sensitive tasks like visual grounding [cite].",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven → PASS",
-   "s2": "cited here: 2 works cited",
-   "found": [
-    "Chen2024AnII",
-    "Endo2024FeatherTT"
-   ],
-   "found_note": "two or more works cited together",
-   "judge_line": ""
+   "final_reason": "woven: two or more works cited",
+   "s2": "2 works cited",
+   "found": [],
+   "found_note": "woven: two or more works cited",
+   "judge_line": "",
+   "ci": {
+    "before": "Visual token pruning—selectively retaining only the most relevant tokens—has emerged as a promising solution for efficient VLM inference [cite].",
+    "before_cites": true,
+    "segs": [
+     [
+      "Existing pruning methods face a fundamental challenge: attention-based importance scoring, while computationally convenient, can fail catastrophically on spatially-sensitive tasks like visual grounding ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      ".",
+      false
+     ]
+    ],
+    "names": [],
+    "checks": [
+     [
+      "two or more works cited",
+      true,
+      "2 works cited"
+     ],
+     [
+      "another work named",
+      false,
+      "no other work’s name in the sentence"
+     ],
+     [
+      "relational cue",
+      false,
+      "no “Similarly,” / “Building on this,” / “unlike these”"
+     ]
+    ],
+    "first_person": false
+   }
   },
   {
-   "id": "",
+   "id": "c4",
    "sec": "§1 Introduction",
-   "kind": "cites 1 work",
+   "kind": "1 work",
    "text": "FastV [cite], which prunes tokens based on shallow-layer attention, achieves only 33.85% grounding accuracy on RefCOCO benchmarks—less than half of the unpruned model's performance.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "isolated → FAIL",
-   "s2": "cited here: FastV · no other work cited or named",
+   "final_reason": "isolated: none of the three checks holds",
+   "s2": "1 work cited: FastV",
    "found": [],
-   "found_note": "nothing else in the sentence; no relational cue to the sentence before",
-   "judge_line": ""
+   "found_note": "isolated: none of the three checks holds",
+   "judge_line": "",
+   "ci": {
+    "before": "Existing pruning methods face a fundamental challenge: attention-based importance scoring, while computationally convenient, can fail catastrophically on spatially-sensitive tasks like visual grounding [cite].",
+    "before_cites": true,
+    "segs": [
+     [
+      "FastV ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      ", which prunes tokens based on shallow-layer attention, achieves only 33.85% grounding accuracy on RefCOCO benchmarks—less than half of the unpruned model's performance.",
+      false
+     ]
+    ],
+    "names": [
+     "FastV"
+    ],
+    "checks": [
+     [
+      "two or more works cited",
+      false,
+      "1 work cited: FastV"
+     ],
+     [
+      "another work named",
+      false,
+      "no other work’s name in the sentence"
+     ],
+     [
+      "relational cue",
+      false,
+      "no “Similarly,” / “Building on this,” / “unlike these”"
+     ]
+    ],
+    "first_person": false
+   }
   },
   {
-   "id": "",
+   "id": "c5",
    "sec": "§1 Introduction",
-   "kind": "cites 1 work",
+   "kind": "1 work",
    "text": "D²Pruner [cite] addresses this by debiasing attention scores using an offline prior computed from 1000 COCO images, improving accuracy to 55.03%.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "isolated → FAIL",
-   "s2": "cited here: D²Pruner · no other work cited or named",
+   "final_reason": "isolated: none of the three checks holds",
+   "s2": "1 work cited: D²Pruner",
    "found": [],
-   "found_note": "nothing else in the sentence; no relational cue to the sentence before",
-   "judge_line": ""
+   "found_note": "isolated: none of the three checks holds",
+   "judge_line": "",
+   "ci": {
+    "before": "FastV [cite], which prunes tokens based on shallow-layer attention, achieves only 33.85% grounding accuracy on RefCOCO benchmarks—less than half of the unpruned model's performance.",
+    "before_cites": true,
+    "segs": [
+     [
+      "D²Pruner ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " addresses this by debiasing attention scores using an offline prior computed from 1000 COCO images, improving accuracy to 55.03%.",
+      false
+     ]
+    ],
+    "names": [
+     "D²Pruner"
+    ],
+    "checks": [
+     [
+      "two or more works cited",
+      false,
+      "1 work cited: D²Pruner"
+     ],
+     [
+      "another work named",
+      false,
+      "no other work’s name in the sentence"
+     ],
+     [
+      "relational cue",
+      false,
+      "no “Similarly,” / “Building on this,” / “unlike these”"
+     ]
+    ],
+    "first_person": false
+   }
   },
   {
-   "id": "",
+   "id": "c6",
    "sec": "§2 Related Work",
-   "kind": "cites 1 work",
+   "kind": "1 work",
    "text": "FastV [cite] pioneered training-free pruning by selecting tokens based on attention scores from shallow layers, but suffers from significant performance degradation on spatially-sensitive tasks.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "isolated → FAIL",
-   "s2": "cited here: FastV · no other work cited or named",
+   "final_reason": "isolated: none of the three checks holds",
+   "s2": "1 work cited: FastV",
    "found": [],
-   "found_note": "nothing else in the sentence; no relational cue to the sentence before",
-   "judge_line": ""
+   "found_note": "isolated: none of the three checks holds",
+   "judge_line": "",
+   "ci": {
+    "before": "The computational cost of vision-language models scales quadratically with the number of visual tokens, motivating extensive research on token reduction strategies.",
+    "before_cites": false,
+    "segs": [
+     [
+      "FastV ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " pioneered training-free pruning by selecting tokens based on attention scores from shallow layers, but suffers from significant performance degradation on spatially-sensitive tasks.",
+      false
+     ]
+    ],
+    "names": [
+     "FastV"
+    ],
+    "checks": [
+     [
+      "two or more works cited",
+      false,
+      "1 work cited: FastV"
+     ],
+     [
+      "another work named",
+      false,
+      "no other work’s name in the sentence"
+     ],
+     [
+      "relational cue",
+      false,
+      "no “Similarly,” / “Building on this,” / “unlike these”"
+     ]
+    ],
+    "first_person": false
+   }
   },
   {
-   "id": "",
+   "id": "c7",
    "sec": "§2 Related Work",
-   "kind": "cites 2 works",
+   "kind": "2 works",
    "text": "LLaVA-PruMerge [cite] combines pruning with token merging to preserve information from discarded tokens, while PyramidDrop [cite] progressively reduces tokens across layers following a pyramid schedule.",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven → PASS",
-   "s2": "cited here: LLaVA-PruMerge · PyramidDrop",
-   "found": [
-    "Shang2024LLaVAPruMergeAT",
-    "Xing2024PyramidDropAY"
-   ],
-   "found_note": "two or more works cited together",
-   "judge_line": ""
+   "final_reason": "woven: two or more works cited",
+   "s2": "2 works cited: LLaVA-PruMerge, PyramidDrop",
+   "found": [],
+   "found_note": "woven: two or more works cited",
+   "judge_line": "",
+   "ci": {
+    "before": "FastV [cite] pioneered training-free pruning by selecting tokens based on attention scores from shallow layers, but suffers from significant performance degradation on spatially-sensitive tasks.",
+    "before_cites": true,
+    "segs": [
+     [
+      "LLaVA-PruMerge ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " combines pruning with token merging to preserve information from discarded tokens, while PyramidDrop ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " progressively reduces tokens across layers following a pyramid schedule.",
+      false
+     ]
+    ],
+    "names": [
+     "LLaVA-PruMerge",
+     "PyramidDrop"
+    ],
+    "checks": [
+     [
+      "two or more works cited",
+      true,
+      "2 works cited: LLaVA-PruMerge, PyramidDrop"
+     ],
+     [
+      "another work named",
+      false,
+      "no other work’s name in the sentence"
+     ],
+     [
+      "relational cue",
+      false,
+      "no “Similarly,” / “Building on this,” / “unlike these”"
+     ]
+    ],
+    "first_person": false
+   }
   },
   {
-   "id": "",
+   "id": "c8",
    "sec": "§2 Related Work",
-   "kind": "cites 2 works",
+   "kind": "2 works",
    "text": "SparseVLM [cite] introduces text-aware sparsification that conditions token selection on the input query, and FEATHER [cite] revisits pruning strategies with improved layer selection.",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven → PASS",
-   "s2": "cited here: SparseVLM · FEATHER",
-   "found": [
-    "Endo2024FeatherTT",
-    "Zhang2024SparseVLMVT"
-   ],
-   "found_note": "two or more works cited together",
-   "judge_line": ""
+   "final_reason": "woven: two or more works cited",
+   "s2": "2 works cited: SparseVLM, FEATHER",
+   "found": [],
+   "found_note": "woven: two or more works cited",
+   "judge_line": "",
+   "ci": {
+    "before": "LLaVA-PruMerge [cite] combines pruning with token merging to preserve information from discarded tokens, while PyramidDrop [cite] progressively reduces tokens across layers following a pyramid schedule.",
+    "before_cites": true,
+    "segs": [
+     [
+      "SparseVLM ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " introduces text-aware sparsification that conditions token selection on the input query, and FEATHER ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " revisits pruning strategies with improved layer selection.",
+      false
+     ]
+    ],
+    "names": [
+     "SparseVLM",
+     "FEATHER"
+    ],
+    "checks": [
+     [
+      "two or more works cited",
+      true,
+      "2 works cited: SparseVLM, FEATHER"
+     ],
+     [
+      "another work named",
+      false,
+      "no other work’s name in the sentence"
+     ],
+     [
+      "relational cue",
+      false,
+      "no “Similarly,” / “Building on this,” / “unlike these”"
+     ]
+    ],
+    "first_person": false
+   }
   },
   {
-   "id": "",
+   "id": "c9",
    "sec": "§2 Related Work",
-   "kind": "cites 1 work",
+   "kind": "1 work",
    "text": "Token Merging (ToMe) [cite], originally designed for Vision Transformers, has also been adapted for VLM acceleration.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "isolated → FAIL",
-   "s2": "cited here: Token Merging · no other work cited or named",
+   "final_reason": "isolated: none of the three checks holds",
+   "s2": "1 work cited: Token Merging",
    "found": [],
-   "found_note": "nothing else in the sentence; no relational cue to the sentence before",
-   "judge_line": ""
+   "found_note": "isolated: none of the three checks holds",
+   "judge_line": "",
+   "ci": {
+    "before": "SparseVLM [cite] introduces text-aware sparsification that conditions token selection on the input query, and FEATHER [cite] revisits pruning strategies with improved layer selection.",
+    "before_cites": true,
+    "segs": [
+     [
+      "Token Merging (ToMe) ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      ", originally designed for Vision Transformers, has also been adapted for VLM acceleration.",
+      false
+     ]
+    ],
+    "names": [
+     "Token Merging"
+    ],
+    "checks": [
+     [
+      "two or more works cited",
+      false,
+      "1 work cited: Token Merging"
+     ],
+     [
+      "another work named",
+      false,
+      "no other work’s name in the sentence"
+     ],
+     [
+      "relational cue",
+      false,
+      "no “Similarly,” / “Building on this,” / “unlike these”"
+     ]
+    ],
+    "first_person": false
+   }
   },
   {
-   "id": "",
+   "id": "c10",
    "sec": "§2 Related Work",
-   "kind": "cites 2 works",
+   "kind": "2 works",
    "text": "Recent work has explored more sophisticated selection criteria: Balanced Token Pruning [cite] optimizes global token allocation across layers, while IVC-Prune [cite] leverages implicit visual coordinates for pruning decisions.",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven → PASS",
-   "s2": "cited here: Balanced Token Pruning · IVC-Prune",
-   "found": [
-    "Li2025BalancedTP",
-    "Sun2026IVCPruneRT"
-   ],
-   "found_note": "two or more works cited together",
-   "judge_line": ""
+   "final_reason": "woven: two or more works cited",
+   "s2": "2 works cited: Balanced Token Pruning, IVC-Prune",
+   "found": [],
+   "found_note": "woven: two or more works cited",
+   "judge_line": "",
+   "ci": {
+    "before": "Token Merging (ToMe) [cite], originally designed for Vision Transformers, has also been adapted for VLM acceleration.",
+    "before_cites": true,
+    "segs": [
+     [
+      "Recent work has explored more sophisticated selection criteria: Balanced Token Pruning ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " optimizes global token allocation across layers, while IVC-Prune ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " leverages implicit visual coordinates for pruning decisions.",
+      false
+     ]
+    ],
+    "names": [
+     "Balanced Token Pruning",
+     "IVC-Prune"
+    ],
+    "checks": [
+     [
+      "two or more works cited",
+      true,
+      "2 works cited: Balanced Token Pruning, IVC-Prune"
+     ],
+     [
+      "another work named",
+      false,
+      "no other work’s name in the sentence"
+     ],
+     [
+      "relational cue",
+      false,
+      "no “Similarly,” / “Building on this,” / “unlike these”"
+     ]
+    ],
+    "first_person": false
+   }
   },
   {
-   "id": "",
+   "id": "c11",
    "sec": "§2 Related Work",
-   "kind": "cites 1 work",
+   "kind": "1 work",
    "text": "D²Pruner [cite] advances this approach by introducing debiased importance scoring with Maximal Independent Set (MIS) for diversity-aware token selection.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "isolated → FAIL",
-   "s2": "cited here: D²Pruner · no other work cited or named",
+   "final_reason": "isolated: none of the three checks holds",
+   "s2": "1 work cited: D²Pruner",
    "found": [],
-   "found_note": "nothing else in the sentence; no relational cue to the sentence before",
-   "judge_line": ""
+   "found_note": "isolated: none of the three checks holds",
+   "judge_line": "",
+   "ci": {
+    "before": "Attention weights provide a natural signal for token importance, as they reflect how much the model attends to each visual token during generation.",
+    "before_cites": false,
+    "segs": [
+     [
+      "D²Pruner ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " advances this approach by introducing debiased importance scoring with Maximal Independent Set (MIS) for diversity-aware token selection.",
+      false
+     ]
+    ],
+    "names": [
+     "D²Pruner"
+    ],
+    "checks": [
+     [
+      "two or more works cited",
+      false,
+      "1 work cited: D²Pruner"
+     ],
+     [
+      "another work named",
+      false,
+      "no other work’s name in the sentence"
+     ],
+     [
+      "relational cue",
+      false,
+      "no “Similarly,” / “Building on this,” / “unlike these”"
+     ]
+    ],
+    "first_person": false
+   }
   },
   {
-   "id": "",
+   "id": "c12",
    "sec": "§2 Related Work",
-   "kind": "cites 2 works",
+   "kind": "2 works",
    "text": "PoRe [cite] addresses position bias through reweighting schemes, while recent analysis [cite] reveals that visual information flow in MLLMs varies significantly across layers, suggesting that layer choice is critical for attention-based pruning.",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven → PASS",
-   "s2": "cited here: 2 works cited",
-   "found": [
-    "Yin2025LiftingTV",
-    "Zhao2025AttentionDF"
-   ],
-   "found_note": "two or more works cited together",
-   "judge_line": ""
+   "final_reason": "woven: two or more works cited",
+   "s2": "2 works cited: PoRe",
+   "found": [],
+   "found_note": "woven: two or more works cited",
+   "judge_line": "",
+   "ci": {
+    "before": "However, D²Pruner requires offline calibration on external data to compute bias priors, limiting deployment flexibility.",
+    "before_cites": false,
+    "segs": [
+     [
+      "PoRe ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " addresses position bias through reweighting schemes, while recent analysis ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " reveals that visual information flow in MLLMs varies significantly across layers, suggesting that layer choice is critical for attention-based pruning.",
+      false
+     ]
+    ],
+    "names": [
+     "PoRe"
+    ],
+    "checks": [
+     [
+      "two or more works cited",
+      true,
+      "2 works cited: PoRe + 1 unnamed"
+     ],
+     [
+      "another work named",
+      false,
+      "no other work’s name in the sentence"
+     ],
+     [
+      "relational cue",
+      false,
+      "no “Similarly,” / “Building on this,” / “unlike these”"
+     ]
+    ],
+    "first_person": false
+   }
   },
   {
-   "id": "",
+   "id": "c13",
    "sec": "§2 Related Work",
-   "kind": "cites 2 works",
+   "kind": "2 works",
    "text": "Beyond token pruning, VLM efficiency has been addressed through architectural innovations, quantization, and knowledge distillation [cite].",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven → PASS",
-   "s2": "cited here: 2 works cited",
-   "found": [
-    "Jin2024EfficientML",
-    "Shinde2025ASO"
-   ],
-   "found_note": "two or more works cited together",
-   "judge_line": ""
+   "final_reason": "woven: two or more works cited",
+   "s2": "2 works cited",
+   "found": [],
+   "found_note": "woven: two or more works cited",
+   "judge_line": "",
+   "ci": {
+    "before": "Efficient Vision-Language Models.",
+    "before_cites": false,
+    "segs": [
+     [
+      "Beyond token pruning, VLM efficiency has been addressed through architectural innovations, quantization, and knowledge distillation ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      ".",
+      false
+     ]
+    ],
+    "names": [],
+    "checks": [
+     [
+      "two or more works cited",
+      true,
+      "2 works cited"
+     ],
+     [
+      "another work named",
+      false,
+      "no other work’s name in the sentence"
+     ],
+     [
+      "relational cue",
+      false,
+      "no “Similarly,” / “Building on this,” / “unlike these”"
+     ]
+    ],
+    "first_person": false
+   }
   },
   {
-   "id": "",
+   "id": "c14",
    "sec": "§2 Related Work",
-   "kind": "cites 2 works",
+   "kind": "2 works",
    "text": "FlashAttention [cite] reduces memory overhead through IO-aware computation, while attention sink mechanisms [cite] enable efficient streaming inference.",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven → PASS",
-   "s2": "cited here: 2 works cited",
-   "found": [
-    "Dao2022FlashAttentionFA",
-    "Xiao2023EfficientSL"
-   ],
-   "found_note": "two or more works cited together",
-   "judge_line": ""
+   "final_reason": "woven: two or more works cited",
+   "s2": "2 works cited: FlashAttention",
+   "found": [],
+   "found_note": "woven: two or more works cited",
+   "judge_line": "",
+   "ci": {
+    "before": "Beyond token pruning, VLM efficiency has been addressed through architectural innovations, quantization, and knowledge distillation [cite].",
+    "before_cites": true,
+    "segs": [
+     [
+      "FlashAttention ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " reduces memory overhead through IO-aware computation, while attention sink mechanisms ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " enable efficient streaming inference.",
+      false
+     ]
+    ],
+    "names": [
+     "FlashAttention"
+    ],
+    "checks": [
+     [
+      "two or more works cited",
+      true,
+      "2 works cited: FlashAttention + 1 unnamed"
+     ],
+     [
+      "another work named",
+      false,
+      "no other work’s name in the sentence"
+     ],
+     [
+      "relational cue",
+      false,
+      "no “Similarly,” / “Building on this,” / “unlike these”"
+     ]
+    ],
+    "first_person": false
+   }
   }
- ]
+ ],
+ "cimap": {
+  "rows": [
+   {
+    "sec": "§1",
+    "names": [
+     "2 works"
+    ],
+    "n": 2,
+    "final": "PASS",
+    "short": "Vision-language models (VLMs) have achieved remarkable progress on mul"
+   },
+   {
+    "sec": "§1",
+    "names": [
+     "2 works"
+    ],
+    "n": 2,
+    "final": "PASS",
+    "short": "Visual token pruning—selectively retaining only the most relevant toke"
+   },
+   {
+    "sec": "§1",
+    "names": [
+     "2 works"
+    ],
+    "n": 2,
+    "final": "PASS",
+    "short": "Existing pruning methods face a fundamental challenge: attention-based"
+   },
+   {
+    "sec": "§1",
+    "names": [
+     "FastV"
+    ],
+    "n": 1,
+    "final": "FAIL",
+    "short": "FastV [cite], which prunes tokens based on shallow-layer attention, ac"
+   },
+   {
+    "sec": "§1",
+    "names": [
+     "D²Pruner"
+    ],
+    "n": 1,
+    "final": "FAIL",
+    "short": "D²Pruner [cite] addresses this by debiasing attention scores using an "
+   },
+   {
+    "sec": "§2",
+    "names": [
+     "FastV"
+    ],
+    "n": 1,
+    "final": "FAIL",
+    "short": "FastV [cite] pioneered training-free pruning by selecting tokens based"
+   },
+   {
+    "sec": "§2",
+    "names": [
+     "LLaVA-PruMerge",
+     "PyramidDrop"
+    ],
+    "n": 2,
+    "final": "PASS",
+    "short": "LLaVA-PruMerge [cite] combines pruning with token merging to preserve "
+   },
+   {
+    "sec": "§2",
+    "names": [
+     "SparseVLM",
+     "FEATHER"
+    ],
+    "n": 2,
+    "final": "PASS",
+    "short": "SparseVLM [cite] introduces text-aware sparsification that conditions "
+   },
+   {
+    "sec": "§2",
+    "names": [
+     "Token Merging"
+    ],
+    "n": 1,
+    "final": "FAIL",
+    "short": "Token Merging (ToMe) [cite], originally designed for Vision Transforme"
+   },
+   {
+    "sec": "§2",
+    "names": [
+     "Balanced Token Pruning",
+     "IVC-Prune"
+    ],
+    "n": 2,
+    "final": "PASS",
+    "short": "Recent work has explored more sophisticated selection criteria: Balanc"
+   },
+   {
+    "sec": "§2",
+    "names": [
+     "D²Pruner"
+    ],
+    "n": 1,
+    "final": "FAIL",
+    "short": "D²Pruner [cite] advances this approach by introducing debiased importa"
+   },
+   {
+    "sec": "§2",
+    "names": [
+     "PoRe",
+     "+1 work"
+    ],
+    "n": 2,
+    "final": "PASS",
+    "short": "PoRe [cite] addresses position bias through reweighting schemes, while"
+   },
+   {
+    "sec": "§2",
+    "names": [
+     "2 works"
+    ],
+    "n": 2,
+    "final": "PASS",
+    "short": "Beyond token pruning, VLM efficiency has been addressed through archit"
+   },
+   {
+    "sec": "§2",
+    "names": [
+     "FlashAttention",
+     "+1 work"
+    ],
+    "n": 2,
+    "final": "PASS",
+    "short": "FlashAttention [cite] reduces memory overhead through IO-aware computa"
+   }
+  ],
+  "caps": [
+   "14 citing sentences in §1 Introduction and §2 Related Work. Other sections are not checked.",
+   "The works each sentence cites. 9 cite two works in one sentence; 5 cite one work.",
+   "Woven sentences tie a work to another one (green link). Five tie it to nothing (red ✕).",
+   "5 isolated of 14 → score 5 ÷ 14 = 0.36. Its human pair scores 0.21."
+  ]
+ }
 }
