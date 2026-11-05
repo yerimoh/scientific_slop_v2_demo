@@ -1,0 +1,275 @@
+{
+ "meta": {
+  "item": "2-5",
+  "paper": "FA0064",
+  "side": "AI paper",
+  "n_runs": 1,
+  "F": 4,
+  "P": 2,
+  "U": 0,
+  "NA": 0,
+  "pre": {},
+  "default": "S4.119",
+  "source": "v2/verification/structure_cands_1106/echo_results.json (code only: 8-word runs >= 50% or MiniLM cosine >= 0.95)"
+ },
+ "units": [
+  {
+   "id": "S4.117",
+   "sec": "Conclusion",
+   "kind": "6 conclusion sentences",
+   "text": "We presented NLL-guided layer selection, a principled, training-free method for identifying which layers should retain full attention in hybrid sliding-window attention models.",
+   "runs": [],
+   "final": "FAIL",
+   "final_reason": "a copy of Introduction S0.012",
+   "s2": "closest earlier sentence: S0.012 (Introduction)",
+   "found": [
+    "S0.012"
+   ],
+   "found_note": "8-word runs cover 60% of the sentence · cosine 0.91",
+   "judge_line": "",
+   "pair": {
+    "later": {
+     "id": "S4.117",
+     "sec": "Conclusion",
+     "segs": [
+      [
+       "We presented NLL-guided layer selection, a principled, ",
+       false
+      ],
+      [
+       "training-free method for identifying which layers should retain full attention in hybrid sliding-window ",
+       true
+      ],
+      [
+       "attention models.",
+       false
+      ]
+     ]
+    },
+    "earlier": {
+     "id": "S0.012",
+     "sec": "Introduction",
+     "segs": [
+      [
+       "We introduce NLL-guided layer selection, a ",
+       false
+      ],
+      [
+       "training-free method for identifying which layers should retain full attention in hybrid sliding-window ",
+       true
+      ],
+      [
+       "models.",
+       false
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "S4.118",
+   "sec": "Conclusion",
+   "kind": "6 conclusion sentences",
+   "text": "By directly measuring each layer's impact on answer prediction quality, our approach achieves 64.6% accuracy with only 1/4 full-attention layers, matching the 1/2-FA periodic baseline (65.0%) while halving the computational budget.",
+   "runs": [],
+   "final": "FAIL",
+   "final_reason": "a copy of Abstract A03",
+   "s2": "closest earlier sentence: A03 (Abstract)",
+   "found": [
+    "A03"
+   ],
+   "found_note": "8-word runs cover 53% of the sentence · cosine 0.65",
+   "judge_line": "",
+   "pair": {
+    "later": {
+     "id": "S4.118",
+     "sec": "Conclusion",
+     "segs": [
+      [
+       "By directly measuring each layer's impact on answer prediction quality, our approach achieves 64.6% accuracy with ",
+       false
+      ],
+      [
+       "only 1/4 full-attention layers, matching the 1/2-FA periodic baseline (65.0%) while halving the computational budget.",
+       true
+      ]
+     ]
+    },
+    "earlier": {
+     "id": "A03",
+     "sec": "Abstract",
+     "segs": [
+      [
+       "On LongMemEval with Qwen3-4B, our method achieves 64.6% accuracy using ",
+       false
+      ],
+      [
+       "only 1/4 full-attention layers, matching the 1/2-FA periodic baseline (65.0%) while halving the computational budget.",
+       true
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "S4.119",
+   "sec": "Conclusion",
+   "kind": "6 conclusion sentences",
+   "text": "The method outperforms fixed periodic patterns by 10.4 percentage points and attention-based heuristics by 26.4 percentage points.",
+   "runs": [],
+   "final": "FAIL",
+   "final_reason": "a copy of Abstract A04",
+   "s2": "closest earlier sentence: A04 (Abstract)",
+   "found": [
+    "A04"
+   ],
+   "found_note": "8-word runs cover 70% of the sentence · cosine 0.77",
+   "judge_line": "",
+   "pair": {
+    "later": {
+     "id": "S4.119",
+     "sec": "Conclusion",
+     "segs": [
+      [
+       "The method outperforms fixed periodic patterns ",
+       false
+      ],
+      [
+       "by 10.4 percentage points and attention-based heuristics by 26.4 percentage points.",
+       true
+      ]
+     ]
+    },
+    "earlier": {
+     "id": "A04",
+     "sec": "Abstract",
+     "segs": [
+      [
+       "NLL-guided selection outperforms the best periodic 1/4-FA pattern ",
+       false
+      ],
+      [
+       "by 10.4 percentage points and attention-based heuristics by 26.4 percentage points.",
+       true
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "S4.120",
+   "sec": "Conclusion",
+   "kind": "6 conclusion sentences",
+   "text": "Our work has limitations: we evaluate on a single model (Qwen3-4B) and benchmark (LongMemEval).",
+   "runs": [],
+   "final": "PASS",
+   "final_reason": "not a copy",
+   "s2": "closest earlier sentence: A03 (Abstract)",
+   "found": [],
+   "found_note": "8-word runs cover 0% of the sentence · cosine 0.65",
+   "judge_line": "",
+   "pair": {
+    "later": {
+     "id": "S4.120",
+     "sec": "Conclusion",
+     "segs": [
+      [
+       "Our work has limitations: we evaluate on a single model (Qwen3-4B) and benchmark (LongMemEval).",
+       false
+      ]
+     ]
+    },
+    "earlier": {
+     "id": "A03",
+     "sec": "Abstract",
+     "segs": [
+      [
+       "On LongMemEval with Qwen3-4B, our method achieves 64.6% accuracy using only 1/4 full-attention layers, matching the 1/2-FA periodic baseline (65.0%) while halving the computational budget.",
+       false
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "S4.121",
+   "sec": "Conclusion",
+   "kind": "6 conclusion sentences",
+   "text": "Future work should validate across model families and tasks, and explore dynamic per-input layer selection.",
+   "runs": [],
+   "final": "PASS",
+   "final_reason": "not a copy",
+   "s2": "closest earlier sentence: S0.012 (Introduction)",
+   "found": [],
+   "found_note": "8-word runs cover 0% of the sentence · cosine 0.51",
+   "judge_line": "",
+   "pair": {
+    "later": {
+     "id": "S4.121",
+     "sec": "Conclusion",
+     "segs": [
+      [
+       "Future work should validate across model families and tasks, and explore dynamic per-input layer selection.",
+       false
+      ]
+     ]
+    },
+    "earlier": {
+     "id": "S0.012",
+     "sec": "Introduction",
+     "segs": [
+      [
+       "We introduce NLL-guided layer selection, a training-free method for identifying which layers should retain full attention in hybrid sliding-window models.",
+       false
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "S4.122",
+   "sec": "Conclusion",
+   "kind": "6 conclusion sentences",
+   "text": "Nevertheless, NLL-guided selection advances the efficiency-accuracy Pareto frontier for long-context LLM deployment.",
+   "runs": [],
+   "final": "FAIL",
+   "final_reason": "a copy of Abstract A06",
+   "s2": "closest earlier sentence: A06 (Abstract)",
+   "found": [
+    "A06"
+   ],
+   "found_note": "8-word runs cover 67% of the sentence · cosine 0.71",
+   "judge_line": "",
+   "pair": {
+    "later": {
+     "id": "S4.122",
+     "sec": "Conclusion",
+     "segs": [
+      [
+       "Nevertheless, NLL-guided selection advances ",
+       false
+      ],
+      [
+       "the efficiency-accuracy Pareto frontier for long-context LLM deployment.",
+       true
+      ]
+     ]
+    },
+    "earlier": {
+     "id": "A06",
+     "sec": "Abstract",
+     "segs": [
+      [
+       "The method requires only [math] 15 minutes of one-time calibration, advancing ",
+       false
+      ],
+      [
+       "the efficiency-accuracy Pareto frontier for long-context LLM deployment.",
+       true
+      ]
+     ]
+    }
+   }
+  }
+ ]
+}
