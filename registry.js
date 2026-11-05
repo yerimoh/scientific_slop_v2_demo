@@ -442,20 +442,22 @@ const MEASURE = {
     line: 'Two checks, each scored 0–100. The slop score combines them.' },
   '1-4': { unit: 'citation', units: 'citations', who: true,
     stages: [['Find citations', '', CD], ['Connected to other work?', '', CD], ['Connected to this paper?', '', CD], ['Is it a method?', '', CD]],
+    ask: ['What do we evaluate?', 'When the paper cites a method, does it say how that method relates to other work or to this paper?'],
     doc: [
-      [{ p: 'Start with citations in the Introduction and Related Work.' }, { l: 'Collect', t: 'Sentences that cite at least one work.' }, { s: 'Other sections are not checked.' }],
-      [{ p: 'Check the sentence and the one before it.' }, { l: 'Connected if', list: ['it cites multiple works together', 'it names another cited work', 'it continues a comparison from the previous sentence'] }, { s: 'Yes → PASS · No → continue' }],
-      [{ p: 'Look for any comparison or use elsewhere in the paper.' }, { l: 'Connected if the paper', list: ['compares against it', 'uses it', 'builds on it', 'explicitly contrasts with it'] }, { s: 'Yes → PASS · No → continue' }],
-      [{ p: 'We only flag isolated methods.' }, { l: 'Do not flag', t: 'Surveys · benchmarks · datasets · factual citations' }, { s: 'Method → FAIL' }]],
+      [{ p: 'Start with citations in the Introduction and Related Work.' }, { ul: [['Collect', 'sentences that cite at least one work']] }, { s: 'Other sections are not checked.' }],
+      [{ p: 'Check the sentence and the one before it.' }, { p: 'It is connected if the sentence' }, { ul: [['Groups it', 'cites several works together'], ['Names another', 'names another cited work'], ['Continues', 'carries on a comparison from the sentence before']] }, { s: 'Yes → PASS · No → continue' }],
+      [{ p: 'Look for any comparison or use elsewhere in the paper.' }, { p: 'It is connected if the paper' }, { ul: [['Compares', 'reports results against it'], ['Uses', 'uses it or builds on it'], ['Contrasts', 'says explicitly how it differs']] }, { s: 'Yes → PASS · No → continue' }],
+      [{ p: 'We only flag isolated methods.' }, { ul: [['Do not flag', 'surveys, benchmarks, datasets, factual citations']] }, { s: 'Method → FAIL' }]],
     how: [], line: 'A cited method is isolated when the paper mentions it alone and never explains how it relates to other work or to the current paper. All four steps are rules; no model is used.' },
   '2-3': { unit: 'component', units: 'components',
-    stages: [['Component', 'a method / experiment section or a numbered equation', CD], ['Pointers', 'where the paper points to it', CD], ['Used?', 'section: from another section · equation: anywhere', CD], ['Verdict', 'rule, one run', CD]],
-    how: [
-      ['Collect the components', [[CD, 'Body sections and labelled subsections: method, experiments, others.'], [CD, 'Labelled equations and algorithms.'], [CD, 'Not checked: introduction, related work, conclusion, appendix, statements; figures and tables.']]],
-      ['Find the pointers', [[CD, '\\ref, \\cref, \\autoref and similar macros.'], [CD, 'Printed numbers: “Section 4”, “Sec. 3.2”.'], [CD, 'Names: “the previous section”, “in the Method section”.'], [CD, 'Ignored: the introduction’s roadmap, pointers into the appendix.']]],
-      ['Check: used?', [[CD, 'Section → pointed to from another section.'], [CD, 'Equation, algorithm → pointed to anywhere.'], [CD, 'No model judgment.']]],
-      ['Decide PASS / FAIL', [[CD, 'Not used → FAIL. Used → PASS.'], [CD, 'score = FAIL ÷ components.'], [CD, 'Deterministic: one run.']]]],
-    line: 'Code only (v1 cross-section parser). A section fails when no other section points to it; an equation fails when nothing points to it.' },
+    stages: [['Collect the parts', '', CD], ['Find the pointers', '', CD], ['Is it used?', '', CD], ['Verdict', '', CD]],
+    ask: ['What do we evaluate?', 'Is each method section, experiment section and equation used later in the paper?'],
+    doc: [
+      [{ p: 'Take the method and experiment sections and the numbered equations of the main paper.' }, { ul: [['Sections', 'method, experiments and their labelled subsections'], ['Equations', 'numbered equations and algorithms']] }, { s: 'Introduction, related work, conclusion, appendix, figures and tables are not checked.' }],
+      [{ p: 'Find every place where the paper points to one of these parts.' }, { ul: [['References', '\\ref, \\cref and similar macros'], ['Numbers', '“Section 4”, “Sec. 3.2”'], ['Names', '“the previous section”, “in the Method section”']] }, { s: 'The introduction’s roadmap and pointers into the appendix are ignored.' }],
+      [{ p: 'A section is used when another section points to it.' }, { p: 'An equation is used when anything points to it.' }],
+      [{ p: 'Not used → FAIL' }, { p: 'Used → PASS' }, { s: 'Score = FAIL / (FAIL + PASS)' }]],
+    how: [], line: 'Find the method and experiment sections and the equations, then check whether the rest of the paper points back to them.' },
   '2-4': { unit: 'proposition', units: 'propositions',
     stages: [['Figure says', 'one claim of the overview', QV], ['Text says', 'Method / Setup sentence', Q], ['Match?', 'consistent · conflicting · unverifiable', Q], ['Verdict', '3 runs vote', CD]],
     how: [
@@ -464,14 +466,15 @@ const MEASURE = {
       ['Grade the match', [[Q, 'Judge reads transcript, caption and those sentences: consistent · conflicting · unverifiable.']]],
       ['Decide PASS / FAIL / U', [[CD, 'conflicting, with a valid text id → FAIL. consistent → PASS. No matching sentence → U.'], [CD, 'Candidate item: reported separately, outside the 17-item score.']]]],
     line: 'Qwen2.5-VL transcribes the overview figure; Qwen2.5-32B matches each proposition to the text. Three runs vote. Candidate item, reported separately.' },
-  '4-1': { unit: 'sentence', units: 'candidate sentences', plain: true, tags: true,
+  '4-1': { unit: 'sentence', units: 'candidate sentences',
     stages: [['Find the claim', '', CD], ['Separate result from interpretation', '', CD], ['Does it explain the result?', '', H45], ['Verdict', '', CD]],
-    how: [
-      ['', [[CD, 'Find sentences that interpret a result.'], [CD, 'Look for phrases like “This shows …” · “This suggests …” · “…, demonstrating that …”.']]],
-      ['', [[CD, 'Read the surrounding sentences.'], [CD, 'Ignore what the result already tells us. Check only what the interpretation adds.']]],
-      ['', [[H45, 'It counts if it adds:'], [H45, [['WHY', 'Why did this happen?'], ['SCOPE', 'When does it hold, or fail?'], ['ALTERNATIVE', 'What explanation does it rule out?'], ['NEXT', 'What should we test or do next?']]], [H45, 'Just restating the result does not count.']]],
-      ['', [[CD, 'Adds an interpretation → PASS'], [CD, 'Restates the result → FAIL']]]],
-    line: 'After a result, does the sentence only repeat it, or add an interpretation?' },
+    ask: ['What do we evaluate?', 'After a result, does the sentence add an interpretation, or only repeat the result?'],
+    doc: [
+      [{ p: 'Find sentences that interpret a result.' }, { ul: [['Look for', '“This shows …”, “This suggests …”, “…, demonstrating that …”']] }],
+      [{ p: 'Read the surrounding sentences and split the result from what is said about it.' }, { s: 'Only the interpretation is checked.' }],
+      [{ p: 'It counts if it adds one of these:' }, { ul: [['Why', 'why did this happen?'], ['Scope', 'when does it hold, or fail?'], ['Alternative', 'what explanation does it rule out?'], ['Next', 'what should be tested or done next?']] }, { s: 'Restating the result in other words does not count.' }],
+      [{ p: 'Adds an interpretation → PASS' }, { p: 'Restates the result → FAIL' }, { s: 'Score = FAIL / (FAIL + PASS)' }]],
+    how: [], line: 'After a result, does the sentence only repeat it, or add an interpretation?' },
   '4-2': { unit: 'term', units: 'terms', plain: true,
     stages: [['Find the paper’s own terms', '', H], ['Would a reader know it?', '', H], ['Where is it first explained?', '', H], ['Verdict', '', CD]],
     ask: ['What do we evaluate?', 'When a term of the paper first appears with a result, has the reader been told what it means?'],
@@ -481,28 +484,30 @@ const MEASURE = {
       [{ p: 'Find the first sentence that says what the term means, in any words.' }, { ul: [['At first use', 'the sentence itself, the two before, or the one after'], ['Later', 'a later section, a caption, the appendix']] }, { s: 'The quoted words must be in that sentence.' }],
       [{ p: 'Look at the sentence where the term first appears.' }, { p: 'A result number (%, ×, a score) and no explanation until a later section, or none → FAIL' }, { p: 'Explained at first use or in the same section → PASS' }, { s: 'Score = FAIL / (FAIL + PASS)' }]],
     how: [], line: 'Find the paper’s own terms, then check whether the first sentence that reports a result in them has been explained.' },
-  '2-5': { unit: 'sentence', units: 'conclusion sentences', plain: true,
-    stages: [['Take the conclusion', '', CD], ['Find its twin', '', CD], ['Copied?', '', CD], ['Count', '', CD]],
-    how: [
-      ['', [[CD, 'Use every conclusion sentence of 8 or more words. Captions are left out.']]],
-      ['', [[CD, 'For each one, find the closest sentence in the abstract or the introduction.']]],
-      ['', [[CD, 'It is a copy when the two share runs of 8 words covering at least half of the conclusion sentence, or when their meaning is almost the same (cosine 0.95 or more).'], [CD, 'The same point with a new number or a new implication is not a copy.']]],
-      ['', [[CD, 'Copied → FAIL'], [CD, 'Not copied → PASS'], [CD, 'Code only, no model, one run.']]]],
-    line: 'Compare each conclusion sentence with the abstract and the introduction, and count the copies.' },
+  '2-5': { unit: 'sentence', units: 'conclusion sentences',
+    stages: [['Take the conclusion', '', CD], ['Find its twin', '', CD], ['Copied?', '', CD], ['Verdict', '', CD]],
+    ask: ['What do we evaluate?', 'Does the conclusion say something new, or copy the abstract and the introduction?'],
+    doc: [
+      [{ p: 'Take every conclusion sentence of 8 or more words.' }, { s: 'Captions are left out.' }],
+      [{ p: 'For each one, find the closest sentence in the abstract or the introduction.' }],
+      [{ p: 'It is a copy when shared 8-word runs cover at least half of the conclusion sentence, or when the meaning is almost the same (cosine 0.95 or more).' }, { s: 'The same point with a new number or a new implication is not a copy.' }],
+      [{ p: 'Copied → FAIL' }, { p: 'Not copied → PASS' }, { s: 'Score = FAIL / (FAIL + PASS)' }]],
+    how: [], line: 'Compare each conclusion sentence with the abstract and the introduction, and count the copies.' },
   '4-4': { unit: 'section', units: 'body sections',
-    stages: [['Section', 'a body section, sentence by sentence', CD], ['Earlier twin', 'closest sentence in an earlier section', CD], ['Same?', '8-word runs ≥ 50% or cosine ≥ 0.95', CD], ['Verdict', 'one repeat → slop section', CD]],
-    how: [
-      ['Select the sections', [[CD, 'Body sections: introduction, related work, method, experiments, others.'], [CD, 'Not scored: abstract, conclusion, appendix, ethics / reproducibility statements.'], [CD, 'Sentences of ≥8 tokens. Excluded: captions, formula-heavy sentences, explicit recaps (“as mentioned”).']]],
-      ['Find the earlier twin', [[CD, 'For each sentence: the closest earlier sentence in a different section. The abstract counts as an earlier section.'], [CD, 'Candidates: a shared 8-word run, or MiniLM cosine ≥ 0.75 with content-word Jaccard ≥ 0.2.']]],
-      ['Check: same sentence?', [[CD, 'Repeat → 8-word runs shared with earlier sections cover ≥ 50% of the sentence, or MiniLM cosine ≥ 0.95.'], [CD, 'Same topic in new words with new content → below both bars → not a repeat.'], [CD, 'No model judgment.']]],
-      ['Score the section', [[CD, '≥1 repeat in the section → FAIL. Otherwise → PASS.'], [CD, 'score = FAIL sections ÷ body sections.'], [CD, 'Deterministic: one run.']]]],
-    line: 'Code only. A body section fails when one of its sentences is a near-copy of a sentence in an earlier section or the abstract.' },
+    stages: [['Take the body sections', '', CD], ['Find the earlier twin', '', CD], ['Same sentence?', '', CD], ['Verdict', '', CD]],
+    ask: ['What do we evaluate?', 'Does a body section repeat sentences the reader has already read?'],
+    doc: [
+      [{ p: 'Split each body section into sentences of 8 or more words.' }, { ul: [['Checked', 'introduction, related work, method, experiments, others'], ['Not checked', 'abstract, conclusion, appendix, statements']] }, { s: 'Captions, formula-heavy sentences and recaps such as “as mentioned” are left out.' }],
+      [{ p: 'For each sentence, find the closest sentence in an earlier section.' }, { s: 'The abstract counts as an earlier section.' }],
+      [{ p: 'It is a repeat when shared 8-word runs cover at least half of the sentence, or when the meaning is almost the same (cosine 0.95 or more).' }, { s: 'The same topic in new words with new content is not a repeat.' }],
+      [{ p: 'At least one repeat in the section → FAIL' }, { p: 'No repeat → PASS' }, { s: 'Score = FAIL / (FAIL + PASS), over body sections' }]],
+    how: [], line: 'Compare each body sentence with the sections before it, and count the sections that repeat one.' },
   '1-3': { unit: 'paper', units: 'papers', paper: true,
-    stages: [['Check for quantitative results', '', CD], ['Look for actual examples', '', CD], ['Decide', '', CD]],
-    ask: ['Question', 'Does the paper show actual examples, not just aggregate results?'],
+    stages: [['Check for quantitative results', '', CD], ['Look for actual examples', '', CD], ['Verdict', '', CD]],
+    ask: ['What do we evaluate?', 'Does the paper show actual examples, not just aggregate results?'],
     doc: [
       [{ p: 'Apply this check only to papers that report numerical experimental results.' }, { s: 'No result table → NA' }],
-      [{ p: 'Search the main paper and appendix for actual inputs, outputs, successes, or failures.' }, { l: 'Examples include', list: ['prompts / inputs / outputs', 'generated outputs', 'success or failure cases', 'qualitative examples / case studies'] }, { s: 'Analysis text or a table of aggregate scores does not count.' }],
+      [{ p: 'Search the main paper and appendix for actual inputs, outputs, successes, or failures.' }, { ul: [['Inputs', 'prompts or inputs given to the method'], ['Outputs', 'what the method generated'], ['Cases', 'a success or failure case, a qualitative example, a case study']] }, { s: 'Analysis text or a table of aggregate scores does not count.' }],
       [{ p: 'At least one actual example → PASS' }, { p: 'Numbers only → FAIL' }]],
     how: [], line: 'Does the paper only say 87.6%, or does it also show what the model actually produced?' },
   '4-5': { unit: 'figure', units: 'method figures', kinds: true,
@@ -1362,7 +1367,7 @@ function measureSteps(it) {
   const docBody = bs => bs.map(b => b.p ? h('p', { class: 'dc-p', text: b.p }) : b.ul ? h('ul', { class: 'dc-ul' }, ...b.ul.map(([l, t]) => h('li', {}, h('b', { text: l + ': ' }), t)))
     : b.list ? h('div', { class: 'dc-g' }, h('span', { class: 'dc-l', text: b.l }), h('ul', {}, ...b.list.map(t => h('li', { text: t }))))
     : b.l ? h('div', { class: 'dc-g' }, h('span', { class: 'dc-l', text: b.l }), h('p', { text: b.t })) : b.s ? h('p', { class: 'dc-s', text: b.s }) : null);
-  const DOCW = { code: ['rule', 'Rule'], 'code+reader': ['rule', 'Rule + one reader'], 'Qwen-VL': ['llm', 'VLM (Qwen2.5-VL-32B)'] };
+  const DOCW = { code: ['rule', 'Rule'], 'code+reader': ['rule', 'Rule + one reader'], 'Qwen-VL': ['llm', 'VLM (Qwen2.5-VL-32B)'], 'Haiku 4.5': ['llm', 'LLM (Haiku 4.5)'] };
   const docWho = w => { const [c, t] = DOCW[w] || ['llm', 'LLM (Haiku)']; return h('span', { class: 'dc-who ' + c, text: t }); };
   const whoTag = w => doc ? (w === 'paper' ? null : docWho(w)) : (m.tags && w !== 'paper') ? h('span', { class: 'dc-who ' + (w === 'code' ? 'rule' : 'llm'), text: w === 'code' ? 'Rule' : 'LLM (' + w + ')' }) : (plain || w === 'paper') ? null : h('span', { class: 'rs-who ' + (w === 'code' ? 'rule' : 'model'), text: w === 'code' ? 'rule' : w.includes('code') ? 'model + rule' : 'model' });
   const ex = m.stages.map(() => h('div', { class: 'rs-ex' }, h('span', { class: 'rs-wait', text: '…' })));
@@ -1413,9 +1418,8 @@ function measureSteps(it) {
     if (m.kinds) { const mt = data.meta; score.replaceChildren(`${mt.side} ${mt.paper} · ${mt.kinds} of 6 kinds → score `, h('b', { text: (mt.kinds / 6).toFixed(2) }), ` · Human pair ${mt.hu_paper}: ${mt.hu_kinds} of 6 → ${(mt.hu_kinds / 6).toFixed(2)}`); return; }
     if (m.cost) { score.replaceChildren(`${data.meta.side} ${data.meta.paper} · Missing Cost Accounting `, h('b', { class: 'big', text: String(data.meta.cost) }), ' / 100 → ', h('b', { class: 'v-F', text: data.meta.cost ? 'PASS' : 'FAIL' })); return; }
     if (m.paper) { const g = data.meta.rate; score.replaceChildren('One verdict per paper. Across the benchmark, ', h('b', { class: 'big', text: g.ai }), ` of AI papers (${g.n_ai}) and `, h('b', { class: 'big', text: g.hu }), ` of human papers (${g.n_hu}) report numbers only.`); return; }
-    if (data.meta.score_den) { const N = data.meta.score_den; score.replaceChildren(h('b', { class: 'big', text: `${F} of ${N}` }), ` ${m.units} are isolated → `, h('b', { class: 'big', text: Math.round(100 * F / N) + '%' }), h('small', { class: 'ms-sub', text: `${data.meta.side} ${data.meta.paper} · Human pair: ${Math.round(100 * (data.meta.hu_score || 0))}%` })); return; }
-    if (m.plain) { score.replaceChildren(`Score = FAIL / (FAIL + PASS). ${data.meta.side} ${data.meta.paper}: ${F} / ${D} = ${D ? (F / D).toFixed(2) : '—'}` + (UU ? `, ${UU} U not counted.` : '.')); return; }
-    score.replaceChildren(`${data.meta.side} ${data.meta.paper} · ${U.length} ${m.units} · score = FAIL ÷ (FAIL + PASS) = `, h('b', { text: `${F} ÷ ${D}` }), ' = ', h('b', { class: 'big', text: D ? (F / D).toFixed(2) : '—' }), UU ? ` · ${UU} U, not counted` : '');
+    if (data.meta.score_den) { const N = data.meta.score_den; score.replaceChildren(`${data.meta.side} ${data.meta.paper} · ${F} of ${N} ${m.units} isolated → score `, h('b', { text: Math.round(100 * F / N) + '%' }), ` · Human pair ${Math.round(100 * (data.meta.hu_score || 0))}%`); return; }
+    score.replaceChildren(`${data.meta.side} ${data.meta.paper} · ${F} of ${D} ${m.units} FAIL → score `, h('b', { text: D ? (F / D).toFixed(2) : '—' }), UU ? ` · ${UU} U not counted` : '');
   }).catch(() => ex.forEach(e => e.replaceChildren(h('span', { class: 'rs-wait', text: 'run data not loaded' }))));
   return box;
 }

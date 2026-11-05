@@ -1484,9 +1484,9 @@ mark.cx-e { color: inherit; background: rgba(255, 214, 10, .38); border-radius: 
 .eb-vd b { font-family: inherit; font-weight: 650; }
 .eb-vd .v-F, .eb-vd .v-P { color: inherit; }
 .eb-vd small { font-size: 13px; }
-.pt .mw-score, .pt-comb { font-size: 14px; }
-.pt .mw-score b, .pt .mw-score .big, .pt-comb b, .pt-comb .big { font-family: inherit; font-size: inherit; font-weight: 650; color: var(--ink); }
-.pt .mw-score .v-F, .pt-comb .v-F { color: var(--ink); }
+.pt .mw-score, .pt-comb, .rs-wrap.doc .mw-score, .rs-wrap.doc .mw-score.small { font-size: 14px; color: var(--ink-2); }
+.pt .mw-score b, .pt .mw-score .big, .pt-comb b, .pt-comb .big, .rs-wrap.doc .mw-score b, .rs-wrap.doc .mw-score .big { font-family: inherit; font-size: inherit; font-weight: 650; color: var(--ink); }
+.pt .mw-score .v-F, .pt-comb .v-F, .rs-wrap.doc .mw-score .v-F { color: var(--ink); }
 .pt-comb .pt-cl { text-transform: none; letter-spacing: 0; font-size: 13px; }
 .eb-kv dd.bad { color: var(--ink); }
 .eb-img { margin: 0; } .eb-img img { display: block; width: 100%; height: auto; border: 1px solid var(--hair, #ddd); border-radius: 4px; background: #fff; }
