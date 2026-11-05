@@ -1286,7 +1286,7 @@ body::after { display: none; }
 .res-tbl td { text-align: right; color: var(--ink); padding: 5px 0 5px 14px; border-bottom: 1px solid var(--line); }
 .res-tbl td:first-child { text-align: left; padding-left: 0; color: var(--ink-2); }
 .res-tbl tr.has td:first-child { color: var(--ink); font-weight: 600; }
-.res-tbl .res-id { display: inline-block; width: 30px; color: var(--ink-4); font-size: 12px; }
+.res-tbl .res-id { display: inline-block; width: 36px; white-space: nowrap; color: var(--ink-4); font-size: 12px; }
 .res-tbl tr.res-g td { text-align: left; padding: 12px 0 4px; font-size: 12px; font-weight: 600; letter-spacing: .02em; border-bottom: 0; }
 .res-tbl tr.res-g td { color: var(--ac); }
 .res-note { margin: 8px 0 0; font-size: 12.5px; color: var(--ink-3); line-height: 1.5; }
