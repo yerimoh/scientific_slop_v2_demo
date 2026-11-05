@@ -93,13 +93,12 @@ const PIC = {
   '3-1': () => row([E.chip('layer 12 of 32', C.art), E.miss(C.art), E.ask(['why 12?'])]),
   '4-1': () => row([E.para('§1 Introduction', 'this holds exciting promise …', C.struct)]),
   '4-2': () => row([E.chip('retrieval rate', C.art), E.miss(C.art), E.ask(['= ?'])]),
-  '4-3': () => row([E.para('§4.1 Data', 'folder layout · renamed files · scratch dirs', C.struct, { box: true })]),
   '4-4': () => row([E.card('§3 · Method', inner.chip('destroys saliency', C.struct)), E.eq(), E.card('§4 · Experiments', inner.chip('destroys saliency', C.struct))]),
   '4-5': () => row([E.card('Figure 1', inner.bars(), { lines: false }), E.miss(C.art), E.ask(['L8 in the text?'])]),
   '5-4': () => row([E.chip('0.3, "typically considered"', C.arg), E.miss(C.arg), E.ask(['by whom?', '[ ? ]'])]),
 };
 // what the pattern looks like, one line under each scene
-const CAP = { '1-1': 'a claim with nothing behind it', '1-2': 'claim wider than its evidence', '1-3': 'numbers only, no example', '1-4': 'cited, related to nothing', '2-1': 'the bad news never reaches the front', '2-3': 'used later, never pointed back to', '3-1': 'a choice with no reason', '4-1': 'delete it and nothing is lost', '4-2': 'a term with no meaning', '4-3': 'detail the reader never needs', '4-4': 'the same sentence, another section', '4-5': 'a result only the figure reports', '5-4': 'a source that is not there' };
+const CAP = { '1-1': 'a claim with nothing behind it', '1-2': 'claim wider than its evidence', '1-3': 'numbers only, no example', '1-4': 'cited, related to nothing', '2-1': 'the bad news never reaches the front', '2-3': 'used later, never pointed back to', '3-1': 'a choice with no reason', '4-1': 'delete it and nothing is lost', '4-2': 'a term with no meaning', '4-4': 'the same sentence, another section', '4-5': 'a result only the figure reports', '5-4': 'a source that is not there' };
 // hero: a paper spine with the five kinds of broken connection
 function heroSvg() {
   const secs = [['Abstract', 4], ['Introduction', 42], ['Method', 80], ['Experiments', 118], ['Conclusion', 156]];
@@ -177,18 +176,12 @@ const ITEMS = [
     judge: ['Fix the intended reader and field.', 'Can the meaning be recovered from context, equations, or a cited definition?', 'Several names for one thing is a naming inconsistency, logged separately.'],
     not: ['Standard terms in their usual sense.', 'Meaning clear from an equation.'],
     fix: ['Explain the operation, object, or role.', 'Not a fix: expanding an acronym; swapping in another abstract word.'] },
-  { id: '4-3', area: 4, name: 'Irrelevant Detail', what: 'Detail that helps no one understand, check, or reproduce the study.',
-    ex: { made: true, src: 'Constructed example · no instance in the three verified pairs', sec: '§4.1 Data', pre: 'After tokenization, ', mark: 'we reorganized the working directory, renamed intermediate files by date, and merged two scratch folders', post: ' before training.', note: 'None of this affects a result. It buries the preprocessing steps that do.' },
-    judge: ['Would removing it lose anything needed to understand, check, or reproduce?', 'Keep needed method and data detail even when it is off the core contribution.', 'Section-length balance decides nothing.'],
-    not: ['Preprocessing and collection details needed to reproduce.', 'Information about failure conditions.'],
-    fix: ['Remove content with no role; keep what reproduction needs.', 'Not a fix: cutting reproduction detail to shorten.'],
-    borders: [['4-4', 'the same content again'], ['4-1', 'empty rather than extra']] },
   { id: '4-4', area: 4, name: 'Redundant Repetition', v1: 'Macro redundancy', what: 'Content is said again with no new information and no summary role.',
     ex: { spec: 'As Table 2 shows, our model beats all baselines on both datasets.', specnote: '§1 Introduction already says this in almost the same words. §4 adds nothing.', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments', pre: '', mark: 'These results demonstrate that the ratio formula does not remove positional bias---it destroys useful saliency signal.', post: '', note: 'The method section already states this conclusion with its numbers. The experiments section repeats it in the same words and drops the numbers.' },
     judge: ['Find the closest earlier sentence in another section, abstract included.', 'A near-copy counts: 8-word runs cover half the sentence, or cosine ≥ 0.95.', 'One repeat makes the section slop.'],
     not: ['The abstract and the conclusion (not scored).', 'The same point in new words with new content.'],
     fix: ['Cut it, or put the missing analysis there.', 'Not a fix: paraphrase.'],
-    borders: [['4-1', 'empty regardless of repetition'], ['4-3', 'extra detail']] },
+    borders: [['4-1', 'empty regardless of repetition']] },
   { id: '4-5', area: 4, name: 'Unclear Figures', v1: 'Figure exposition', what: 'A figure’s parts and relations cannot be read from the figure, its caption, or the text.',
     ex: { spec: 'Overview of the proposed framework.', specnote: 'Which arrows carry data and which carry gradients? What do the colors mean? Nothing says.', src: 'AI paper · SciSlopBench FA0280 · Figure 1, text inside the figure', pre: 'Key Insight: Deeper Layers = Better Token Selection · ', mark: 'L2 55% · L4 39% · L8 69% · L12 66%', post: '', note: 'The L8 result appears in no table or sentence, and it is higher than the layer the paper chose. The L2 bar is D²Pruner with debiasing, not raw L2.' },
     judge: ['Fix the figure’s purpose first.', 'Can the needed elements, symbols, axes, and flows be read from the figure plus its explanation?', 'Decoration count and caption length decide nothing.'],
@@ -236,9 +229,6 @@ const DEF = {
   '4-2': { what: 'The paper leans on a term it never defines.',
     q: [{ pre: 'This occurs because LLaMA-3.1-8B-Instruct has a ', mark: 'low retrieval rate (<14%)', post: ', limiting the effectiveness of consensus-based validation.', src: 'AI paper · SciSlopBench FA0083 · §4 Experiments' }],
     note: 'The paper’s main negative result is explained by this number. “Retrieval rate” is never defined and no table reports it, so the reader cannot tell what 14% is a share of.' },
-  '4-3': { what: 'The paper spends words on details that help no one understand, check, or repeat the study.',
-    q: [{ pre: 'After tokenization, ', mark: 'we reorganized the working directory, renamed intermediate files by date, and merged two scratch folders', post: ' before training.', src: 'Constructed example · no instance in the three verified pairs' }],
-    note: 'None of this changes a result. It sits between the preprocessing steps that do, and hides them.' },
   '4-4': { what: 'The paper says the same thing again, with nothing new and no reason to repeat it.',
     q: [{ pre: '', mark: 'These results demonstrate that the ratio formula does not remove positional bias---it destroys useful saliency signal.', post: '', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments' },
         { pre: 'Consequently, ', mark: 'the ratio formula in Equation 3 does not remove positional bias---it destroys useful saliency signal', post: ', resulting in only 13.24% grounding accuracy compared to 38.70% with raw attention at the same layer.', src: 'Same paper · §3 Method' }],
@@ -289,7 +279,7 @@ function hbars(rows, o = {}) { // rows: [label, value, {color, bold, note}]
   return `<svg class="v-chart" viewBox="0 0 ${W} ${H}" font-family="Inter, system-ui, sans-serif">${s}</svg>`;
 }
 const FINDINGS = [
-  { id: 'f1', q: 'How does AI slop differ from human poor writing?', a: 'Human and AI papers on the same 13 items, author hidden.',
+  { id: 'f1', q: 'How does AI slop differ from human poor writing?', a: 'Human and AI papers on the same 12 items, author hidden.',
     compare: 'Human-written papers and AI-generated papers. The judge never sees the author; the label is joined afterwards.',
     measure: 'The distribution of each item in each group: how often, how severe, and in what concrete form. Which slop is shared, which is AI’s alone.',
     v1: 'Six counting measures already pick the AI paper in 85.9% of 390 matched pairs; the best AI-text detector reaches 68.7%.',
@@ -326,7 +316,6 @@ const PAGE = {
   ],
   right: [
     { h: '4  Experiments', sub: '4.1  Setup', p: [A('gqa', 'We evaluate on long-document QA.'), ' ', M('3-1'), ' ', G('g31', 'why? effect on the long-input claim?'), ' ', G('g11', 'no label-noise experiment')], lines: 1 },
-    { p: ['After tokenization, ', M('4-3'), ' before training.'], lines: 1 },
     { sub: '4.2  Results', p: ['Table 3 ablates the alignment term. ', M('2-3')], lines: 1 },
     { p: ['Adding the auxiliary loss improves BLEU by 1.8 points.'], lines: 1 },
     { p: ['Table 2 reports the main results. ', M('4-4')], lines: 1 },
@@ -347,17 +336,16 @@ const FAIL = {
   '3-1': { to: 'g31', label: 'excluded, no reason given' },
   '4-1': { to: 'g41', label: 'says nothing about this paper' },
   '4-2': { to: 'g42', label: 'never defined' },
-  '4-3': { self: true, label: 'no result depends on this' },
   '4-4': { to: 'g44', label: 'the same sentence as in §1', eq: true, from: '§1 Introduction', at: '§4.2 Results' },
   '4-5': { to: 'gfig', label: 'arrows and colors never explained' },
   '5-4': { to: 'gref', label: '[12] covers fixed step sizes only' },
 };
 const PLANES = { structure: { title: 'Structure', q: 'Do the sections build on one another?' }, argument: { title: 'Argument', q: 'Are the claims and citations argued?' }, artifacts: { title: 'Artifacts', q: 'Can the method and the evidence be inspected?' } };
-const PLANE_OF = { '2-1': 'structure', '2-3': 'structure', '4-1': 'structure', '4-3': 'structure', '4-4': 'structure',
+const PLANE_OF = { '2-1': 'structure', '2-3': 'structure', '4-1': 'structure', '4-4': 'structure',
   '1-1': 'argument', '1-2': 'argument', '1-4': 'argument', '5-4': 'argument',
   '1-3': 'artifacts', '3-1': 'artifacts', '4-2': 'artifacts', '4-5': 'artifacts' };
 const PLANE_C = { structure: '#7E4E66', argument: '#E4959E', artifacts: '#56717B' };   // site planes: structure/artifacts in their deep shade so structure and argument separate
-// the page groups the thirteen items by the index's three planes; the 1-5 area numbers stay in the item ids
+// the page groups the twelve items by the index's three planes; the 1-5 area numbers stay in the item ids
 const GROUPS = [
   { n: 1, key: 'structure', cls: 'p-structure', title: 'Structure', q: 'Do the sections build on one another?' },
   { n: 2, key: 'argument', cls: 'p-argument', title: 'Argument', q: 'Are the claims and citations argued?' },
@@ -366,7 +354,7 @@ const GROUPS = [
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
 const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'The claim goes further than the evidence.', '1-3': 'Results, but not one example shown.', '1-4': 'Cited, but never related to this paper.',
   '2-1': 'The key finding is missing from the abstract.', '2-3': 'Set up in one section, never pointed back to.', '3-1': 'A design choice with no reason given.',
-  '4-1': 'Says nothing about this paper.', '4-2': 'A term that is never defined.', '4-3': 'Detail that no result depends on.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
+  '4-1': 'Says nothing about this paper.', '4-2': 'A term that is never defined.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
   '5-4': 'The cited source says something else.' };
 for (const it of ITEMS) it.short = SHORT[it.id];
 const BY_ID = Object.fromEntries(ITEMS.map(i => [i.id, i]));
@@ -446,7 +434,7 @@ renderPage();
 const PAPER = (x, y, w, h, label, marks) => K.card(x, y, w, h, label) + K.lines(x + 3, y + 7, w - 6, 3, { gap: 3.2, last: .6 }) + (marks || []).map(([mx, my, mw, col]) => K.box(x + mx, y + my, mw, 2.6, { fc: col, ec: col, r: .8 })).join('');
 const PERSON = (x, y, col) => `<circle cx="${x}" cy="${y}" r="2.6" fill="${col}"/><path d="M${x - 4.6} ${y + 9.5} a4.6 4.6 0 0 1 9.2 0z" fill="${col}"/>`;
 const ROBOT = (x, y, col) => K.box(x - 3.4, y - 2.6, 6.8, 6, { fc: col, ec: col, r: 1 }) + `<rect x="${x - 2}" y="${y - 1}" width="1.4" height="1.4" fill="#fff"/><rect x="${x + .6}" y="${y - 1}" width="1.4" height="1.4" fill="#fff"/><line x1="${x}" y1="${y - 2.6}" x2="${x}" y2="${y - 4.5}" stroke="${col}" stroke-width=".8"/>` + K.box(x - 4.6, y + 4.4, 9.2, 5, { fc: col, ec: col, r: 1 });
-const MINI_CAP = {"f1": "Human and AI papers, same 13 items, author hidden", "f2": "Slop against review scores, year by year and venue by venue", "f3": "One paper, one human review and one AI review", "f4": "Each review remark matched to the slop it points at"};
+const MINI_CAP = {"f1": "Human and AI papers, same 12 items, author hidden", "f2": "Slop against review scores, year by year and venue by venue", "f3": "One paper, one human review and one AI review", "f4": "Each review remark matched to the slop it points at"};
 const MINI = {
   f1: () => `<img src="img/q1.png" alt="An AI paper that looks polished next to a human paper full of red marks">`,
   f2: () => `<img src="img/q2_v2.png" alt="Clean and sloppy AI papers, reviewers' star ratings, and the scores plotted by year and by venue">`,
@@ -551,14 +539,6 @@ const MEASURE = {
       ['Search for a definition', [[CD, 'Code first: parenthetical expansion (“Self-Recall Error (SRE)”) or a same-paragraph cue (“we call”, “is defined as”, “denotes”).'], [Q, 'Otherwise search the paper: defined here (id) · standard term · undefined · name variant.'], [Q, 'Still undefined: judge re-reads every use. Expanding an abbreviation, or “X is our X module”, is not a definition.']]],
       ['Decide PASS / FAIL / NA', [[CD, 'Valid definition → PASS. Standard term or name → NA. Undefined after both passes → FAIL. Name variants recorded separately.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
     line: 'Code finds the terms and easy definitions; Qwen2.5-32B searches for the rest and re-reads every use. Three runs vote.' },
-  '4-3': { unit: 'sentence', units: 'sentences',
-    stages: [['Sentence', 'eligible prose', CD], ['Role', 'understand · check · reproduce · limits', Q], ['Any role?', 'or none', Q], ['Verdict', '3 runs vote', CD]],
-    how: [
-      ['Select the sentences', [[CD, 'All eligible prose sentences, as in 4-1.']]],
-      ['Flag sentences with no role', [[Q, 'Flag sentences that serve no reader need (understanding, checking, reproducing, reading the limits): file-renaming history, anecdotes, implementation chatter unrelated to results.']]],
-      ['Confirm in context', [[Q, 'Judge re-reads each flag in context. Preprocessing exceptions, hardware, data constraints, failure conditions count as needed.']]],
-      ['Decide PASS / FAIL', [[CD, 'Confirmed → FAIL. Near zero in conference-length papers; the sample shows three unflagged sentences.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS) over all eligible sentences.']]]],
-    line: 'Qwen2.5-32B flags sentences that serve no reader need; a second call confirms in context. Rare in conference papers.' },
   '4-4': { unit: 'section', units: 'body sections',
     stages: [['Section', 'a body section, sentence by sentence', CD], ['Earlier twin', 'closest sentence in an earlier section', CD], ['Same?', '8-word runs ≥ 50% or cosine ≥ 0.95', CD], ['Verdict', 'one repeat → slop section', CD]],
     how: [
@@ -694,10 +674,6 @@ Inserting model or dataset names to make a sentence look specific is not a fix.`
   '4-2': `# Fix · Undefined Terms (4-2)
 For every term or abbreviation the intended reader cannot interpret from context, give its operation, object, or role where it first appears, or cite the definition.
 Expanding an acronym or swapping in another abstract word is not enough. If one thing has several names, pick one.`,
-  '4-3': `# Fix · Irrelevant Detail (4-3)
-For each passage, ask whether removing it loses anything needed to understand, check, or reproduce the study.
-Remove what has no role; keep every preprocessing, data, and failure-condition detail that reproduction needs.
-Cutting reproduction detail to shorten the paper is not a fix.`,
   '4-4': `# Fix · Redundant Repetition (4-4)
 Find each body sentence that copies, almost word for word, a sentence from the abstract or an earlier section.
 Cut it, point back to where it was first said, or replace it with what is new at this point (a number, a condition, an interpretation).
@@ -866,7 +842,7 @@ function openHash() {
 document.addEventListener('click', e => { const a = e.target.closest('a[data-xref], a.ql, a.atile'); if (!a) return; e.preventDefault(); history.pushState({}, '', a.getAttribute('href')); openHash(); });
 addEventListener('hashchange', openHash);
 // ------------------------------------------------------------------ studio: the specimen page under a lens, one slop at a time, votes beside it
-const PAGE_ORDER = ['2-1', '1-2', '4-1', '1-4', '5-4', '4-2', '4-5', '3-1', '4-3', '2-3', '4-4', '1-3', '1-1'];
+const PAGE_ORDER = ['2-1', '1-2', '4-1', '1-4', '5-4', '4-2', '4-5', '3-1', '2-3', '4-4', '1-3', '1-1'];
 const tally = id => hub.votes[id] || { up: 0, down: 0 };
 const nCases = id => hub.cases.filter(c => c.item === id).length;
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
@@ -941,8 +917,8 @@ function showFix(id) { const box = $('#sp-body .sp-fix'); if (box) { box.hidden 
 const clip = (t, n) => (t = String(t || '').replace(/\s+/g, ' ').trim()).length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t;
 const cap1 = t => t.charAt(0).toUpperCase() + t.slice(1);
 function srcParts(src) { const m = String(src || '').split(' · '); return [h('span', { class: 'snip-who', text: m[0] || '' }), h('span', { text: m.slice(1).join(' · ') })]; }
-// six v1 measures → thirteen slops, drawn as a hand-ruled tree; the caption under the page says what the chosen slop is
-const TREE = [['Argument graph', ['1-1', '1-2', '5-4']], ['Evidence gap', ['1-3']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4']], ['Figure exposition', ['4-5']], [null, ['2-1', '3-1', '4-1', '4-2', '4-3']]];
+// six v1 measures → twelve slops, drawn as a hand-ruled tree; the caption under the page says what the chosen slop is
+const TREE = [['Argument graph', ['1-1', '1-2', '5-4']], ['Evidence gap', ['1-3']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4']], ['Figure exposition', ['4-5']], [null, ['2-1', '3-1', '4-1', '4-2']]];
 // results so far, on the 123 AI / human pairs; an item stays blank until its measure is final
 const RESULTS = { '2-3': { ai: '0.92', hu: '0.59', auc: '0.88', prec: '—' }, '4-4': { ai: '0.49', hu: '0.13', auc: '0.90', prec: '0.83' } };
 $('#sm-res').replaceChildren(h('table', { class: 'res-tbl' },
@@ -997,7 +973,7 @@ function renderStrip() {
     c.classList.toggle('on', on); c.setAttribute('aria-pressed', String(on));
     c.querySelector('.bk-r').textContent = String(i + 1).padStart(2, '0');
     c.querySelector('.bk-v').textContent = up ? '▲' + up : '';
-    c.querySelector('.bk-cv').textContent = `${String(i + 1).padStart(2, '0')} / 13 · ${up} ran into it`;
+    c.querySelector('.bk-cv').textContent = `${String(i + 1).padStart(2, '0')} / 12 · ${up} ran into it`;
     strip.append(c);
   });
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) for (const [el, y] of before) { const dy = y - el.offsetTop; if (dy) el.animate([{ transform: `translateY(${dy}px)` }, { transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.2,.7,.2,1)' }); }
