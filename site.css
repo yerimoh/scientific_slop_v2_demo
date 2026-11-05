@@ -1554,3 +1554,9 @@ a.tm:hover .tm-name { text-decoration: underline; text-underline-offset: 3px; }
 .qx-q:hover .qk, .qx-q.on .qk { opacity: 1; }
 .qx-q.on .qk { background-image: linear-gradient(90deg, var(--structure-deep), var(--argument-deep) 55%, var(--artifacts-deep)); }
 .xm .xm-stamp.sm { font-size: 10px; }
+/* question key words, readable: text keeps its colour, a soft three-colour marker band sits under the lower part */
+.qx-t .qk, .qx-q.on .qk { color: inherit; -webkit-text-fill-color: currentColor; opacity: 1;
+  background-image: linear-gradient(90deg, color-mix(in srgb, var(--structure) 30%, transparent), color-mix(in srgb, var(--argument) 30%, transparent) 55%, color-mix(in srgb, var(--artifacts) 30%, transparent));
+  -webkit-background-clip: border-box; background-clip: border-box; background-repeat: no-repeat; background-position: 0 92%; background-size: 100% .38em; border-radius: 2px; }
+.qx-q:not(.on) .qk { background-image: linear-gradient(90deg, color-mix(in srgb, var(--structure) 16%, transparent), color-mix(in srgb, var(--argument) 16%, transparent) 55%, color-mix(in srgb, var(--artifacts) 16%, transparent)); }
+.qx-q:hover .qk { opacity: 1; }
