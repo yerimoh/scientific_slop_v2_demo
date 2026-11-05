@@ -6,9 +6,9 @@
   "title": "Execution-Signature Recycling: Deduplicating Unit-Test Failure Feedback for Test-Time Code Scaling",
   "n_runs": 1,
   "F": 6,
-  "P": 6,
+  "P": 9,
   "U": 0,
-  "NA": 3,
+  "NA": 0,
   "pre": {},
   "default": "S3.095",
   "score_den": 15,
@@ -23,75 +23,52 @@
    "text": "Large language models (LLMs) have demonstrated remarkable capabilities in code generation, and recent work shows that allocating additional inference-time compute---known as test-time scaling---can substantially improve performance [cite].",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven → PASS",
+   "final_reason": "connected to other work",
    "s2": "2 works cited: a work, a work",
    "found": [],
    "found_note": "woven → PASS",
    "judge_line": "",
-   "ci": {
-    "segs": [
-     [
-      "Large language models (LLMs) have demonstrated remarkable capabilities in code generation, and recent work shows that allocating additional inference-time compute---known as test-time scaling---can substantially improve performance ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      ".",
-      false
-     ]
-    ],
-    "names": [
-     "a work",
-     "a work"
-    ],
-    "before": null,
-    "before_cites": false,
-    "weave": [
-     [
-      "two or more works cited",
-      true,
-      "2 works cited: a work, a work"
-     ],
-     [
-      "another work named",
-      false,
-      "no other work’s name in the sentence"
-     ],
-     [
-      "tied to the sentence before",
-      false,
-      "no “Similarly,” / “extends this” / “unlike these”"
-     ]
-    ],
-    "rel": [
+   "steps": [
+    [
      {
-      "work": "a work",
-      "ok": false,
-      "why": "never compared, used, or contrasted with this paper anywhere"
-     },
-     {
-      "work": "a work",
-      "ok": false,
-      "why": "never compared, used, or contrasted with this paper anywhere"
+      "quote": {
+       "sec": "Introduction",
+       "id": "S0.000",
+       "segs": [
+        [
+         "Large language models (LLMs) have demonstrated remarkable capabilities in code generation, and recent work shows that allocating additional inference-time compute---known as test-time scaling---can substantially improve performance ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         ".",
+         false
+        ]
+       ]
+      }
      }
     ],
-    "na": [
+    [
      {
-      "work": "a work",
-      "ok": true,
-      "why": "cited for a statement, not as a method"
-     },
-     {
-      "work": "a work",
-      "ok": true,
-      "why": "cited for a statement, not as a method"
+      "head": "2 works cited together.",
+      "sub": "Multiple works in one sentence",
+      "out": "PASS"
      }
     ],
-    "stage": "woven"
-   }
+    [
+     {
+      "line": "Already passed at step 2."
+     }
+    ],
+    [
+     {
+      "line": "Already passed at step 2."
+     }
+    ]
+   ]
   },
   {
    "id": "S0.004",
@@ -100,104 +77,68 @@
    "text": "Self-debugging methods [cite] use error messages and tracebacks to iteratively refine failing candidates, while approaches like Reflexion [cite] and Self-Refine [cite] maintain memory of past failures to guide future attempts.",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven → PASS",
+   "final_reason": "connected to other work",
    "s2": "3 works cited: a work, Reflexion, Self-Refine",
    "found": [],
    "found_note": "woven → PASS",
    "judge_line": "",
-   "ci": {
-    "segs": [
-     [
-      "Self-debugging methods ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " use error messages and tracebacks to iteratively refine failing candidates, while approaches like Reflexion ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " and Self-Refine ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " maintain memory of past failures to guide future attempts.",
-      false
-     ]
-    ],
-    "names": [
-     "a work",
-     "Reflexion",
-     "Self-Refine"
-    ],
-    "before": "Execution feedback provides a powerful signal for improving code generation.",
-    "before_cites": false,
-    "weave": [
-     [
-      "two or more works cited",
-      true,
-      "3 works cited: a work, Reflexion, Self-Refine"
-     ],
-     [
-      "another work named",
-      false,
-      "no other work’s name in the sentence"
-     ],
-     [
-      "tied to the sentence before",
-      false,
-      "no “Similarly,” / “extends this” / “unlike these”"
-     ]
-    ],
-    "rel": [
+   "steps": [
+    [
      {
-      "work": "a work",
-      "ok": true,
-      "why": "the paper says how it relates",
-      "ev": "ESR aggregates information across candidates to identify common failure patterns, unlike per-sample self-debugging approaches [cite] that refine each candidate independently.",
-      "sid": "S1.043"
-     },
-     {
-      "work": "Reflexion",
-      "ok": false,
-      "why": "never compared, used, or contrasted with this paper anywhere"
-     },
-     {
-      "work": "Self-Refine",
-      "ok": false,
-      "why": "never compared, used, or contrasted with this paper anywhere"
+      "quote": {
+       "sec": "Introduction",
+       "id": "S0.004",
+       "segs": [
+        [
+         "Self-debugging methods ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         " use error messages and tracebacks to iteratively refine failing candidates, while approaches like Reflexion ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         " and Self-Refine ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         " maintain memory of past failures to guide future attempts.",
+         false
+        ]
+       ]
+      }
      }
     ],
-    "na": [
+    [
      {
-      "work": "a work",
-      "ok": false,
-      "why": "a named method: the reader needs its relation"
-     },
-     {
-      "work": "Reflexion",
-      "ok": false,
-      "why": "a named method: the reader needs its relation"
-     },
-     {
-      "work": "Self-Refine",
-      "ok": false,
-      "why": "a named method: the reader needs its relation"
+      "head": "3 works cited together.",
+      "sub": "Multiple works in one sentence",
+      "out": "PASS"
      }
     ],
-    "stage": "woven"
-   }
+    [
+     {
+      "line": "Already passed at step 2."
+     }
+    ],
+    [
+     {
+      "line": "Already passed at step 2."
+     }
+    ]
+   ]
   },
   {
    "id": "S3.092",
@@ -206,83 +147,60 @@
    "text": "Allocating additional inference-time compute can substantially improve LLM performance on reasoning and code generation tasks. [cite] demonstrate that optimal test-time compute scaling can be more effective than scaling model parameters, while [cite] show that repeated sampling with large generation budgets can solve problems that smaller budgets cannot.",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven → PASS",
+   "final_reason": "connected to other work",
    "s2": "2 works cited: a work, a work",
    "found": [],
    "found_note": "woven → PASS",
    "judge_line": "",
-   "ci": {
-    "segs": [
-     [
-      "Allocating additional inference-time compute can substantially improve LLM performance on reasoning and code generation tasks. ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " demonstrate that optimal test-time compute scaling can be more effective than scaling model parameters, while ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " show that repeated sampling with large generation budgets can solve problems that smaller budgets cannot.",
-      false
-     ]
-    ],
-    "names": [
-     "a work",
-     "a work"
-    ],
-    "before": "Test-Time Scaling.",
-    "before_cites": false,
-    "weave": [
-     [
-      "two or more works cited",
-      true,
-      "2 works cited: a work, a work"
-     ],
-     [
-      "another work named",
-      false,
-      "no other work’s name in the sentence"
-     ],
-     [
-      "tied to the sentence before",
-      false,
-      "no “Similarly,” / “extends this” / “unlike these”"
-     ]
-    ],
-    "rel": [
+   "steps": [
+    [
      {
-      "work": "a work",
-      "ok": false,
-      "why": "never compared, used, or contrasted with this paper anywhere"
-     },
-     {
-      "work": "a work",
-      "ok": false,
-      "why": "never compared, used, or contrasted with this paper anywhere"
+      "quote": {
+       "sec": "Related Work",
+       "id": "S3.092",
+       "segs": [
+        [
+         "Allocating additional inference-time compute can substantially improve LLM performance on reasoning and code generation tasks. ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         " demonstrate that optimal test-time compute scaling can be more effective than scaling model parameters, while ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         " show that repeated sampling with large generation budgets can solve problems that smaller budgets cannot.",
+         false
+        ]
+       ]
+      }
      }
     ],
-    "na": [
+    [
      {
-      "work": "a work",
-      "ok": true,
-      "why": "cited for a statement, not as a method"
-     },
-     {
-      "work": "a work",
-      "ok": true,
-      "why": "cited for a statement, not as a method"
+      "head": "2 works cited together.",
+      "sub": "Multiple works in one sentence",
+      "out": "PASS"
      }
     ],
-    "stage": "woven"
-   }
+    [
+     {
+      "line": "Already passed at step 2."
+     }
+    ],
+    [
+     {
+      "line": "Already passed at step 2."
+     }
+    ]
+   ]
   },
   {
    "id": "S3.093",
@@ -291,64 +209,56 @@
    "text": "Self-consistency [cite] improves reasoning by sampling multiple chains and aggregating answers.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "alone, never related to this paper, and a method → FAIL",
+   "final_reason": "isolated method",
    "s2": "1 work cited: Self-consistency",
    "found": [],
    "found_note": "alone, never related to this paper, and a method → FAIL",
    "judge_line": "",
-   "ci": {
-    "segs": [
-     [
-      "Self-consistency ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " improves reasoning by sampling multiple chains and aggregating answers.",
-      false
-     ]
-    ],
-    "names": [
-     "Self-consistency"
-    ],
-    "before": "Allocating additional inference-time compute can substantially improve LLM performance on reasoning and code generation tasks. [cite] demonstrate that optimal test-time compute scaling can be more effective than scaling model parameters, while [cite] show that repeated sampling with large generation budgets can solve problems that smaller budgets cannot.",
-    "before_cites": true,
-    "weave": [
-     [
-      "two or more works cited",
-      false,
-      "1 work cited: Self-consistency"
-     ],
-     [
-      "another work named",
-      false,
-      "no other work’s name in the sentence"
-     ],
-     [
-      "tied to the sentence before",
-      false,
-      "no “Similarly,” / “extends this” / “unlike these”"
-     ]
-    ],
-    "rel": [
+   "steps": [
+    [
      {
-      "work": "Self-consistency",
-      "ok": false,
-      "why": "never compared, used, or contrasted with this paper anywhere"
+      "quote": {
+       "sec": "Related Work",
+       "id": "S3.093",
+       "segs": [
+        [
+         "Self-consistency ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         " improves reasoning by sampling multiple chains and aggregating answers.",
+         false
+        ]
+       ]
+      }
      }
     ],
-    "na": [
+    [
      {
-      "work": "Self-consistency",
-      "ok": false,
-      "why": "a named method: the reader needs its relation"
+      "head": "Self-consistency is cited alone.",
+      "sub": "One work · no comparison · no link to the previous sentence",
+      "out": "Continue"
      }
     ],
-    "stage": "fail"
-   }
+    [
+     {
+      "head": "Self-consistency is never connected to this paper.",
+      "sub": "Not compared · not used · not contrasted",
+      "out": "Continue"
+     }
+    ],
+    [
+     {
+      "head": "Self-consistency is a method.",
+      "sub": "It was cited alone and never connected to the paper.",
+      "out": "FAIL"
+     }
+    ]
+   ]
   },
   {
    "id": "S3.094",
@@ -357,64 +267,56 @@
    "text": "Tree of Thoughts [cite] enables deliberate problem solving through search over intermediate reasoning states.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "alone, never related to this paper, and a method → FAIL",
+   "final_reason": "isolated method",
    "s2": "1 work cited: Tree of Thoughts",
    "found": [],
    "found_note": "alone, never related to this paper, and a method → FAIL",
    "judge_line": "",
-   "ci": {
-    "segs": [
-     [
-      "Tree of Thoughts ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " enables deliberate problem solving through search over intermediate reasoning states.",
-      false
-     ]
-    ],
-    "names": [
-     "Tree of Thoughts"
-    ],
-    "before": "Self-consistency [cite] improves reasoning by sampling multiple chains and aggregating answers.",
-    "before_cites": true,
-    "weave": [
-     [
-      "two or more works cited",
-      false,
-      "1 work cited: Tree of Thoughts"
-     ],
-     [
-      "another work named",
-      false,
-      "no other work’s name in the sentence"
-     ],
-     [
-      "tied to the sentence before",
-      false,
-      "no “Similarly,” / “extends this” / “unlike these”"
-     ]
-    ],
-    "rel": [
+   "steps": [
+    [
      {
-      "work": "Tree of Thoughts",
-      "ok": false,
-      "why": "never compared, used, or contrasted with this paper anywhere"
+      "quote": {
+       "sec": "Related Work",
+       "id": "S3.094",
+       "segs": [
+        [
+         "Tree of Thoughts ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         " enables deliberate problem solving through search over intermediate reasoning states.",
+         false
+        ]
+       ]
+      }
      }
     ],
-    "na": [
+    [
      {
-      "work": "Tree of Thoughts",
-      "ok": false,
-      "why": "a named method: the reader needs its relation"
+      "head": "Tree of Thoughts is cited alone.",
+      "sub": "One work · no comparison · no link to the previous sentence",
+      "out": "Continue"
      }
     ],
-    "stage": "fail"
-   }
+    [
+     {
+      "head": "Tree of Thoughts is never connected to this paper.",
+      "sub": "Not compared · not used · not contrasted",
+      "out": "Continue"
+     }
+    ],
+    [
+     {
+      "head": "Tree of Thoughts is a method.",
+      "sub": "It was cited alone and never connected to the paper.",
+      "out": "FAIL"
+     }
+    ]
+   ]
   },
   {
    "id": "S3.095",
@@ -423,64 +325,56 @@
    "text": "For code generation, AlphaCode [cite] achieves competition-level performance through massive sampling and clustering-based selection.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "alone, never related to this paper, and a method → FAIL",
+   "final_reason": "isolated method",
    "s2": "1 work cited: AlphaCode",
    "found": [],
    "found_note": "alone, never related to this paper, and a method → FAIL",
    "judge_line": "",
-   "ci": {
-    "segs": [
-     [
-      "For code generation, AlphaCode ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " achieves competition-level performance through massive sampling and clustering-based selection.",
-      false
-     ]
-    ],
-    "names": [
-     "AlphaCode"
-    ],
-    "before": "Tree of Thoughts [cite] enables deliberate problem solving through search over intermediate reasoning states.",
-    "before_cites": true,
-    "weave": [
-     [
-      "two or more works cited",
-      false,
-      "1 work cited: AlphaCode"
-     ],
-     [
-      "another work named",
-      false,
-      "no other work’s name in the sentence"
-     ],
-     [
-      "tied to the sentence before",
-      false,
-      "no “Similarly,” / “extends this” / “unlike these”"
-     ]
-    ],
-    "rel": [
+   "steps": [
+    [
      {
-      "work": "AlphaCode",
-      "ok": false,
-      "why": "never compared, used, or contrasted with this paper anywhere"
+      "quote": {
+       "sec": "Related Work",
+       "id": "S3.095",
+       "segs": [
+        [
+         "For code generation, AlphaCode ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         " achieves competition-level performance through massive sampling and clustering-based selection.",
+         false
+        ]
+       ]
+      }
      }
     ],
-    "na": [
+    [
      {
-      "work": "AlphaCode",
-      "ok": false,
-      "why": "a named method: the reader needs its relation"
+      "head": "AlphaCode is cited alone.",
+      "sub": "One work · no comparison · no link to the previous sentence",
+      "out": "Continue"
      }
     ],
-    "stage": "fail"
-   }
+    [
+     {
+      "head": "AlphaCode is never connected to this paper.",
+      "sub": "Not compared · not used · not contrasted",
+      "out": "Continue"
+     }
+    ],
+    [
+     {
+      "head": "AlphaCode is a method.",
+      "sub": "It was cited alone and never connected to the paper.",
+      "out": "FAIL"
+     }
+    ]
+   ]
   },
   {
    "id": "S3.097",
@@ -488,67 +382,55 @@
    "kind": "",
    "text": "Execution feedback enables iterative improvement of generated code. [cite] introduce self-debugging, where models refine code based on execution traces and error messages.",
    "runs": [],
-   "final": "NOT_APPLICABLE",
-   "final_reason": "related to this paper → set aside",
+   "final": "PASS",
+   "final_reason": "connected to this paper",
    "s2": "1 work cited: a work",
    "found": [],
    "found_note": "related to this paper → set aside",
    "judge_line": "",
-   "ci": {
-    "segs": [
-     [
-      "Execution feedback enables iterative improvement of generated code. ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " introduce self-debugging, where models refine code based on execution traces and error messages.",
-      false
-     ]
-    ],
-    "names": [
-     "a work"
-    ],
-    "before": "Self-Debugging and Iterative Refinement.",
-    "before_cites": false,
-    "weave": [
-     [
-      "two or more works cited",
-      false,
-      "1 work cited: a work"
-     ],
-     [
-      "another work named",
-      false,
-      "no other work’s name in the sentence"
-     ],
-     [
-      "tied to the sentence before",
-      false,
-      "no “Similarly,” / “extends this” / “unlike these”"
-     ]
-    ],
-    "rel": [
+   "steps": [
+    [
      {
-      "work": "a work",
-      "ok": true,
-      "why": "the paper says how it relates",
-      "ev": "ESR aggregates information across candidates to identify common failure patterns, unlike per-sample self-debugging approaches [cite] that refine each candidate independently.",
-      "sid": "S1.043"
+      "quote": {
+       "sec": "Related Work",
+       "id": "S3.097",
+       "segs": [
+        [
+         "Execution feedback enables iterative improvement of generated code. ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         " introduce self-debugging, where models refine code based on execution traces and error messages.",
+         false
+        ]
+       ]
+      }
      }
     ],
-    "na": [
+    [
      {
-      "work": "a work",
-      "ok": false,
-      "why": "a named method: the reader needs its relation"
+      "head": "This work is cited alone.",
+      "sub": "One work · no comparison · no link to the previous sentence",
+      "out": "Continue"
      }
     ],
-    "stage": "related"
-   }
+    [
+     {
+      "head": "This work is connected to this paper.",
+      "sub": "ESR aggregates information across candidates to identify common failure patterns, unlike per-sample self-debugging approaches [cite] that refine each …",
+      "out": "PASS"
+     }
+    ],
+    [
+     {
+      "line": "Already passed at step 3."
+     }
+    ]
+   ]
   },
   {
    "id": "S3.098",
@@ -557,64 +439,52 @@
    "text": "Reflexion [cite] extends this with verbal reinforcement learning, maintaining episodic memory of past failures.",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven → PASS",
+   "final_reason": "connected to other work",
    "s2": "1 work cited: Reflexion",
    "found": [],
    "found_note": "woven → PASS",
    "judge_line": "",
-   "ci": {
-    "segs": [
-     [
-      "Reflexion ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " extends this with verbal reinforcement learning, maintaining episodic memory of past failures.",
-      false
-     ]
-    ],
-    "names": [
-     "Reflexion"
-    ],
-    "before": "Execution feedback enables iterative improvement of generated code. [cite] introduce self-debugging, where models refine code based on execution traces and error messages.",
-    "before_cites": true,
-    "weave": [
-     [
-      "two or more works cited",
-      false,
-      "1 work cited: Reflexion"
-     ],
-     [
-      "another work named",
-      false,
-      "no other work’s name in the sentence"
-     ],
-     [
-      "tied to the sentence before",
-      true,
-      "takes up the previous citing sentence (“extends this”, “builds on this”)"
-     ]
-    ],
-    "rel": [
+   "steps": [
+    [
      {
-      "work": "Reflexion",
-      "ok": false,
-      "why": "never compared, used, or contrasted with this paper anywhere"
+      "quote": {
+       "sec": "Related Work",
+       "id": "S3.098",
+       "segs": [
+        [
+         "Reflexion ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         " extends this with verbal reinforcement learning, maintaining episodic memory of past failures.",
+         false
+        ]
+       ]
+      }
      }
     ],
-    "na": [
+    [
      {
-      "work": "Reflexion",
-      "ok": false,
-      "why": "a named method: the reader needs its relation"
+      "head": "Reflexion continues the sentence before.",
+      "sub": "e.g. “extends this”, “Similarly,”",
+      "out": "PASS"
      }
     ],
-    "stage": "woven"
-   }
+    [
+     {
+      "line": "Already passed at step 2."
+     }
+    ],
+    [
+     {
+      "line": "Already passed at step 2."
+     }
+    ]
+   ]
   },
   {
    "id": "S3.099",
@@ -623,64 +493,56 @@
    "text": "Self-Refine [cite] demonstrates iterative refinement using self-generated feedback across diverse tasks.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "alone, never related to this paper, and a method → FAIL",
+   "final_reason": "isolated method",
    "s2": "1 work cited: Self-Refine",
    "found": [],
    "found_note": "alone, never related to this paper, and a method → FAIL",
    "judge_line": "",
-   "ci": {
-    "segs": [
-     [
-      "Self-Refine ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " demonstrates iterative refinement using self-generated feedback across diverse tasks.",
-      false
-     ]
-    ],
-    "names": [
-     "Self-Refine"
-    ],
-    "before": "Reflexion [cite] extends this with verbal reinforcement learning, maintaining episodic memory of past failures.",
-    "before_cites": true,
-    "weave": [
-     [
-      "two or more works cited",
-      false,
-      "1 work cited: Self-Refine"
-     ],
-     [
-      "another work named",
-      false,
-      "no other work’s name in the sentence"
-     ],
-     [
-      "tied to the sentence before",
-      false,
-      "no “Similarly,” / “extends this” / “unlike these”"
-     ]
-    ],
-    "rel": [
+   "steps": [
+    [
      {
-      "work": "Self-Refine",
-      "ok": false,
-      "why": "never compared, used, or contrasted with this paper anywhere"
+      "quote": {
+       "sec": "Related Work",
+       "id": "S3.099",
+       "segs": [
+        [
+         "Self-Refine ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         " demonstrates iterative refinement using self-generated feedback across diverse tasks.",
+         false
+        ]
+       ]
+      }
      }
     ],
-    "na": [
+    [
      {
-      "work": "Self-Refine",
-      "ok": false,
-      "why": "a named method: the reader needs its relation"
+      "head": "Self-Refine is cited alone.",
+      "sub": "One work · no comparison · no link to the previous sentence",
+      "out": "Continue"
      }
     ],
-    "stage": "fail"
-   }
+    [
+     {
+      "head": "Self-Refine is never connected to this paper.",
+      "sub": "Not compared · not used · not contrasted",
+      "out": "Continue"
+     }
+    ],
+    [
+     {
+      "head": "Self-Refine is a method.",
+      "sub": "It was cited alone and never connected to the paper.",
+      "out": "FAIL"
+     }
+    ]
+   ]
   },
   {
    "id": "S3.103",
@@ -689,64 +551,56 @@
    "text": "CodeT [cite] uses model-generated tests to rank candidate solutions.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "alone, never related to this paper, and a method → FAIL",
+   "final_reason": "isolated method",
    "s2": "1 work cited: CodeT",
    "found": [],
    "found_note": "alone, never related to this paper, and a method → FAIL",
    "judge_line": "",
-   "ci": {
-    "segs": [
-     [
-      "CodeT ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " uses model-generated tests to rank candidate solutions.",
-      false
-     ]
-    ],
-    "names": [
-     "CodeT"
-    ],
-    "before": "Unit tests provide strong programmatic signals for code generation.",
-    "before_cites": false,
-    "weave": [
-     [
-      "two or more works cited",
-      false,
-      "1 work cited: CodeT"
-     ],
-     [
-      "another work named",
-      false,
-      "no other work’s name in the sentence"
-     ],
-     [
-      "tied to the sentence before",
-      false,
-      "no “Similarly,” / “extends this” / “unlike these”"
-     ]
-    ],
-    "rel": [
+   "steps": [
+    [
      {
-      "work": "CodeT",
-      "ok": false,
-      "why": "never compared, used, or contrasted with this paper anywhere"
+      "quote": {
+       "sec": "Related Work",
+       "id": "S3.103",
+       "segs": [
+        [
+         "CodeT ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         " uses model-generated tests to rank candidate solutions.",
+         false
+        ]
+       ]
+      }
      }
     ],
-    "na": [
+    [
      {
-      "work": "CodeT",
-      "ok": false,
-      "why": "a named method: the reader needs its relation"
+      "head": "CodeT is cited alone.",
+      "sub": "One work · no comparison · no link to the previous sentence",
+      "out": "Continue"
      }
     ],
-    "stage": "fail"
-   }
+    [
+     {
+      "head": "CodeT is never connected to this paper.",
+      "sub": "Not compared · not used · not contrasted",
+      "out": "Continue"
+     }
+    ],
+    [
+     {
+      "head": "CodeT is a method.",
+      "sub": "It was cited alone and never connected to the paper.",
+      "out": "FAIL"
+     }
+    ]
+   ]
   },
   {
    "id": "S3.104",
@@ -755,64 +609,56 @@
    "text": "CodeRL [cite] applies reinforcement learning from execution feedback to improve code generation.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "alone, never related to this paper, and a method → FAIL",
+   "final_reason": "isolated method",
    "s2": "1 work cited: CodeRL",
    "found": [],
    "found_note": "alone, never related to this paper, and a method → FAIL",
    "judge_line": "",
-   "ci": {
-    "segs": [
-     [
-      "CodeRL ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " applies reinforcement learning from execution feedback to improve code generation.",
-      false
-     ]
-    ],
-    "names": [
-     "CodeRL"
-    ],
-    "before": "CodeT [cite] uses model-generated tests to rank candidate solutions.",
-    "before_cites": true,
-    "weave": [
-     [
-      "two or more works cited",
-      false,
-      "1 work cited: CodeRL"
-     ],
-     [
-      "another work named",
-      false,
-      "no other work’s name in the sentence"
-     ],
-     [
-      "tied to the sentence before",
-      false,
-      "no “Similarly,” / “extends this” / “unlike these”"
-     ]
-    ],
-    "rel": [
+   "steps": [
+    [
      {
-      "work": "CodeRL",
-      "ok": false,
-      "why": "never compared, used, or contrasted with this paper anywhere"
+      "quote": {
+       "sec": "Related Work",
+       "id": "S3.104",
+       "segs": [
+        [
+         "CodeRL ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         " applies reinforcement learning from execution feedback to improve code generation.",
+         false
+        ]
+       ]
+      }
      }
     ],
-    "na": [
+    [
      {
-      "work": "CodeRL",
-      "ok": false,
-      "why": "a named method: the reader needs its relation"
+      "head": "CodeRL is cited alone.",
+      "sub": "One work · no comparison · no link to the previous sentence",
+      "out": "Continue"
      }
     ],
-    "stage": "fail"
-   }
+    [
+     {
+      "head": "CodeRL is never connected to this paper.",
+      "sub": "Not compared · not used · not contrasted",
+      "out": "Continue"
+     }
+    ],
+    [
+     {
+      "head": "CodeRL is a method.",
+      "sub": "It was cited alone and never connected to the paper.",
+      "out": "FAIL"
+     }
+    ]
+   ]
   },
   {
    "id": "S3.105",
@@ -820,65 +666,57 @@
    "kind": "",
    "text": "Recent work on experience recycling [cite] proposes batched experience banks with semantic deduplication for test-time scaling in mathematical reasoning, though this has not been applied to code generation with unit-test feedback.",
    "runs": [],
-   "final": "NOT_APPLICABLE",
-   "final_reason": "needs no relation → set aside",
+   "final": "PASS",
+   "final_reason": "not a method",
    "s2": "1 work cited: a work",
    "found": [],
    "found_note": "needs no relation → set aside",
    "judge_line": "",
-   "ci": {
-    "segs": [
-     [
-      "Recent work on experience recycling ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " proposes batched experience banks with semantic deduplication for test-time scaling in mathematical reasoning, though this has not been applied to code generation with unit-test feedback.",
-      false
-     ]
-    ],
-    "names": [
-     "a work"
-    ],
-    "before": "CodeRL [cite] applies reinforcement learning from execution feedback to improve code generation.",
-    "before_cites": true,
-    "weave": [
-     [
-      "two or more works cited",
-      false,
-      "1 work cited: a work"
-     ],
-     [
-      "another work named",
-      false,
-      "no other work’s name in the sentence"
-     ],
-     [
-      "tied to the sentence before",
-      false,
-      "no “Similarly,” / “extends this” / “unlike these”"
-     ]
-    ],
-    "rel": [
+   "steps": [
+    [
      {
-      "work": "a work",
-      "ok": false,
-      "why": "never compared, used, or contrasted with this paper anywhere"
+      "quote": {
+       "sec": "Related Work",
+       "id": "S3.105",
+       "segs": [
+        [
+         "Recent work on experience recycling ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         " proposes batched experience banks with semantic deduplication for test-time scaling in mathematical reasoning, though this has not been applied to code generation with unit-test feedback.",
+         false
+        ]
+       ]
+      }
      }
     ],
-    "na": [
+    [
      {
-      "work": "a work",
-      "ok": true,
-      "why": "cited for a statement, not as a method"
+      "head": "This work is cited alone.",
+      "sub": "One work · no comparison · no link to the previous sentence",
+      "out": "Continue"
      }
     ],
-    "stage": "norel"
-   }
+    [
+     {
+      "head": "This work is never connected to this paper.",
+      "sub": "Not compared · not used · not contrasted",
+      "out": "Continue"
+     }
+    ],
+    [
+     {
+      "head": "A factual citation.",
+      "sub": "Only isolated methods are flagged.",
+      "out": "Not flagged"
+     }
+    ]
+   ]
   },
   {
    "id": "S3.107",
@@ -887,85 +725,60 @@
    "text": "HumanEval [cite] and MBPP [cite] are standard benchmarks for Python code generation.",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven → PASS",
+   "final_reason": "connected to other work",
    "s2": "2 works cited: HumanEval, MBPP",
    "found": [],
    "found_note": "woven → PASS",
    "judge_line": "",
-   "ci": {
-    "segs": [
-     [
-      "HumanEval ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " and MBPP ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " are standard benchmarks for Python code generation.",
-      false
-     ]
-    ],
-    "names": [
-     "HumanEval",
-     "MBPP"
-    ],
-    "before": "Code Generation Benchmarks.",
-    "before_cites": false,
-    "weave": [
-     [
-      "two or more works cited",
-      true,
-      "2 works cited: HumanEval, MBPP"
-     ],
-     [
-      "another work named",
-      false,
-      "no other work’s name in the sentence"
-     ],
-     [
-      "tied to the sentence before",
-      false,
-      "no “Similarly,” / “extends this” / “unlike these”"
-     ]
-    ],
-    "rel": [
+   "steps": [
+    [
      {
-      "work": "HumanEval",
-      "ok": true,
-      "why": "the paper says how it relates",
-      "ev": "We evaluate ESR on HumanEval+ with Qwen2.5-Coder-7B-Instruct under a fixed 16-generation budget.",
-      "sid": "A03"
-     },
-     {
-      "work": "MBPP",
-      "ok": false,
-      "why": "never compared, used, or contrasted with this paper anywhere"
+      "quote": {
+       "sec": "Related Work",
+       "id": "S3.107",
+       "segs": [
+        [
+         "HumanEval ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         " and MBPP ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         " are standard benchmarks for Python code generation.",
+         false
+        ]
+       ]
+      }
      }
     ],
-    "na": [
+    [
      {
-      "work": "HumanEval",
-      "ok": false,
-      "why": "a named method: the reader needs its relation"
-     },
-     {
-      "work": "MBPP",
-      "ok": true,
-      "why": "benchmark or dataset cited in a method paper"
+      "head": "HumanEval is cited together with MBPP.",
+      "sub": "Multiple works in one sentence",
+      "out": "PASS"
      }
     ],
-    "stage": "woven"
-   }
+    [
+     {
+      "line": "Already passed at step 2."
+     }
+    ],
+    [
+     {
+      "line": "Already passed at step 2."
+     }
+    ]
+   ]
   },
   {
    "id": "S3.108",
@@ -974,66 +787,52 @@
    "text": "HumanEval+ [cite] extends HumanEval with augmented tests to reduce overfitting.",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven → PASS",
+   "final_reason": "connected to other work",
    "s2": "1 work cited: HumanEval+",
    "found": [],
    "found_note": "woven → PASS",
    "judge_line": "",
-   "ci": {
-    "segs": [
-     [
-      "HumanEval+ ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " extends HumanEval with augmented tests to reduce overfitting.",
-      false
-     ]
-    ],
-    "names": [
-     "HumanEval+"
-    ],
-    "before": "HumanEval [cite] and MBPP [cite] are standard benchmarks for Python code generation.",
-    "before_cites": true,
-    "weave": [
-     [
-      "two or more works cited",
-      false,
-      "1 work cited: HumanEval+"
-     ],
-     [
-      "another work named",
-      true,
-      "names another work (HumanEval)"
-     ],
-     [
-      "tied to the sentence before",
-      false,
-      "no “Similarly,” / “extends this” / “unlike these”"
-     ]
-    ],
-    "rel": [
+   "steps": [
+    [
      {
-      "work": "HumanEval+",
-      "ok": true,
-      "why": "the paper says how it relates",
-      "ev": "We evaluate ESR on HumanEval+ [cite], an extension of the HumanEval benchmark [cite] with augmented unit tests designed to reduce overfitting.",
-      "sid": "S2.047"
+      "quote": {
+       "sec": "Related Work",
+       "id": "S3.108",
+       "segs": [
+        [
+         "HumanEval+ ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         " extends HumanEval with augmented tests to reduce overfitting.",
+         false
+        ]
+       ]
+      }
      }
     ],
-    "na": [
+    [
      {
-      "work": "HumanEval+",
-      "ok": false,
-      "why": "a named method: the reader needs its relation"
+      "head": "HumanEval+ names another cited work.",
+      "sub": "HumanEval",
+      "out": "PASS"
      }
     ],
-    "stage": "woven"
-   }
+    [
+     {
+      "line": "Already passed at step 2."
+     }
+    ],
+    [
+     {
+      "line": "Already passed at step 2."
+     }
+    ]
+   ]
   },
   {
    "id": "S3.109",
@@ -1041,65 +840,57 @@
    "kind": "",
    "text": "LiveCodeBench [cite] provides contamination-resistant evaluation with continuously updated problems.",
    "runs": [],
-   "final": "NOT_APPLICABLE",
-   "final_reason": "needs no relation → set aside",
+   "final": "PASS",
+   "final_reason": "not a method",
    "s2": "1 work cited: LiveCodeBench",
    "found": [],
    "found_note": "needs no relation → set aside",
    "judge_line": "",
-   "ci": {
-    "segs": [
-     [
-      "LiveCodeBench ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " provides contamination-resistant evaluation with continuously updated problems.",
-      false
-     ]
-    ],
-    "names": [
-     "LiveCodeBench"
-    ],
-    "before": "HumanEval+ [cite] extends HumanEval with augmented tests to reduce overfitting.",
-    "before_cites": true,
-    "weave": [
-     [
-      "two or more works cited",
-      false,
-      "1 work cited: LiveCodeBench"
-     ],
-     [
-      "another work named",
-      false,
-      "no other work’s name in the sentence"
-     ],
-     [
-      "tied to the sentence before",
-      false,
-      "no “Similarly,” / “extends this” / “unlike these”"
-     ]
-    ],
-    "rel": [
+   "steps": [
+    [
      {
-      "work": "LiveCodeBench",
-      "ok": false,
-      "why": "never compared, used, or contrasted with this paper anywhere"
+      "quote": {
+       "sec": "Related Work",
+       "id": "S3.109",
+       "segs": [
+        [
+         "LiveCodeBench ",
+         false
+        ],
+        [
+         "[cite]",
+         true
+        ],
+        [
+         " provides contamination-resistant evaluation with continuously updated problems.",
+         false
+        ]
+       ]
+      }
      }
     ],
-    "na": [
+    [
      {
-      "work": "LiveCodeBench",
-      "ok": true,
-      "why": "a benchmark"
+      "head": "LiveCodeBench is cited alone.",
+      "sub": "One work · no comparison · no link to the previous sentence",
+      "out": "Continue"
      }
     ],
-    "stage": "norel"
-   }
+    [
+     {
+      "head": "LiveCodeBench is never connected to this paper.",
+      "sub": "Not compared · not used · not contrasted",
+      "out": "Continue"
+     }
+    ],
+    [
+     {
+      "head": "LiveCodeBench is a benchmark.",
+      "sub": "Only isolated methods are flagged.",
+      "out": "Not flagged"
+     }
+    ]
+   ]
   }
  ]
 }

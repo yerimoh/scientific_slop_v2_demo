@@ -1440,3 +1440,12 @@ mark.cx-e { color: inherit; background: rgba(255, 214, 10, .38); border-radius: 
 .eb-vd small { display: block; margin-top: 4px; font-size: 12px; color: var(--ink-3, var(--ink-2)); font-family: inherit; }
 .eb-kv { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; margin: 0; font-size: 13px; }
 .eb-kv dt { color: var(--ink-2); } .eb-kv dd { margin: 0; font-weight: 700; color: var(--ink); } .eb-kv dd.bad { color: #D93A3A; }
+
+/* example column: one-line result, short reason, outcome */
+.eb-res { display: grid; gap: 3px; }
+.eb-rh { margin: 0; font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.4; }
+.eb-ro { margin: 2px 0 0; font-size: 13px; color: var(--ink-3); }
+.eb-ro b { font-family: var(--mono, ui-monospace, monospace); color: var(--ink-2); }
+.eb-ro b.v-F { color: #D93A3A; } .eb-ro b.v-P { color: #3F9A5A; }
+.mw-score .ms-sub { display: block; margin-top: 4px; font-size: 12px; color: var(--ink-3); }
+.rs-do .dc-g ul { list-style: disc; padding-left: 18px; gap: 2px; }

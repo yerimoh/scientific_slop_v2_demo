@@ -138,7 +138,7 @@ const ITEMS = [
     borders: [['1-1', 'no support at all'], ['5-4', 'evidence described wrongly']] },
   { id: '1-4', area: 1, name: 'Unclear Links to Prior Work', v1: 'Citation isolation', what: 'The paper cites a method much like its own, then never says how its own method differs. What is new is left for the reader to guess.',
     ex: { spec: 'Method B [7] adds a memory module.', specnote: 'B gets a sentence to itself. It is not tied to A [3], and the paper never says how its own method relates to B.', src: 'AI paper · SciSlopBench FA0163 · §4 Related Work', pre: 'For code generation, ', mark: 'AlphaCode [cite] achieves competition-level performance through massive sampling and clustering-based selection.', post: '', note: 'This paper’s method, ESR, groups sampled programs by how they behave when run. AlphaCode also samples many programs and groups them by their behaviour. The paper introduces AlphaCode in this one sentence and never says how ESR differs from it.' },
-    judge: ['Units: citing sentences in the introduction and related work.', 'Woven (fine): cites two works, names another work, or takes up the sentence before (“extends this”).', 'Set aside: works the paper compares against, uses, or contrasts itself with; surveys, model releases, benchmarks, cited facts.'],
+    judge: ['Citations in the introduction and related work.', 'Fine if the sentence connects the work to other work, or the paper compares against, uses, builds on, or contrasts with it.', 'Only methods are flagged; surveys, benchmarks, datasets and factual citations are not.'],
     not: ['A baseline introduced in one sentence and compared in a table.', 'A benchmark or a survey cited on its own.'],
     fix: ['One sentence on how this paper relates to the work: what it takes, what it does differently.', 'Not a fix: piling another citation into the sentence.'] },
 
@@ -462,7 +462,7 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
 const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code';
-const MV = '1106z';   // bump with the run data so browsers do not keep an old measure/*.json
+const MV = '1107a';   // bump with the run data so browsers do not keep an old measure/*.json
 const MEASURE = {
   '1-1': { unit: 'claim', units: 'claims',
     stages: [['Claim', 'stated as fact', 'paper'], ['Needs', 'what would prove it?', Q], ['Found', 'in the paper?', QC], ['Verdict', '3 runs vote', CD]],
@@ -490,15 +490,14 @@ const MEASURE = {
     how: [], line: 'Find methods that add compute, then check whether the paper reports that cost with a number.' },
   '1-2': { parts: ['1-2b', '1-2d'],
     line: 'Two checks, each scored 0–100. The slop score combines them.' },
-  '1-4': { unit: 'sentence', units: 'citing sentences',
-    stages: [['Sentence', 'a citing sentence in the introduction or related work', CD], ['Woven?', 'tied to another work in the sentence', CD], ['Related to this paper?', 'compared, used, or contrasted anywhere', CD], ['Needs a relation?', 'a method, not a survey, benchmark or fact', CD], ['Verdict', 'rule, one run', CD]],
-    how: [
-      ['Collect the sentences', [[CD, 'Introduction and related-work sentences with at least one citation.'], [CD, 'Other sections: not checked.']]],
-      ['Check: woven? (v1 citation isolation)', [[CD, 'Two or more works cited → woven.'], [CD, 'Another cited work named (“FastV” from “FastV [x]” elsewhere) → woven.'], [CD, 'Takes up the citing sentence before: “Similarly,”, “Building on this,”, “X extends this” → woven.'], [CD, 'Woven → PASS. Alone → step 3.']]],
-      ['Check: related to this paper?', [[CD, 'Its name is a row in a result table.'], [CD, 'It is used in the paper’s own method or experiments.'], [CD, 'A sentence in the paper’s own voice (“we”, “our”, the method’s name) cites or names it with a relation: “unlike”, “compared to”, “builds on”, “addresses”.'], [CD, 'Any of these → set aside.']]],
-      ['Check: needs a relation?', [[CD, 'Surveys, model releases, benchmarks and datasets, works cited for a statement (“[x] showed that …”) → set aside.'], [CD, 'A named method → it needs one.']]],
-      ['Decide FAIL', [[CD, 'Alone, never related, and a method → FAIL.'], [CD, 'score = FAIL ÷ citing sentences.'], [CD, 'No model judgment. Deterministic: one run.']]]],
-    line: 'Code only. A citing sentence fails when it introduces a method on its own and the paper never relates that method to itself.' },
+  '1-4': { unit: 'citation', units: 'citations',
+    stages: [['Find citations', '', CD], ['Connected to other work?', '', CD], ['Connected to this paper?', '', CD], ['Is it a method?', '', CD]],
+    doc: [
+      [{ p: 'Start with citations in the Introduction and Related Work.' }, { l: 'Collect', t: 'Sentences that cite at least one work.' }, { s: 'Other sections are not checked.' }],
+      [{ p: 'Check the sentence and the one before it.' }, { l: 'Connected if', list: ['it cites multiple works together', 'it names another cited work', 'it continues a comparison from the previous sentence'] }, { s: 'Yes → PASS · No → continue' }],
+      [{ p: 'Look for any comparison or use elsewhere in the paper.' }, { l: 'Connected if the paper', list: ['compares against it', 'uses it', 'builds on it', 'explicitly contrasts with it'] }, { s: 'Yes → PASS · No → continue' }],
+      [{ p: 'We only flag isolated methods.' }, { l: 'Do not flag', t: 'Surveys · benchmarks · datasets · factual citations' }, { s: 'Method → FAIL' }]],
+    how: [], line: 'A cited method is isolated when the paper mentions it alone and never explains how it relates to other work or to the current paper.' },
   '2-1': { unit: 'finding', units: 'findings',
     stages: [['Finding', 'a key result in the body', Q], ['Shown in', 'the table or sentence', CD], ['Up front?', 'abstract and intro', Q], ['Verdict', '3 runs vote', CD]],
     how: [
@@ -1356,6 +1355,8 @@ function blkView(b) {
   if (b.count) { const c = b.count;
     return h('div', { class: 'eb-cnt' }, h('table', {}, ...c.rows.map(([l, n, v]) => h('tr', {}, h('td', { text: l }), h('td', { class: 'n', text: n }), h('td', { class: 'v' + (+v ? '' : ' z'), text: v })))),
       h('p', { class: 'eb-tot' }, c.total, ' → ', h('b', { class: 'v-' + (c.verdict === 'PASS' ? 'P' : 'F'), text: c.verdict })), c.hint ? h('small', { class: 'eb-n', text: c.hint }) : null); }
+  if (b.head) return h('div', { class: 'eb-res' }, h('p', { class: 'eb-rh', text: b.head }), b.sub ? h('small', { class: 'eb-n', text: b.sub }) : null,
+    b.out ? h('p', { class: 'eb-ro' }, '→ ', h('b', { class: b.out === 'FAIL' ? 'v-F' : b.out === 'PASS' ? 'v-P' : '', text: b.out })) : null);
   if (b.line) return h('p', { class: 'eb-line', text: b.line });
   if (b.stat) return h('div', { class: 'eb-stat' }, ...b.stat.map(([n, main, sub]) => h('div', {}, h('span', { class: 'eb-sn', text: n }), h('b', { text: main }), sub ? h('small', { text: sub }) : null)));
   if (b.verdict) return h('p', { class: 'eb-vd' }, h('b', { text: b.verdict.score }), ' · ', h('b', { class: 'v-' + (b.verdict.v === 'PASS' ? 'P' : 'F'), text: b.verdict.v }), b.verdict.note ? h('small', { text: b.verdict.note }) : null);
@@ -1486,7 +1487,7 @@ function measureSteps(it) {
     const F = c.FAIL + (pre.FAIL || 0), P = c.PASS + (pre.PASS || 0), UU = c.UNRESOLVED + (pre.UNRESOLVED || 0), D = F + P;
     if (m.breadth) { breadthLine(data, score); return; }
     if (m.cost) { score.replaceChildren(`${data.meta.side} ${data.meta.paper} · Missing Cost Accounting `, h('b', { class: 'big', text: String(data.meta.cost) }), ' / 100 → ', h('b', { class: 'v-F', text: data.meta.cost ? 'PASS' : 'FAIL' })); return; }
-    if (data.meta.score_den) { const N = data.meta.score_den; score.replaceChildren(`${data.meta.side} ${data.meta.paper} · ${N} ${m.units} · score = FAIL ÷ ${m.units} = `, h('b', { text: `${F} ÷ ${N}` }), ' = ', h('b', { class: 'big', text: (F / N).toFixed(2) }), data.meta.hu_score != null ? `  ·  its human pair: ${data.meta.hu_score.toFixed(2)}` : ''); return; }
+    if (data.meta.score_den) { const N = data.meta.score_den; score.replaceChildren(h('b', { class: 'big', text: `${F} of ${N}` }), ` ${m.units} are isolated → `, h('b', { class: 'big', text: Math.round(100 * F / N) + '%' }), h('small', { class: 'ms-sub', text: `${data.meta.side} ${data.meta.paper} · Human pair: ${Math.round(100 * (data.meta.hu_score || 0))}%` })); return; }
     if (m.plain) { score.replaceChildren(`Score = FAIL / (FAIL + PASS). ${data.meta.side} ${data.meta.paper}: ${F} / ${D} = ${D ? (F / D).toFixed(2) : '—'}` + (UU ? `, ${UU} U not counted.` : '.')); return; }
     score.replaceChildren(`${data.meta.side} ${data.meta.paper} · ${U.length} ${m.units} · score = FAIL ÷ (FAIL + PASS) = `, h('b', { text: `${F} ÷ ${D}` }), ' = ', h('b', { class: 'big', text: D ? (F / D).toFixed(2) : '—' }), UU ? ` · ${UU} U, not counted` : '');
   }).catch(() => ex.forEach(e => e.replaceChildren(h('span', { class: 'rs-wait', text: 'run data not loaded' }))));
