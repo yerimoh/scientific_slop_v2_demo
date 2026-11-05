@@ -80,11 +80,11 @@ const PIC = {
   '4-2': () => row([E.chip('retrieval rate', C.art), E.miss(C.art), E.ask(['= ?'])]),
   '2-5': () => row([E.card('Abstract', inner.chip('+10.4 points', C.struct)), E.eq(), E.card('§5 · Conclusion', inner.chip('+10.4 points', C.struct))]),
   '4-4': () => row([E.card('§3 · Method', inner.chip('destroys saliency', C.struct)), E.eq(), E.card('§4 · Experiments', inner.chip('destroys saliency', C.struct))]),
-  '4-5': () => row([E.card('Figure 1', inner.bars(), { lines: false }), E.miss(C.art), E.ask(['L8 in the text?'])]),
+  '4-5': () => row([E.card('Figure 1', inner.bars(), { lines: false }), E.miss(C.art), E.ask(['results, in a method figure?'])]),
   '1-3': () => row([E.card('§4 Results', inner.text(['median 1.0', 'signature per task']), { lines: false }), E.miss(C.art), E.ask(['one signature?'])]),
 };
 // what the pattern looks like, one line under each scene
-const CAP = { '2-5': 'the abstract again, at the end', '1-2': 'one setting tried, cost left out', '1-4': 'cited, related to nothing', '2-3': 'used later, never pointed back to', '3-1': 'a choice with no reason', '4-1': 'nicer words, nothing new', '4-2': 'a term with no meaning', '4-4': 'the same sentence, another section', '4-5': 'a result only the figure reports', '1-3': 'numbers only, not one case' };
+const CAP = { '2-5': 'the abstract again, at the end', '1-2': 'one setting tried, cost left out', '1-4': 'cited, related to nothing', '2-3': 'used later, never pointed back to', '3-1': 'a choice with no reason', '4-1': 'nicer words, nothing new', '4-2': 'a term with no meaning', '4-4': 'the same sentence, another section', '4-5': 'results and a key inside the diagram', '1-3': 'numbers only, not one case' };
 // hero: a paper spine with the five kinds of broken connection
 function heroSvg() {
   const secs = [['Abstract', 4], ['Introduction', 42], ['Method', 80], ['Experiments', 118], ['Conclusion', 156]];
@@ -163,11 +163,11 @@ const ITEMS = [
     judge: ['Applies to papers with a result table in the main text.', 'Search the whole paper, appendix included, for one shown case: a prompt, input or output in a box or code block; a caption announcing an example, a case or a failure; a long quotation outside the related work.', 'One case anywhere closes the gap.'],
     not: ['A paper with no result table (theory, position).', 'A case shown only in the appendix still counts as shown.'],
     fix: ['Show a real case from the experiment records (an input, the output, a failure) and point to it where the result is interpreted. If none was kept, say so there.', 'Not a fix: an invented example presented as an observation.'] },
-  { id: '4-5', area: 4, name: 'Unclear Figures', v1: 'Figure exposition', what: 'A figure’s parts and relations cannot be read from the figure, its caption, or the text.',
-    ex: { spec: 'Overview of the proposed framework.', specnote: 'Which arrows carry data and which carry gradients? What do the colors mean? Nothing says.', src: 'AI paper · SciSlopBench FA0280 · Figure 1, text inside the figure', pre: 'Key Insight: Deeper Layers = Better Token Selection · ', mark: 'L2 55% · L4 39% · L8 69% · L12 66%', post: '', note: 'The L8 result appears in no table or sentence, and it is higher than the layer the paper chose. The L2 bar is D²Pruner with debiasing, not raw L2.' },
-    judge: ['Fix the figure’s purpose first.', 'Can the needed elements, symbols, axes, and flows be read from the figure plus its explanation?', 'Decoration count and caption length decide nothing.'],
-    not: ['A short caption whose meaning is clear from the legend and text.', 'A simplified overview whose detail is clearly located.'],
-    fix: ['Explain the notation and tie it to the method.', 'Not a fix: a longer caption; deleting the figure.'] },
+  { id: '4-5', area: 4, name: 'Unclear Figures', v1: 'Figure exposition', what: 'The method figure carries what belongs in the text: settings, results, a legend, a thesis.',
+    ex: { spec: 'Overview of the proposed framework.', specnote: 'Besides the method, the diagram holds an “Ours” tag, an accuracy number and a check mark.', src: 'AI paper · SciSlopBench FA0280 · Figure 1, text inside the figure', pre: 'Key Insight: Deeper Layers = Better Token Selection · Accuracy ', mark: 'L2 55% · L4 39% · L8 69% · L12 66%', post: '', note: '' },
+    judge: ['Read the method figure as text.', 'Check six kinds: notation key, comparison arm, experimental content, evaluative mark, thesis box, enumerated stages.', 'Score = kinds found ÷ 6.'],
+    not: ['The method’s components and the arrows between them.', 'Panel letters, caption text, plain Input / Output labels.'],
+    fix: ['Keep the components and their connections; move settings, results and the key to the text or caption.', 'Not a fix: inventing components; dropping the figure.'] },
 
 ];
 // Definitions tab text, 1013: one plain definition, one or two real sentences (the second shows where the support should be), two-sentence note.
@@ -208,9 +208,10 @@ const DEF = {
     q: [{ pre: 'Among tasks with failures, ', mark: 'the median number of unique execution signatures is 1.0', post: ', validating ESR’s premise that failure modes cluster strongly.', src: 'AI paper · SciSlopBench FA0163 · §3 Experiments, Analysis' },
         { pre: '', mark: 'An example of Self-Debugging prompting for text-to-SQL generation.', post: ' The SQL query, explanation and feedback are all predicted by the model.', src: 'Human pair · Self-Debug (Chen et al., 2023) · figure caption, §4' }],
     note: 'The method is built on execution signatures and a failure bank. The paper reports counts of both and never prints one signature, one failing test or one program. Its human pair, which is also its baseline, prints the full prompt, the model’s query and its feedback.' },
-  '4-5': { what: 'The figure shows something the reader cannot interpret from the figure, its caption, or the text.',
-    q: [{ pre: 'Key Insight: Deeper Layers = Better Token Selection · ', mark: 'L2 55% · L4 39% · L8 69% · L12 66%', post: '', src: 'AI paper · SciSlopBench FA0280 · Figure 1, text inside the figure' }],
-    note: 'Nothing says what the four bars measure, or that the L2 bar is a different method with debiasing. The highest bar, L8, is never mentioned in the text, so the reader cannot tell what the figure is showing.' },
+  '4-5': { what: 'The method figure carries what belongs in the text: settings, results, a legend, a thesis. The method itself gets harder to follow.',
+    q: [{ pre: 'Key Insight: Deeper Layers = Better Token Selection · Accuracy ', mark: 'L2 55% · L4 39% · L8 69% · L12 66%', post: '', src: 'AI paper · SciSlopBench FA0280 · Figure 1, text inside the figure' },
+        { pre: '', mark: 'Legend: = Visual Token · = Vision Encoder · = LLM Decoder · = Selection Module', post: '', src: 'Same figure · bottom right' }],
+    note: 'Next to the pipeline, Figure 1 has a result chart, a “Key Insight” box, an “Ours” vs “Existing Methods” split and a legend. The results belong in §4, the insight in the text, the key in the caption.' },
 };
 for (const it of ITEMS) { const d = DEF[it.id]; if (!d) continue; it.what = d.what; const [a, b] = d.q; it.ex.pre = a.pre; it.ex.mark = a.mark; it.ex.post = a.post; it.ex.src = a.src; it.ex.note = d.note; it.ex2 = b || null; }
 
@@ -284,7 +285,7 @@ const PAGE = {
     { h: '2  Related Work', p: ['Method A [3] uses contrastive pairs. ', M('1-4'), ' ', G('g14', 'B alone; ours vs B never said')], lines: 1 },
     { p: ['Prior studies established that update rule A converges under adaptive step sizes [12].'], lines: 1 },
     { h: '3  Method', p: ['We apply ', M('4-2'), ' ', G('g42', 'definition'), ' before fusion and then project to the shared space. ', A('gloss', 'We add an alignment term: L = L_task + λ·L_align (Eq. 2).')], lines: 1 },
-    { fig: true, cap: [M('4-5'), ' Solid and dashed arrows; blue, green, and orange blocks.'] },
+    { fig: true, cap: [M('4-5'), ' Overview of the method. The diagram also carries an “Ours” tag, an accuracy and a ✓.'] },
   ],
   right: [
     { h: '4  Experiments', sub: '4.1  Setup', p: [A('gqa', 'We evaluate on long-document QA.'), ' ', M('1-2'), ' ', M('3-1'), ' ', G('g31', 'why? effect on the long-input claim?')], lines: 1 },
@@ -307,7 +308,7 @@ const FAIL = {
   '4-2': { to: 'g42', label: 'never defined' },
   '2-5': { to: 'g25', label: 'the Abstract sentence, copied', eq: true, from: 'Abstract', at: '6 Conclusion' },
   '4-4': { to: 'g44', label: 'the same sentence as in §1', eq: true, from: '§1 Introduction', at: '§4.2 Results' },
-  '4-5': { to: 'gfig', label: 'arrows and colors never explained' },
+  '4-5': { to: 'gfig', label: '“Ours”, a result and a ✓ inside the method figure' },
   '1-3': { to: 'g13', label: 'counts only; no example anywhere, appendix included' },
 };
 const PLANES = { structure: { title: 'Structure', q: 'Do the sections build on one another?' }, argument: { title: 'Argument', q: 'Are the claims and citations argued?' }, artifacts: { title: 'Artifacts', q: 'Can the method and the evidence be inspected?' } };
@@ -324,7 +325,7 @@ const GROUPS = [
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
 const SHORT = { '1-2': 'The paper claims more than its experiments can show.', '1-4': 'Cites a method much like its own, never says how it differs.',
   '2-3': 'Set up in one section, never pointed back to.', '3-1': 'A design choice with no reason given.',
-  '2-5': 'The conclusion only repeats the abstract.', '4-1': 'Says what was already shown in nicer words, and tells nothing new.', '4-2': 'A term that is never defined.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.', '1-3': 'Results, but not one concrete case shown.' };
+  '2-5': 'The conclusion only repeats the abstract.', '4-1': 'Says what was already shown in nicer words, and tells nothing new.', '4-2': 'A term that is never defined.', '4-4': 'The same sentence in two sections.', '4-5': 'The method figure carries what belongs in the text.', '1-3': 'Results, but not one concrete case shown.' };
 for (const it of ITEMS) it.short = SHORT[it.id];
 const BY_ID = Object.fromEntries(ITEMS.map(i => [i.id, i]));
 function renderPage() {
@@ -332,7 +333,7 @@ function renderPage() {
     const out = [];
     if (b.h) out.push(h('h4', { text: b.h }));
     if (b.sub) out.push(h('h5', { text: b.sub }));
-    if (b.fig) out.push(h('div', { class: 'pfig' }, h('div', { class: 'pfig-d', 'data-g': 'gfig', html: '<svg viewBox="0 0 100 30"><rect x="6" y="9" width="18" height="12" rx="2" fill="#D9E5EA" stroke="#5C717D" stroke-width=".6"/><rect x="41" y="9" width="18" height="12" rx="2" fill="#E6EFDF" stroke="#5C717D" stroke-width=".6"/><rect x="76" y="9" width="18" height="12" rx="2" fill="#F6E7D2" stroke="#5C717D" stroke-width=".6"/><path d="M24 15H40" stroke="#5C717D" stroke-width=".8"/><path d="M59 15H75" stroke="#5C717D" stroke-width=".8" stroke-dasharray="2 1.5"/><path d="M15 21C30 32 70 32 85 21" fill="none" stroke="#5C717D" stroke-width=".8" stroke-dasharray="2 1.5"/></svg>' }), h('p', { class: 'pcap' }, ...b.cap.map(seg))));
+    if (b.fig) out.push(h('div', { class: 'pfig' }, h('div', { class: 'pfig-d', 'data-g': 'gfig', html: '<svg viewBox="0 0 100 30"><rect x="6" y="9" width="18" height="12" rx="2" fill="#D9E5EA" stroke="#5C717D" stroke-width=".6"/><rect x="41" y="9" width="18" height="12" rx="2" fill="#E6EFDF" stroke="#5C717D" stroke-width=".6"/><rect x="76" y="9" width="18" height="12" rx="2" fill="#F6E7D2" stroke="#5C717D" stroke-width=".6"/><path d="M24 15H40" stroke="#5C717D" stroke-width=".8"/><path d="M59 15H75" stroke="#5C717D" stroke-width=".8" stroke-dasharray="2 1.5"/><path d="M15 21C30 32 70 32 85 21" fill="none" stroke="#5C717D" stroke-width=".8" stroke-dasharray="2 1.5"/><text x="85" y="7" font-size="4" font-weight="700" fill="#5C717D" text-anchor="middle">Ours</text><text x="50" y="26.5" font-size="3.6" fill="#5C717D" text-anchor="middle">acc 69%</text><text x="97" y="9" font-size="5" fill="#3E8E5A" text-anchor="middle">✓</text></svg>' }), h('p', { class: 'pcap' }, ...b.cap.map(seg))));
     if (b.table) out.push(h('table', { class: 'ptab' }, h('caption', { text: 'Table 3: Ablation on the dev set.' }), h('tr', {}, h('th', { text: 'Model' }), h('th', { text: 'R@10' })), h('tr', {}, h('td', { text: 'Full model' }), h('td', { text: '71.2' })), h('tr', {}, h('td', {}, seg(M('2-3'))), h('td', { text: '68.0' })), h('tr', {}, h('td', { text: 'w/o auxiliary loss' }), h('td', { text: '69.4' }))));
     if (b.refs) out.push(h('div', { class: 'prefs' }, ...b.refs.map(r => h('p', {}, seg(r)))));
     if (b.p) out.push(h('p', {}, ...b.p.map(seg)));
@@ -427,7 +428,7 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
 const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code', H45 = 'Haiku 4.5';
-const MV = '1107eg';   // bump with the run data so browsers do not keep an old measure/*.json
+const MV = '1107f45';   // bump with the run data so browsers do not keep an old measure/*.json
 const MEASURE = {
 
   '1-2b': { unit: 'paper', units: 'papers', breadth: true,
@@ -523,14 +524,15 @@ const MEASURE = {
       [{ p: 'One case anywhere is enough.' }, { s: 'A plot or a table of per-example scores is not a case.' }],
       [{ p: 'No case anywhere → FAIL' }, { p: 'At least one → PASS' }, { s: 'One verdict per paper.' }]],
     how: [], line: 'A paper with results fails when it never shows one concrete case. All four steps are rules; no model is used.' },
-  '4-5': { unit: 'figure', units: 'figures',
-    stages: [['Figure', 'body figure with an image', CD], ['Transcribed', 'what the image contains', QV], ['Explained?', 'elements, numbers, caption, comparisons', Q], ['Verdict', '3 runs vote', CD]],
-    how: [
-      ['Select the figures', [[CD, 'Every body figure with an image: the figure file (AI papers) or the PDF page located by caption (human papers).']]],
-      ['Transcribe the image', [[QV, 'Qwen2.5-VL-32B transcribes the image. Image–caption mismatch → U.']]],
-      ['Check the explanation', [[Q, 'Judge reads transcript, caption and citing sentences, and lists: (1) unexplained elements the figure’s purpose needs, (2) figure numbers and whether their condition is readable, (3) caption–image conflicts, (4) body comparisons that cannot be matched to the figure.'], [CD, 'Count only elements a reader must interpret (arrow and line styles, symbols, colour classes, legends, panels, axis labels), not “exact value not printed”.']]],
-      ['Decide PASS / FAIL / U', [[CD, 'FAIL: caption conflict · figure-only number with unreadable condition · ≥2 unexplained structural elements · 1 unexplained + an uncheckable comparison.'], [CD, 'One weak signal alone → U.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS). Limited by transcription quality (numbers on bars are sometimes missed).']]]],
-    line: 'Qwen2.5-VL transcribes the image; Qwen2.5-32B lists what caption and body leave unexplained; code applies the thresholds. Three runs vote.' },
+  '4-5': { unit: 'figure', units: 'method figures', kinds: true,
+    stages: [['Find the method figure', '', CD], ['Read the figure as text', '', QV], ['Check six kinds', '', 'code+reader'], ['Score', '', CD]],
+    ask: ['What do we evaluate?', 'Does the method figure show only the method, or does it also carry what the text should say?'],
+    doc: [
+      [{ p: 'Take the one figure that shows the method.' }, { ul: [['AI paper', 'the overview image the pipeline drew'], ['Human paper', 'the figure whose caption says overview, framework, pipeline or architecture']] }, { s: 'No method figure → NA' }],
+      [{ p: 'A vision model writes down all the text in the image.' }, { p: 'Same model and prompt for both papers.' }, { s: 'Only text is read. Icons and colours are not.' }],
+      [{ p: 'Look for six kinds of content that belong in the text, not in a method diagram.' }, { ul: [['Notation key', 'a legend, “blue = …”'], ['Comparison arm', 'boxes tagged Ours / Baseline'], ['Experimental content', 'settings or results of the run: lr, epochs, accuracy'], ['Evaluative mark', '✓ or ✗ on a box'], ['Thesis box', '“Key insight”, “Why it works”'], ['Enumerated stages', '“Stage 1”, “Stage 2”, …']] }, { s: 'Five kinds are fixed text patterns. Experimental content is decided by one reader.' }],
+      [{ p: 'Count the kinds the figure carries.' }, { p: 'score = kinds found ÷ 6' }, { p: '0 → only the method · 1 → all six' }]],
+    how: [], line: 'Read the method figure as text and count how many of six kinds of text-only content it carries.' },
 };
 const VLAB = { FAIL: 'FAIL', PASS: 'PASS', UNRESOLVED: 'U', NOT_APPLICABLE: 'NA' };
 const VK = d => ({ FAIL: 'F', PASS: 'P', UNRESOLVED: 'U', NOT_APPLICABLE: 'N' })[d] || 'U';
@@ -650,9 +652,9 @@ Find one real case in the experiment records behind the main result: an input, t
 Show it verbatim (a box or a listing) with where it came from, and point to it where the result is interpreted.
 If the records hold no case, do not invent one. Say there that no individual case was kept or inspected.`,
   '4-5': `# Fix · Unclear Figures (4-5)
-State the figure's purpose. List every element, symbol, arrow type, and color the reader must interpret.
-Explain each in the figure, the legend, or the caption, and tie it to the method or result it shows.
-A longer caption, or deleting the figure, is not by itself a fix.`,
+Read the method figure and list every element that is not a component of the method or a connection between components: a legend, Ours / Baseline tags, experimental settings or results, check or cross marks, a "Key insight" box, numbered stage headers.
+Remove those elements from the figure. Where the reader needs them, state them once in the text or the caption near the figure.
+Keep every component and every arrow. Do not invent components, do not simplify the mechanism, and do not drop the figure.`,
 };
 const LIVE_API = 'https://scientific-slop-demo.onrender.com';
 const hub = { mode: 'local', api: '', token: '', uid: null, db: null, canWrite: true, votes: {}, mine: {}, cases: [], prompts: [], pups: {}, mineUps: {} };
@@ -888,7 +890,7 @@ function srcParts(src) { const m = String(src || '').split(' · '); return [h('s
 const TREE = [['Argument graph', ['1-2']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4', '2-5']], ['Figure exposition', ['4-5']], ['Evidence gap', ['1-3']], [null, ['3-1', '4-1', '4-2']]];
 // results so far, on the 123 AI / human pairs; an item stays blank until its measure is final
 // 11-06: columns as in v1 Table 2 (PairAcc, AUROC, TPR at 5% FPR), from each item's saved per-paper scores (v2/verification/table_site_rows_1106.py)
-const RESULTS = { '1-4': { pa: '0.85', auc: '0.87', tpr: '0.59' }, '1-2': { pa: '0.88', auc: '0.88', tpr: '0.50' }, '2-3': { pa: '0.88', auc: '0.88', tpr: '0.00' }, '4-1': { pa: '0.82', auc: '0.82', tpr: '0.34' }, '4-4': { pa: '0.91', auc: '0.90', tpr: '0.29' }, '2-5': { pa: '0.91', auc: '0.90', tpr: '0.76' }, '1-3': { pa: '0.76', auc: '0.75', tpr: '0.00' } };
+const RESULTS = { '1-4': { pa: '0.85', auc: '0.87', tpr: '0.59' }, '1-2': { pa: '0.88', auc: '0.88', tpr: '0.50' }, '2-3': { pa: '0.88', auc: '0.88', tpr: '0.00' }, '4-1': { pa: '0.82', auc: '0.82', tpr: '0.34' }, '4-4': { pa: '0.91', auc: '0.90', tpr: '0.29' }, '2-5': { pa: '0.91', auc: '0.90', tpr: '0.76' }, '1-3': { pa: '0.76', auc: '0.75', tpr: '0.00' }, '4-5': { pa: '0.91', auc: '0.90', tpr: '0.54' } };
 $('#sm-res').replaceChildren(h('table', { class: 'res-tbl' },
   h('thead', {}, h('tr', {}, ...['Slop', 'PairAcc', 'AUROC', 'TPR@5%FPR'].map(t => h('th', { text: t })))),
   h('tbody', {}, ...GROUPS.flatMap(g => [h('tr', { class: 'res-g ' + g.cls }, h('td', { colspan: 4, text: g.title })),
@@ -1299,6 +1301,7 @@ function blkView(b) {
   if (b.head) return h('div', { class: 'eb-res' }, h('p', { class: 'eb-rh', text: b.head }), b.sub ? h('small', { class: 'eb-n', text: b.sub }) : null,
     b.out ? h('p', { class: 'eb-ro' }, '→ ', h('b', { class: b.out === 'FAIL' ? 'v-F' : b.out === 'PASS' ? 'v-P' : '', text: b.out })) : null);
   if (b.line) return h('p', { class: 'eb-line', text: b.line });
+  if (b.img) return h('figure', { class: 'eb-img' }, h('img', { src: b.img.src, alt: b.img.alt, loading: 'lazy' }), b.img.cap ? h('figcaption', { class: 'eb-n', text: b.img.cap }) : null);
   if (b.stat) return h('div', { class: 'eb-stat' }, ...b.stat.map(([n, main, sub]) => h('div', {}, h('span', { class: 'eb-sn', text: n }), h('b', { text: main }), sub ? h('small', { text: sub }) : null)));
   if (b.verdict) return h('p', { class: 'eb-vd' }, h('b', { text: b.verdict.score }), ' · ', h('b', { class: 'v-' + (b.verdict.v === 'PASS' ? 'P' : 'F'), text: b.verdict.v }), b.verdict.note ? h('small', { text: b.verdict.note }) : null);
   if (b.kv) return h('dl', { class: 'eb-kv' }, ...b.kv.flatMap(([k, v, bad]) => [h('dt', { text: k }), h('dd', { class: bad ? 'bad' : '', text: v })]));
@@ -1380,7 +1383,8 @@ function measureSteps(it) {
   const docBody = bs => bs.map(b => b.p ? h('p', { class: 'dc-p', text: b.p }) : b.ul ? h('ul', { class: 'dc-ul' }, ...b.ul.map(([l, t]) => h('li', {}, h('b', { text: l + ': ' }), t)))
     : b.list ? h('div', { class: 'dc-g' }, h('span', { class: 'dc-l', text: b.l }), h('ul', {}, ...b.list.map(t => h('li', { text: t }))))
     : b.l ? h('div', { class: 'dc-g' }, h('span', { class: 'dc-l', text: b.l }), h('p', { text: b.t })) : b.s ? h('p', { class: 'dc-s', text: b.s }) : null);
-  const docWho = w => h('span', { class: 'dc-who ' + (w === 'code' ? 'rule' : 'llm'), text: w === 'code' ? 'Rule' : 'LLM (Haiku)' });
+  const DOCW = { code: ['rule', 'Rule'], 'code+reader': ['rule', 'Rule + one reader'], 'Qwen-VL': ['llm', 'VLM (Qwen2.5-VL-32B)'] };
+  const docWho = w => { const [c, t] = DOCW[w] || ['llm', 'LLM (Haiku)']; return h('span', { class: 'dc-who ' + c, text: t }); };
   const whoTag = w => doc ? (w === 'paper' ? null : docWho(w)) : (m.tags && w !== 'paper') ? h('span', { class: 'dc-who ' + (w === 'code' ? 'rule' : 'llm'), text: w === 'code' ? 'Rule' : 'LLM (' + w + ')' }) : (plain || w === 'paper') ? null : h('span', { class: 'rs-who ' + (w === 'code' ? 'rule' : 'model'), text: w === 'code' ? 'rule' : w.includes('code') ? 'model + rule' : 'model' });
   const ex = m.stages.map(() => h('div', { class: 'rs-ex' }, h('span', { class: 'rs-wait', text: '…' })));
   const rows = m.stages.map(([title, sub, w], k) => h('li', { class: 'rs-row' + (k === m.stages.length - 1 ? ' last' : '') },
@@ -1427,6 +1431,7 @@ function measureSteps(it) {
     const c = { FAIL: 0, PASS: 0, UNRESOLVED: 0 }; U.forEach(u => { if (u.final in c) c[u.final]++; });
     const F = c.FAIL + (pre.FAIL || 0), P = c.PASS + (pre.PASS || 0), UU = c.UNRESOLVED + (pre.UNRESOLVED || 0), D = F + P;
     if (m.breadth) { breadthLine(data, score); return; }
+    if (m.kinds) { const mt = data.meta; score.replaceChildren(`${mt.side} ${mt.paper} · ${mt.kinds} of 6 kinds → score `, h('b', { text: (mt.kinds / 6).toFixed(2) }), ` · Human pair ${mt.hu_paper}: ${mt.hu_kinds} of 6 → ${(mt.hu_kinds / 6).toFixed(2)}`); return; }
     if (m.cost) { score.replaceChildren(`${data.meta.side} ${data.meta.paper} · Missing Cost Accounting `, h('b', { class: 'big', text: String(data.meta.cost) }), ' / 100 → ', h('b', { class: 'v-F', text: data.meta.cost ? 'PASS' : 'FAIL' })); return; }
     if (m.paper) { const g = data.meta.rate; score.replaceChildren('One verdict per paper. Across the benchmark, ', h('b', { class: 'big', text: g.ai }), ` of AI papers (${g.n_ai}) and `, h('b', { class: 'big', text: g.hu }), ` of human papers (${g.n_hu}) show no case.`); return; }
     if (data.meta.score_den) { const N = data.meta.score_den; score.replaceChildren(h('b', { class: 'big', text: `${F} of ${N}` }), ` ${m.units} are isolated → `, h('b', { class: 'big', text: Math.round(100 * F / N) + '%' }), h('small', { class: 'ms-sub', text: `${data.meta.side} ${data.meta.paper} · Human pair: ${Math.round(100 * (data.meta.hu_score || 0))}%` })); return; }

@@ -1488,3 +1488,5 @@ mark.cx-e { color: inherit; background: rgba(255, 214, 10, .38); border-radius: 
 .pt .mw-score .v-F, .pt-comb .v-F { color: var(--ink); }
 .pt-comb .pt-cl { text-transform: none; letter-spacing: 0; font-size: 13px; }
 .eb-kv dd.bad { color: var(--ink); }
+.eb-img { margin: 0; } .eb-img img { display: block; width: 100%; height: auto; border: 1px solid var(--hair, #ddd); border-radius: 4px; background: #fff; }
+.eb-img figcaption { margin-top: 4px; }
