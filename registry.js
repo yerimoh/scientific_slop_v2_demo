@@ -136,7 +136,7 @@ const ITEMS = [
     not: ['A benchmark paper (dataset count not scored), or a study of one named model by design (model count not scored).', 'A method that adds no compute: cost part not scored.'],
     fix: ['Run a second model or dataset; report runtime, tokens, FLOPs or memory for the method and the baseline.', 'Not a fix: more seeds on the same setting; saying “efficient” without a number.'],
     borders: [['1-1', 'no support at all'], ['5-4', 'evidence described wrongly']] },
-  { id: '1-4', area: 1, name: 'Unclear Links to Prior Work', v1: 'Citation isolation', what: 'A method is cited on its own, tied to no other work and never related to this paper.',
+  { id: '1-4', area: 1, name: 'Unclear Links to Prior Work', v1: 'Citation isolation', what: 'The paper cites a method much like its own, then never says how its own method differs. What is new is left for the reader to guess.',
     ex: { spec: 'Method B [7] adds a memory module.', specnote: 'B gets a sentence to itself. It is not tied to A [3], and the paper never says how its own method relates to B.', src: 'AI paper · SciSlopBench FA0163 · §4 Related Work', pre: 'For code generation, ', mark: 'AlphaCode [cite] achieves competition-level performance through massive sampling and clustering-based selection.', post: '', note: 'This paper’s method, ESR, groups sampled programs by how they behave when run. AlphaCode also samples many programs and groups them by their behaviour. The paper introduces AlphaCode in this one sentence and never says how ESR differs from it.' },
     judge: ['Units: citing sentences in the introduction and related work.', 'Woven (fine): cites two works, names another work, or takes up the sentence before (“extends this”).', 'Set aside: works the paper compares against, uses, or contrasts itself with; surveys, model releases, benchmarks, cited facts.'],
     not: ['A baseline introduced in one sentence and compared in a table.', 'A benchmark or a survey cited on its own.'],
@@ -206,7 +206,7 @@ const DEF = {
     q: [{ pre: 'We use ', mark: 'Qwen2.5-VL-7B-Instruct as the judge model', post: ', deployed via vLLM with tensor parallelism across 2 GPUs using bfloat16 precision.', src: 'AI paper · SciSlopBench FA0043 · §4 Experiments' },
         { pre: 'We propose ', mark: 'a two-pass architecture', post: ' where the judge first generates its own answer using only trusted inputs, then uses this uncontaminated reference when evaluating candidates.', src: 'Same paper · §3 Method' }],
     note: 'One judge model on one benchmark (VL-RewardBench), and the defense doubles the model calls per example. The paper reports the accuracy it costs, never the compute.' },
-  '1-4': { what: 'The paper introduces a method in a sentence of its own and never says how its own method relates to it.',
+  '1-4': { what: 'The paper cites a method much like its own, then never says how its own method differs. What is new is left for the reader to guess.',
     q: [{ pre: 'For code generation, ', mark: 'AlphaCode [cite] achieves competition-level performance through massive sampling and clustering-based selection.', post: '', src: 'AI paper · SciSlopBench FA0163 · §4 Related Work' },
         { pre: 'We propose Execution-Signature Recycling (ESR), a training-free method that ', mark: 'clusters candidates by their execution signatures', post: '—the set of failing tests and error types—and conditions subsequent generations on a deduplicated failure bank.', src: 'Same paper · Abstract' }],
     note: 'Both sample many programs and group them by what happens when they run. AlphaCode appears once, in the sentence above, and the paper never says what ESR does differently.' },
@@ -356,7 +356,7 @@ const GROUPS = [
   { n: 3, key: 'artifacts', cls: 'p-artifacts', title: 'Artifacts', q: 'Can the method and the evidence be inspected?' },
 ];
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
-const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'The paper claims more than its experiments can show.', '1-4': 'A method cited alone and never related to this paper.',
+const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'The paper claims more than its experiments can show.', '1-4': 'Cites a method much like its own, never says how it differs.',
   '2-1': 'The key finding is missing from the abstract.', '2-3': 'Set up in one section, never pointed back to.', '3-1': 'A design choice with no reason given.',
   '2-5': 'The conclusion only repeats the abstract.', '4-1': 'Repackages what was shown; tells nothing new.', '4-2': 'A term that is never defined.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
   '5-4': 'The cited source says something else.' };
@@ -462,7 +462,7 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
 const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code';
-const MV = '1106y';   // bump with the run data so browsers do not keep an old measure/*.json
+const MV = '1106z';   // bump with the run data so browsers do not keep an old measure/*.json
 const MEASURE = {
   '1-1': { unit: 'claim', units: 'claims',
     stages: [['Claim', 'stated as fact', 'paper'], ['Needs', 'what would prove it?', Q], ['Found', 'in the paper?', QC], ['Verdict', '3 runs vote', CD]],
