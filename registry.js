@@ -1208,6 +1208,24 @@ function xmap(map) {
   const sel = i => el.querySelectorAll('[data-u]').forEach(n => n.classList.toggle('sel', n.dataset.u !== '' && +n.dataset.u === i));
   return { el, step, sel };
 }
+// 4-1: the passage around a framed sentence, so the reader can see what deleting it loses
+const cxSegs = (segs, cls) => segs.map(([t, on]) => on ? h('mark', { class: cls, text: t }) : t);
+function cxView(u, step) {
+  const c = u.ctx, fail = u.final === 'FAIL', cut = t => t.length > 240 ? t.slice(0, 238).replace(/\s+\S*$/, '') + ' …' : t;
+  const fact = c.clause ? c.target.segs[0][0] : null, frame = c.clause ? c.target.segs[1][0] : null;
+  const tgtSegs = c.clause ? [h('mark', { class: 'cx-e', text: fact }), h('mark', { class: 'cx-f', text: frame })] : cxSegs(c.target.segs, 'cx-f');
+  const ctxLine = (b, lab) => h('p', { class: 'cx-c' }, h('span', { class: 'cx-lab', text: lab }), cut(b.text));
+  const lost = fail ? 'Lost: nothing. What is left still says it.' : (c.kept && c.kept.length ? 'Lost: ' + c.kept.join(', ') : 'Lost: something the context does not say');
+  if (step === 0) return h('div', {}, h('q', { class: 'mw-q' }, ...(c.clause ? [fact, h('mark', { class: 'cx-f', text: frame })] : tgtSegs)), h('small', { text: `${u.id} · ${u.sec} · red = the stock frame` }));
+  if (step === 1) return c.clause
+    ? h('div', { class: 'cx-p' }, h('p', { class: 'cx-t' }, ...tgtSegs), h('small', { text: 'yellow = the fact, already stated · red = the clause that is judged' }))
+    : h('div', { class: 'cx-p' }, ...c.before.slice(-1).map(b => ctxLine(b, 'before')), h('p', { class: 'cx-t' }, h('span', { class: 'cx-lab', text: 'this one' }), ...tgtSegs), ...c.after.map(a => ctxLine(a, 'after')));
+  if (c.clause) return h('div', { class: 'cx-p' }, h('p', { class: 'cx-t' }, fact, fail ? h('span', { class: 'cx-x', text: frame }) : h('mark', { class: 'cx-f', text: frame })),
+    h('small', { class: 'cx-verdict', text: lost }), u.judge_line ? h('small', { text: u.judge_line }) : null);
+  return h('div', { class: 'cx-p' }, ...c.before.slice(-1).map(b => ctxLine(b, 'before')),
+    h('p', { class: 'cx-t' }, h('span', { class: 'cx-lab', text: fail ? 'deleted' : 'kept' }), fail ? h('span', { class: 'cx-x', text: c.target.segs.map(x => x[0]).join('') }) : h('span', {}, ...tgtSegs)),
+    h('small', { class: 'cx-verdict', text: lost }), u.judge_line ? h('small', { text: u.judge_line }) : null);
+}
 function measureSteps(it) {
   // every step of the measurer, all of its rules, and what that step returned on one real paper
   const m = MEASURE[it.id];
@@ -1244,14 +1262,16 @@ function measureSteps(it) {
     const VW = { FAIL: 'slop', PASS: 'fine', UNRESOLVED: 'open', NOT_APPLICABLE: 'n/a' };
     pick.replaceChildren(...U.map((u, k) => h('option', { value: k, text: `${VW[u.final]} · ${u.text.slice(0, 48)}…` })));
     const sh = t => t.length > 140 ? t.slice(0, 138).replace(/\s+\S*$/, '') + '…' : t;
-    const fill = k => { const u = U[k]; const vals = [
+    const fill = k => { const u = U[k]; const vals = u.ctx ? [cxView(u, 0), cxView(u, 1), cxView(u, 2), null] : [
       u.pair ? pairQ(u.pair.later, 'later') : h('div', {}, h('q', { class: 'mw-q', text: sh(u.text) }), h('small', { text: [u.id, u.sec].filter(Boolean).join(' · ') })),
       u.pair ? pairQ(u.pair.earlier, 'earlier') : h('div', {}, h('span', { text: u.s2 || '—' })),
       h('div', {}, u.found.length ? h('span', { class: 'mw-ids' }, ...u.found.map(x => h('code', { text: x }))) : h('span', { class: 'mw-none', text: 'nothing' }), u.found_note ? h('small', { text: tidyNote(u.found_note) }) : null, u.judge_line ? h('small', { text: tidyNote(u.judge_line) }) : null),
       h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: tidyNote(u.final_reason) }) : null)];
+      if (u.ctx) vals[3] = h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: tidyNote(u.final_reason) }) : null);
       ex.forEach((e, j) => e.replaceChildren(vals[j] || h('span', { text: '—' }))); if (XM && data.map.units[k]) XM.sel(k); };
     pick.addEventListener('change', () => { fill(+pick.value); run(); });
-    const k0 = Math.max(0, U.findIndex(u => u.final === 'FAIL')); pick.value = k0; fill(k0);
+    const kd = data.meta.default ? U.findIndex(u => u.id === data.meta.default) : -1;
+    const k0 = kd >= 0 ? kd : Math.max(0, U.findIndex(u => u.final === 'FAIL')); pick.value = k0; fill(k0);
     const c = { FAIL: 0, PASS: 0, UNRESOLVED: 0 }; U.forEach(u => { if (u.final in c) c[u.final]++; });
     const F = c.FAIL + (pre.FAIL || 0), P = c.PASS + (pre.PASS || 0), UU = c.UNRESOLVED + (pre.UNRESOLVED || 0), D = F + P;
     score.replaceChildren(`${data.meta.side} ${data.meta.paper} · ${U.length} ${m.units} · score = FAIL ÷ (FAIL + PASS) = `, h('b', { text: `${F} ÷ ${D}` }), ' = ', h('b', { class: 'big', text: D ? (F / D).toFixed(2) : '—' }), UU ? ` · ${UU} U, not counted` : '');

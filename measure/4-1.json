@@ -1,5 +1,6 @@
 {
  "meta": {
+  "default": "S3.086",
   "item": "4-1",
   "paper": "FA0064",
   "side": "AI paper",
@@ -19,6 +20,69 @@
  },
  "units": [
   {
+   "ctx": {
+    "before": [
+     {
+      "id": "A03",
+      "text": "On LongMemEval with Qwen3-4B, our method achieves 64.6% accuracy using only 1/4 full-attention layers, matching the 1/2-FA periodic baseline (65.0%) while halving the computational budget.",
+      "segs": [
+       [
+        "On LongMemEval with Qwen3-4B, our method achieves 64.6% accuracy using only 1/4 full-attention layers, matching the 1/2-FA periodic baseline (65.0%) while halving the computational budget.",
+        false
+       ]
+      ]
+     },
+     {
+      "id": "A04",
+      "text": "NLL-guided selection outperforms the best periodic 1/4-FA pattern by 10.4 percentage points and attention-based heuristics by 26.4 percentage points.",
+      "segs": [
+       [
+        "NLL-guided selection outperforms the best periodic 1/4-FA pattern by 10.4 percentage points and attention-based heuristics by 26.4 percentage points.",
+        false
+       ]
+      ]
+     }
+    ],
+    "target": {
+     "id": "A05",
+     "sec": "Abstract",
+     "segs": [
+      [
+       "De-confounding analysis ",
+       false
+      ],
+      [
+       "confirms the",
+       true
+      ],
+      [
+       " signal is specific to long-range attention needs.",
+       false
+      ]
+     ]
+    },
+    "after": [
+     {
+      "id": "A06",
+      "text": "The method requires only [math] 15 minutes of one-time calibration, advancing the efficiency-accuracy Pareto frontier for long-context LLM deployment.",
+      "segs": [
+       [
+        "The method requires only [math] 15 minutes of one-time calibration, advancing the efficiency-accuracy Pareto frontier for long-context LLM deployment.",
+        false
+       ]
+      ]
+     }
+    ],
+    "clause": false,
+    "kept": [
+     "confounding",
+     "needs",
+     "range",
+     "signal",
+     "specific"
+    ],
+    "echo_pairs": []
+   },
    "id": "A05",
    "sec": "Abstract",
    "kind": "frame: rigor",
@@ -41,6 +105,66 @@
    "final_reason": "adds information"
   },
   {
+   "ctx": {
+    "before": [
+     {
+      "id": "S0.007",
+      "text": "Existing methods use either fixed periodic patterns, which ignore layer-specific roles, or attention-based heuristics like LightTransfer [cite] , which rely on indirect signals that may not capture what matters for downstream accuracy.",
+      "segs": [
+       [
+        "Existing methods use either fixed periodic patterns, which ignore layer-specific roles, or attention-based heuristics like LightTransfer [cite] , which rely on indirect signals that may not capture what matters for downstream accuracy.",
+        false
+       ]
+      ]
+     },
+     {
+      "id": "S0.008",
+      "text": "The choice of layers dramatically affects performance---on Qwen3-4B, the gap between good and poor 1/4-FA layer selections exceeds 26 percentage points.",
+      "segs": [
+       [
+        "The choice of layers dramatically affects performance---on Qwen3-4B, the gap between good and poor 1/4-FA layer selections exceeds 26 percentage points.",
+        false
+       ]
+      ]
+     }
+    ],
+    "target": {
+     "id": "S0.009",
+     "sec": "Introduction",
+     "segs": [
+      [
+       "We propose NLL-guided layer selection, a ",
+       false
+      ],
+      [
+       "principled",
+       true
+      ],
+      [
+       " approach that directly measures what we care about: how much does each layer's output quality degrade when we restrict its attention?",
+       false
+      ]
+     ]
+    },
+    "after": [
+     {
+      "id": "S0.010",
+      "text": "By computing the negative log-likelihood (NLL) on answer tokens under different attention configurations, we identify layers that genuinely benefit from full attention for long-range information flow.",
+      "segs": [
+       [
+        "By computing the negative log-likelihood (NLL) on answer tokens under different attention configurations, we identify layers that genuinely benefit from full attention for long-range information flow.",
+        false
+       ]
+      ]
+     }
+    ],
+    "clause": false,
+    "kept": [
+     "guided",
+     "selection"
+    ],
+    "echo_pairs": []
+   },
    "id": "S0.009",
    "sec": "Introduction",
    "kind": "frame: rigor",
@@ -61,6 +185,63 @@
    "final_reason": "adds information"
   },
   {
+   "ctx": {
+    "before": [
+     {
+      "id": "S0.008",
+      "text": "The choice of layers dramatically affects performance---on Qwen3-4B, the gap between good and poor 1/4-FA layer selections exceeds 26 percentage points.",
+      "segs": [
+       [
+        "The choice of layers dramatically affects performance---on Qwen3-4B, the gap between good and poor 1/4-FA layer selections exceeds 26 percentage points.",
+        false
+       ]
+      ]
+     },
+     {
+      "id": "S0.009",
+      "text": "We propose NLL-guided layer selection, a principled approach that directly measures what we care about: how much does each layer's output quality degrade when we restrict its attention?",
+      "segs": [
+       [
+        "We propose NLL-guided layer selection, a principled approach that directly measures what we care about: how much does each layer's output quality degrade when we restrict its attention?",
+        false
+       ]
+      ]
+     }
+    ],
+    "target": {
+     "id": "S0.010",
+     "sec": "Introduction",
+     "segs": [
+      [
+       "By computing the negative log-likelihood (NLL) on answer tokens under different attention configurations, we identify layers that ",
+       false
+      ],
+      [
+       "genuinely",
+       true
+      ],
+      [
+       " benefit from full attention for long-range information flow.",
+       false
+      ]
+     ]
+    },
+    "after": [
+     {
+      "id": "S0.011",
+      "text": "Our contributions are:",
+      "segs": [
+       [
+        "Our contributions are:",
+        false
+       ]
+      ]
+     }
+    ],
+    "clause": false,
+    "kept": [],
+    "echo_pairs": []
+   },
    "id": "S0.010",
    "sec": "Introduction",
    "kind": "frame: rigor",
@@ -78,10 +259,69 @@
    "final_reason": "adds information"
   },
   {
+   "ctx": {
+    "before": [
+     {
+      "id": "S0.012",
+      "text": "We introduce NLL-guided layer selection, a training-free method for identifying which layers should retain full attention in hybrid sliding-window models.",
+      "segs": [
+       [
+        "We introduce NLL-guided layer selection, a training-free method for identifying which layers should retain full attention in hybrid sliding-window models.",
+        false
+       ]
+      ]
+     },
+     {
+      "id": "S0.013",
+      "text": "We demonstrate that NLL-Guided 1/4-FA achieves 64.6% accuracy on LongMemEval, matching the 1/2-FA periodic baseline (65.0%) while halving the full-attention budget, and outperforming the best periodic 1/4-FA pattern by 10.4 percentage points.",
+      "segs": [
+       [
+        "We demonstrate that NLL-Guided 1/4-FA achieves 64.6% accuracy on LongMemEval, matching the 1/2-FA periodic baseline (65.0%) while halving the full-attention budget, and outperforming the best periodic 1/4-FA pattern by 10.4 percentage points.",
+        false
+       ]
+      ]
+     }
+    ],
+    "target": {
+     "id": "S0.014",
+     "sec": "Introduction",
+     "segs": [
+      [
+       "We provide mechanistic validation through de-confounding analysis, ",
+       false
+      ],
+      [
+       "showing that the NLL signal is specific to long-range attention needs (Spearman [math] between long and short-prompt rankings) rather than generic layer sensitivity.",
+       true
+      ]
+     ]
+    },
+    "after": [
+     {
+      "id": "S0.015",
+      "text": "We show the method is practical for deployment: calibration requires only [math] 15 minutes on 4 GPUs and amortizes after [math] 1,354 inference requests at 24k prompt length.",
+      "segs": [
+       [
+        "We show the method is practical for deployment: calibration requires only [math] 15 minutes on 4 GPUs and amortizes after [math] 1,354 inference requests at 24k prompt length.",
+        false
+       ]
+      ]
+     }
+    ],
+    "clause": true,
+    "kept": [
+     "correlation",
+     "long",
+     "needs",
+     "range",
+     "signal"
+    ],
+    "echo_pairs": []
+   },
    "id": "S0.014",
    "sec": "Introduction",
    "kind": "frame: tail",
-   "text": "We provide mechanistic validation through de-confounding analysis, showing that the NLL signal is specific to long-range attention needs (Spearman xxmathxx between long and short-prompt rankings) rather than generic layer sensitivity.",
+   "text": "We provide mechanistic validation through de-confounding analysis, showing that the NLL signal is specific to long-range attention needs (Spearman [math] between long and short-prompt rankings) rather than generic layer sensitivity.",
    "s2": "judged part: “showing that the NLL signal is specific to long-range attention needs (Spearman xxmathxx between long and …” · reader already has: “We provide mechanistic validation through de-confounding analysis.”",
    "found": [
     "correlation",
@@ -100,6 +340,65 @@
    "final_reason": "adds information"
   },
   {
+   "ctx": {
+    "before": [
+     {
+      "id": "S1.034",
+      "text": "LightTransfer [cite] proposes attention-based heuristics (``lazy ratio'') to select which layers should retain full attention.",
+      "segs": [
+       [
+        "LightTransfer [cite] proposes attention-based heuristics (``lazy ratio'') to select which layers should retain full attention.",
+        false
+       ]
+      ]
+     },
+     {
+      "id": "S1.035",
+      "text": "However, these methods either use fixed patterns that ignore layer-specific roles or rely on indirect signals that may not capture what matters for downstream accuracy.",
+      "segs": [
+       [
+        "However, these methods either use fixed patterns that ignore layer-specific roles or rely on indirect signals that may not capture what matters for downstream accuracy.",
+        false
+       ]
+      ]
+     }
+    ],
+    "target": {
+     "id": "S1.036",
+     "sec": "Related work",
+     "segs": [
+      [
+       "Our NLL-guided approach directly measures each layer's sensitivity to attention restriction, providing a ",
+       false
+      ],
+      [
+       "principled",
+       true
+      ],
+      [
+       " selection criterion.",
+       false
+      ]
+     ]
+    },
+    "after": [
+     {
+      "id": "S1.038",
+      "text": "[cite] propose KL-guided layer selection for distilling full-attention models into hybrid architectures, using KL divergence between teacher and student outputs to identify critical layers.",
+      "segs": [
+       [
+        "[cite] propose KL-guided layer selection for distilling full-attention models into hybrid architectures, using KL divergence between teacher and student outputs to identify critical layers.",
+        false
+       ]
+      ]
+     }
+    ],
+    "clause": false,
+    "kept": [
+     "criterion"
+    ],
+    "echo_pairs": []
+   },
    "id": "S1.036",
    "sec": "Related work",
    "kind": "frame: rigor",
@@ -119,6 +418,76 @@
    "final_reason": "runs disagree"
   },
   {
+   "ctx": {
+    "before": [
+     {
+      "id": "S2.048",
+      "text": "Given a budget of [math] layers that may use full attention during prefill, we seek to select the set [math] with [math] that maximizes downstream task accuracy.",
+      "segs": [
+       [
+        "Given a budget of [math] layers that may use full attention during prefill, we seek to select the set [math] with [math] that maximizes downstream task accuracy.",
+        false
+       ]
+      ]
+     },
+     {
+      "id": "S2.049",
+      "text": "Following SWAA, we assume full-attention decode is enabled, meaning all layers use full attention during generation regardless of their prefill configuration.",
+      "segs": [
+       [
+        "Following SWAA, we assume full-attention decode is enabled, meaning all layers use full attention during generation regardless of their prefill configuration.",
+        false
+       ]
+      ]
+     }
+    ],
+    "target": {
+     "id": "S2.051",
+     "sec": "Method",
+     "segs": [
+      [
+       "Our key insight is",
+       true
+      ],
+      [
+       " that the importance of full attention at each layer can be measured by how much it improves the model's ability to predict answer tokens.",
+       false
+      ]
+     ]
+    },
+    "after": [
+     {
+      "id": "S2.052",
+      "text": "For an input consisting of a prompt [math] and answer [math] , we define the per-layer score as the reduction in negative log-likelihood (NLL) on answer tokens when that layer uses full attention instead of SWA during prefill.",
+      "segs": [
+       [
+        "For an input consisting of a prompt [math] and answer [math] , we define ",
+        false
+       ],
+       [
+        "the per-layer score as the reduction in negative log-likelihood (NLL) on answer tokens when that layer uses full attention instead of SWA during prefill",
+        true
+       ],
+       [
+        ".",
+        false
+       ]
+      ]
+     }
+    ],
+    "clause": false,
+    "kept": [
+     "how",
+     "measured",
+     "much"
+    ],
+    "echo_pairs": [
+     [
+      "the importance of full attention at each layer can be measured by how much it improves the model's ability to predict answer tokens",
+      "the per-layer score as the reduction in negative log-likelihood (NLL) on answer tokens when that layer uses full attention instead of SWA during prefill"
+     ]
+    ]
+   },
    "id": "S2.051",
    "sec": "Method",
    "kind": "frame: scaffold",
@@ -140,6 +509,64 @@
    "final_reason": "runs disagree"
   },
   {
+   "ctx": {
+    "before": [
+     {
+      "id": "S3.080",
+      "text": "Table [ref] presents the main comparison.",
+      "segs": [
+       [
+        "Table [ref] presents the main comparison.",
+        false
+       ]
+      ]
+     },
+     {
+      "id": "S3.081",
+      "text": "NLL-Guided 1/4-FA achieves 64.6% accuracy, within 0.4 percentage points of the 1/2-FA Periodic baseline (65.0%) while using only half the full-attention budget (9 vs 18 layers).",
+      "segs": [
+       [
+        "NLL-Guided 1/4-FA achieves 64.6% accuracy, within 0.4 percentage points of the 1/2-FA Periodic baseline (65.0%) while using only half the full-attention budget (9 vs 18 layers).",
+        true
+       ]
+      ]
+     }
+    ],
+    "target": {
+     "id": "S3.082",
+     "sec": "Experiments",
+     "segs": [
+      [
+       "This demonstrates",
+       true
+      ],
+      [
+       " that intelligent layer selection can substantially reduce computational cost with minimal accuracy loss.",
+       false
+      ]
+     ]
+    },
+    "after": [
+     {
+      "id": "S3.086",
+      "text": "Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%), demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.",
+      "segs": [
+       [
+        "Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%), demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.",
+        false
+       ]
+      ]
+     }
+    ],
+    "clause": false,
+    "kept": [],
+    "echo_pairs": [
+     [
+      "intelligent layer selection can substantially reduce computational cost with minimal accuracy loss",
+      "NLL-Guided 1/4-FA achieves 64.6% accuracy, within 0.4 percentage points of the 1/2-FA Periodic baseline (65.0%) while using only half the full-attention budget (9 vs 18 layers)."
+     ]
+    ]
+   },
    "id": "S3.082",
    "sec": "Experiments",
    "kind": "frame: tail",
@@ -157,6 +584,59 @@
    "final_reason": "deleting it loses nothing the context does not already say"
   },
   {
+   "ctx": {
+    "before": [
+     {
+      "id": "S3.081",
+      "text": "NLL-Guided 1/4-FA achieves 64.6% accuracy, within 0.4 percentage points of the 1/2-FA Periodic baseline (65.0%) while using only half the full-attention budget (9 vs 18 layers).",
+      "segs": [
+       [
+        "NLL-Guided 1/4-FA achieves 64.6% accuracy, within 0.4 percentage points of the 1/2-FA Periodic baseline (65.0%) while using only half the full-attention budget (9 vs 18 layers).",
+        false
+       ]
+      ]
+     },
+     {
+      "id": "S3.082",
+      "text": "This demonstrates that intelligent layer selection can substantially reduce computational cost with minimal accuracy loss.",
+      "segs": [
+       [
+        "This demonstrates that intelligent layer selection can substantially reduce computational cost with minimal accuracy loss.",
+        false
+       ]
+      ]
+     }
+    ],
+    "target": {
+     "id": "S3.086",
+     "sec": "Experiments",
+     "segs": [
+      [
+       "Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%), ",
+       false
+      ],
+      [
+       "demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.",
+       true
+      ]
+     ]
+    },
+    "after": [
+     {
+      "id": "S3.087",
+      "text": "The improvement over LightTransfer is even more pronounced at 26.4 percentage points (64.6% vs 38.2%), indicating that NLL-based scoring provides a fundamentally better signal than attention-pattern heuristics for this task.",
+      "segs": [
+       [
+        "The improvement over LightTransfer is even more pronounced at 26.4 percentage points (64.6% vs 38.2%), indicating that NLL-based scoring provides a fundamentally better signal than attention-pattern heuristics for this task.",
+        false
+       ]
+      ]
+     }
+    ],
+    "clause": true,
+    "kept": [],
+    "echo_pairs": []
+   },
    "id": "S3.086",
    "sec": "Experiments",
    "kind": "frame: tail",
@@ -174,6 +654,59 @@
    "final_reason": "deleting it loses nothing the context does not already say"
   },
   {
+   "ctx": {
+    "before": [
+     {
+      "id": "S3.082",
+      "text": "This demonstrates that intelligent layer selection can substantially reduce computational cost with minimal accuracy loss.",
+      "segs": [
+       [
+        "This demonstrates that intelligent layer selection can substantially reduce computational cost with minimal accuracy loss.",
+        false
+       ]
+      ]
+     },
+     {
+      "id": "S3.086",
+      "text": "Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%), demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.",
+      "segs": [
+       [
+        "Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%), demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.",
+        false
+       ]
+      ]
+     }
+    ],
+    "target": {
+     "id": "S3.087",
+     "sec": "Experiments",
+     "segs": [
+      [
+       "The improvement over LightTransfer is even more pronounced at 26.4 percentage points (64.6% vs 38.2%), ",
+       false
+      ],
+      [
+       "indicating that NLL-based scoring provides a fundamentally better signal than attention-pattern heuristics for this task.",
+       true
+      ]
+     ]
+    },
+    "after": [
+     {
+      "id": "S3.089",
+      "text": "Table [ref] shows the per-task breakdown comparing NLL-Guided and LightTransfer.",
+      "segs": [
+       [
+        "Table [ref] shows the per-task breakdown comparing NLL-Guided and LightTransfer.",
+        false
+       ]
+      ]
+     }
+    ],
+    "clause": true,
+    "kept": [],
+    "echo_pairs": []
+   },
    "id": "S3.087",
    "sec": "Experiments",
    "kind": "frame: tail",
@@ -191,6 +724,78 @@
    "final_reason": "deleting it loses nothing the context does not already say"
   },
   {
+   "ctx": {
+    "before": [
+     {
+      "id": "S3.089",
+      "text": "Table [ref] shows the per-task breakdown comparing NLL-Guided and LightTransfer.",
+      "segs": [
+       [
+        "Table [ref] shows the per-task breakdown comparing NLL-Guided and LightTransfer.",
+        false
+       ]
+      ]
+     },
+     {
+      "id": "S3.090",
+      "text": "NLL-Guided outperforms LightTransfer on all six task types, with improvements ranging from 13.3 to 37.1 percentage points.",
+      "segs": [
+       [
+        "NLL-Guided outperforms LightTransfer on all six task types, ",
+        false
+       ],
+       [
+        "with improvements ranging from 13.3 to 37.1 percentage points",
+        true
+       ],
+       [
+        ".",
+        false
+       ]
+      ]
+     }
+    ],
+    "target": {
+     "id": "S3.091",
+     "sec": "Experiments",
+     "segs": [
+      [
+       "The largest gains appear on single-session-user (+37.1pp) and temporal-reasoning (+33.9pp), ",
+       false
+      ],
+      [
+       "suggesting that NLL-guided selection particularly benefits tasks requiring precise long-range information retrieval.",
+       true
+      ]
+     ]
+    },
+    "after": [
+     {
+      "id": "S3.095",
+      "text": "A potential concern is that the NLL signal might reflect generic layer sensitivity rather than long-range attention needs.",
+      "segs": [
+       [
+        "A potential concern is that the NLL signal might reflect generic layer sensitivity rather than long-range attention needs.",
+        false
+       ]
+      ]
+     }
+    ],
+    "clause": true,
+    "kept": [
+     "information",
+     "particularly",
+     "precise",
+     "requiring",
+     "retrieval"
+    ],
+    "echo_pairs": [
+     [
+      "+37.1pp",
+      "with improvements ranging from 13.3 to 37.1 percentage points"
+     ]
+    ]
+   },
    "id": "S3.091",
    "sec": "Experiments",
    "kind": "frame: tail",
@@ -213,6 +818,65 @@
    "final_reason": "runs disagree"
   },
   {
+   "ctx": {
+    "before": [
+     {
+      "id": "S3.098",
+      "text": "The Spearman correlation between long-prompt and short-prompt rankings is low ( [math] , [math] ), and only 3 of 9 selected layers overlap (Jaccard similarity = 0.2).",
+      "segs": [
+       [
+        "The Spearman correlation between long-prompt and short-prompt rankings is low ( [math] , [math] ), and only 3 of 9 selected layers overlap (Jaccard similarity = 0.2).",
+        false
+       ]
+      ]
+     },
+     {
+      "id": "S3.099",
+      "text": "Furthermore, long-prompt [math] -NLL values are 85.6 [math] larger in magnitude than short-prompt values.",
+      "segs": [
+       [
+        "Furthermore, long-prompt [math] -NLL values are 85.6 [math] larger in magnitude than short-prompt values.",
+        false
+       ]
+      ]
+     }
+    ],
+    "target": {
+     "id": "S3.100",
+     "sec": "Experiments",
+     "segs": [
+      [
+       "These results confirm",
+       true
+      ],
+      [
+       " that the NLL signal is specific to long-range attention needs, not generic layer sensitivity.",
+       false
+      ]
+     ]
+    },
+    "after": [
+     {
+      "id": "S3.104",
+      "text": "Figure [ref] visualizes the per-layer [math] -NLL scores.",
+      "segs": [
+       [
+        "Figure [ref] visualizes the per-layer [math] -NLL scores.",
+        false
+       ]
+      ]
+     }
+    ],
+    "clause": false,
+    "kept": [
+     "attention",
+     "needs",
+     "range",
+     "signal",
+     "specific"
+    ],
+    "echo_pairs": []
+   },
    "id": "S3.100",
    "sec": "Experiments",
    "kind": "frame: rigor + tail",
@@ -235,6 +899,63 @@
    "final_reason": "runs disagree"
   },
   {
+   "ctx": {
+    "before": [
+     {
+      "id": "S3.115",
+      "text": "Downstream accuracy with 16-example calibration is 62.2%, a modest 2.4 percentage point drop from the 64-example result (64.6%), but still substantially above the periodic baseline (54.2%).",
+      "segs": [
+       [
+        "Downstream accuracy with 16-example calibration is 62.2%, a modest 2.4 percentage point drop from the 64-example result (64.6%), but still substantially above the periodic baseline (54.2%).",
+        false
+       ]
+      ]
+     },
+     {
+      "id": "S3.116",
+      "text": "We recommend 64+ calibration examples for production deployment to maximize stability.",
+      "segs": [
+       [
+        "We recommend 64+ calibration examples for production deployment to maximize stability.",
+        false
+       ]
+      ]
+     }
+    ],
+    "target": {
+     "id": "S4.117",
+     "sec": "Conclusion",
+     "segs": [
+      [
+       "We presented NLL-guided layer selection, a ",
+       false
+      ],
+      [
+       "principled",
+       true
+      ],
+      [
+       ", training-free method for identifying which layers should retain full attention in hybrid sliding-window attention models.",
+       false
+      ]
+     ]
+    },
+    "after": [
+     {
+      "id": "S4.118",
+      "text": "By directly measuring each layer's impact on answer prediction quality, our approach achieves 64.6% accuracy with only 1/4 full-attention layers, matching the 1/2-FA periodic baseline (65.0%) while halving the computational budget.",
+      "segs": [
+       [
+        "By directly measuring each layer's impact on answer prediction quality, our approach achieves 64.6% accuracy with only 1/4 full-attention layers, matching the 1/2-FA periodic baseline (65.0%) while halving the computational budget.",
+        false
+       ]
+      ]
+     }
+    ],
+    "clause": false,
+    "kept": [],
+    "echo_pairs": []
+   },
    "id": "S4.117",
    "sec": "Conclusion",
    "kind": "frame: rigor",
@@ -252,6 +973,65 @@
    "final_reason": "deleting it loses nothing the context does not already say"
   },
   {
+   "ctx": {
+    "before": [
+     {
+      "id": "S4.119",
+      "text": "The method outperforms fixed periodic patterns by 10.4 percentage points and attention-based heuristics by 26.4 percentage points.",
+      "segs": [
+       [
+        "The method outperforms fixed periodic patterns by 10.4 percentage points and attention-based heuristics by 26.4 percentage points.",
+        false
+       ]
+      ]
+     },
+     {
+      "id": "S4.120",
+      "text": "Our work has limitations: we evaluate on a single model (Qwen3-4B) and benchmark (LongMemEval).",
+      "segs": [
+       [
+        "Our work has limitations: we evaluate on a single model (Qwen3-4B) and benchmark (LongMemEval).",
+        false
+       ]
+      ]
+     }
+    ],
+    "target": {
+     "id": "S4.121",
+     "sec": "Conclusion",
+     "segs": [
+      [
+       "Future work should",
+       true
+      ],
+      [
+       " validate across model families and tasks, and explore dynamic per-input layer selection.",
+       false
+      ]
+     ]
+    },
+    "after": [
+     {
+      "id": "S4.122",
+      "text": "Nevertheless, NLL-guided selection advances the efficiency-accuracy Pareto frontier for long-context LLM deployment.",
+      "segs": [
+       [
+        "Nevertheless, NLL-guided selection advances the efficiency-accuracy Pareto frontier for long-context LLM deployment.",
+        false
+       ]
+      ]
+     }
+    ],
+    "clause": false,
+    "kept": [
+     "dynamic",
+     "explore",
+     "families",
+     "input",
+     "layer"
+    ],
+    "echo_pairs": []
+   },
    "id": "S4.121",
    "sec": "Conclusion",
    "kind": "frame: future",
