@@ -75,7 +75,6 @@ const PIC = {
       K.chip(xo, MID - 6.25, 'ours', { fc: C.arg, ec: C.arg, tc: '#fff', bold: true, w: ow, h: 9.5 }) +
       K.arrow([x0 + cw, MID - 6.5], [xo - .5, MID - 3], { color: C.arg, dashed: true, rad: -.1 }) + K.arrow([x0 + cw, MID + 3], [xo - .5, MID], { color: C.arg, dashed: true, rad: .1 }) + K.cross(x0 + cw + gap / 2, MID - 5.5) + K.cross(x0 + cw + gap / 2, MID + 2.5); },
   '2-3': () => row([E.card('§3 · Method', inner.chip('Eq. 1', C.struct)), E.miss(C.struct, { left: true }), E.card('§4 · Experiments', inner.chip('ratio formula', C.struct))]),
-  '3-1': () => row([E.chip('layer 12 of 32', C.art), E.miss(C.art), E.ask(['why 12?'])]),
   '4-1': () => row([E.para('§1 Introduction', 'this confirms the effectiveness …', C.struct)]),
   '4-2': () => row([E.chip('attack sensitivity', C.art), E.miss(C.art), E.ask(['= ?'])]),
   '2-5': () => row([E.card('Abstract', inner.chip('+10.4 points', C.struct)), E.eq(), E.card('§5 · Conclusion', inner.chip('+10.4 points', C.struct))]),
@@ -84,7 +83,7 @@ const PIC = {
   '1-3': () => row([E.card('§4 Results', inner.text(['median 1.0', 'signature per task']), { lines: false }), E.miss(C.art), E.ask(['one signature?'])]),
 };
 // what the pattern looks like, one line under each scene
-const CAP = { '2-5': 'the abstract again, at the end', '1-2': 'one setting tried, cost left out', '1-4': 'cited, related to nothing', '2-3': 'used later, never pointed back to', '3-1': 'a choice with no reason', '4-1': 'nicer words, nothing new', '4-2': 'a result in a term not yet explained', '4-4': 'the same sentence, another section', '4-5': 'results and a key inside the diagram', '1-3': 'numbers only, not one case' };
+const CAP = { '2-5': 'the abstract again, at the end', '1-2': 'one setting tried, cost left out', '1-4': 'cited, related to nothing', '2-3': 'used later, never pointed back to', '4-1': 'nicer words, nothing new', '4-2': 'a result in a term not yet explained', '4-4': 'the same sentence, another section', '4-5': 'results and a key inside the diagram', '1-3': 'numbers only, not one case' };
 // hero: a paper spine with the five kinds of broken connection
 function heroSvg() {
   const secs = [['Abstract', 4], ['Introduction', 42], ['Method', 80], ['Experiments', 118], ['Conclusion', 156]];
@@ -135,12 +134,6 @@ const ITEMS = [
     not: ['A conclusion that recalls the main result in new words and says what it means.', 'Limitations and future work that are not in the abstract.'],
     fix: ['Replace the copied sentences with what the results mean together: what holds, where it stops, what follows.', 'Not a fix: rewording the abstract.'],
     borders: [['4-4', 'repetition inside the body; the conclusion is not scored there']] },
-  { id: '3-1', area: 3, name: 'Unexplained Design Choices', what: 'A choice that affects validity is made, and no reason is given.',
-    ex: { spec: 'Inputs longer than 512 tokens are excluded.', specnote: 'The method is sold for long inputs. Why exclude them, and what does that do to the evaluation?', src: 'AI paper · SciSlopBench FA0280 · §3 Method', pre: 'Our approach is straightforward: ', mark: 'extract attention weights from layer 12 (out of 32 LLM layers in InternVL2.5-8B)', post: ' and apply MIS selection directly without any debiasing.', note: 'Why layer 12 is never said, and no comparison across layers appears in the text. The overview figure shows an L8 bar that beats L12 and is reported nowhere.' },
-    judge: ['Prioritize choices that affect the conclusion: architecture, data, comparisons, metrics.', 'Does the stated reason connect to this choice? “For efficiency” alone does not.', 'Keep apart: value unknown (reproducibility) and reason unknown (this item).'],
-    not: ['A standard setting with a source.', 'Minor settings that do not touch the core claims.'],
-    fix: ['Give the real rationale, constraint, or comparison.', 'Not a fix: inventing alternatives that were never run.'] },
-
   { id: '4-1', area: 4, name: 'Generic Filler', what: 'A sentence that repackages what was already shown in nicer words and tells the reader nothing new.',
     ex: { spec: 'This confirms the effectiveness of our approach.', specnote: 'It only repackages “Our model beats all baselines.” and adds nothing new.', src: 'AI paper · SciSlopBench FA0064 · §4 Experiments', pre: 'Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%), ', mark: 'demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.', post: '', note: 'The first half gives the result. The marked half says the same thing in vaguer words.' },
     judge: ['Candidates are interpretive tails after a result or method (“…, highlighting …”, “This demonstrates that …”). The phrase list follows “Superficial analyses” in Wikipedia’s Signs of AI writing.', 'A candidate passes only if it adds one thing the text before it did not say: why (the mechanism), how far (scope or limit), what it rules out (an alternative explanation), or what follows (a decision for the next design or experiment). Otherwise FAIL.', 'The stock phrase only picks candidates. It does not decide.'],
@@ -185,10 +178,6 @@ const DEF = {
     q: [{ pre: 'Table 2 examines why ratio-based debiasing fails. ', mark: 'The ratio formula A_mid / (A_shallow + ε)', post: ' degrades performance at every tested configuration.', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments' },
         { pre: 'Our proposed debiasing formula was: ', mark: 'A_debiased(i) = A_mid(i) / (A_shallow(i) + ε)   (1)', post: '', src: 'Same paper · §3 Method' }],
     note: '§4 tests the formula from §3 but writes it out again instead of pointing to Equation 1 or §3. No other section points to §3 or §4 at all.' },
-  '3-1': { what: 'The paper makes a choice its results depend on and gives no reason for it.',
-    q: [{ pre: 'Our approach is straightforward: extract attention weights from ', mark: 'layer 12 (out of 32 LLM layers in InternVL2.5-8B)', post: ' and apply MIS selection directly without any debiasing.', src: 'AI paper · SciSlopBench FA0280 · §3 Method' },
-        { pre: 'Key Insight: Deeper Layers = Better Token Selection · L2 55% · L4 39% · ', mark: 'L8 69% · L12 66%', post: '', src: 'Same paper · Figure 1, text inside the figure' }],
-    note: 'The method is the choice of layer, and the paper never says why 12. Its own figure shows layer 8 scoring higher, and the text never mentions it.' },
   '4-1': { what: 'The sentence repackages the result right before it and adds nothing new.',
     q: [{ pre: 'Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%), ', mark: 'demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.', post: '', src: 'AI paper · SciSlopBench FA0064 · §4 Experiments' },
         { pre: '', mark: 'This demonstrates that intelligent layer selection can substantially reduce computational cost with minimal accuracy loss.', post: '', src: 'Same paper · §4 Experiments, right after the accuracy and FA-budget numbers' }],
@@ -230,8 +219,8 @@ const CUES = [
   ['Evidence talk', 'it is well established that, extensive experiments show', []],
   ['Rule of three', 'novel, efficient, and scalable', ['1-2']],
   ['Empty signposting', 'it is worth noting that, in summary, overall', ['4-1', '4-4']],
-  ['Circular phrasing', 'the extraction module extracts features', ['4-1', '4-2', '3-1']],
-  ['Scope limiting', 'beyond the scope, left for future work', ['3-1', '1-2', '4-1']],
+  ['Circular phrasing', 'the extraction module extracts features', ['4-1', '4-2']],
+  ['Scope limiting', 'beyond the scope, left for future work', ['1-2', '4-1']],
   ['Surface style', 'em dashes, title case, bold run-in headings', []],
 ];
 const MAP = [['1-3', 'Evidence gap'], ['1-4', 'Citation isolation'], ['2-3', 'Cross-section references'], ['4-4', 'Macro redundancy'], ['2-5', 'Macro redundancy'], ['4-5', 'Figure exposition']];
@@ -289,7 +278,7 @@ const PAGE = {
     { fig: true, cap: [M('4-5'), ' Overview of the method. The diagram also carries an “Ours” tag, an accuracy and a ✓.'] },
   ],
   right: [
-    { h: '4  Experiments', sub: '4.1  Setup', p: [A('gqa', 'We evaluate on long-document QA.'), ' ', M('1-2'), ' ', M('3-1'), ' ', G('g31', 'why? effect on the long-input claim?')], lines: 1 },
+    { h: '4  Experiments', sub: '4.1  Setup', p: [A('gqa', 'We evaluate on long-document QA.'), ' ', M('1-2')], lines: 1 },
     { sub: '4.2  Results', p: ['Table 3 ablates the alignment term. ', M('2-3')], lines: 1 },
     { p: ['Adding the auxiliary loss improves BLEU by 1.8 points.'], lines: 1 },
     { p: ['Table 2 reports the main results. ', M('4-4')], lines: 1 },
@@ -304,7 +293,6 @@ const FAIL = {
   '1-2': { to: 'gqa', label: 'one encoder, one benchmark; the extra pass is never timed' },
   '1-4': { to: 'g14', label: 'B gets one sentence; how our method relates to B is never said' },
   '2-3': { to: 'gloss', label: 'Eq. 2 defines λ here · §4 never points back', miss: true },
-  '3-1': { to: 'g31', label: 'excluded, no reason given' },
   '4-1': { to: 'g41', label: 'Repackages the result, adds nothing new' },
   '4-2': { to: 'g42', label: 'explained only here' },
   '2-5': { to: 'g25', label: 'the Abstract sentence, copied', eq: true, from: 'Abstract', at: '6 Conclusion' },
@@ -315,9 +303,9 @@ const FAIL = {
 const PLANES = { structure: { title: 'Structure', q: 'Do the sections build on one another?' }, argument: { title: 'Argument', q: 'Are the claims and citations argued?' }, artifacts: { title: 'Artifacts', q: 'Can the method and the evidence be inspected?' } };
 const PLANE_OF = { '2-3': 'structure', '2-5': 'structure', '4-1': 'structure', '4-4': 'structure',
   '1-2': 'argument', '1-4': 'argument',
-  '1-3': 'artifacts', '3-1': 'artifacts', '4-2': 'artifacts', '4-5': 'artifacts' };
+  '1-3': 'artifacts', '4-2': 'artifacts', '4-5': 'artifacts' };
 const PLANE_C = { structure: '#7E4E66', argument: '#E4959E', artifacts: '#56717B' };   // site planes: structure/artifacts in their deep shade so structure and argument separate
-// the page groups the ten items by the index's three planes; the 1-5 area numbers stay in the item ids
+// the page groups the nine items by the index's three planes; the 1-5 area numbers stay in the item ids
 const GROUPS = [
   { n: 1, key: 'structure', cls: 'p-structure', title: 'Structure', q: 'Do the sections build on one another?' },
   { n: 2, key: 'argument', cls: 'p-argument', title: 'Argument', q: 'Are the claims and citations argued?' },
@@ -325,7 +313,7 @@ const GROUPS = [
 ];
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
 const SHORT = { '1-2': 'The paper claims more than its experiments can show.', '1-4': 'Cites a method much like its own, never says how it differs.',
-  '2-3': 'Set up in one section, never pointed back to.', '3-1': 'A design choice with no reason given.',
+  '2-3': 'Set up in one section, never pointed back to.',
   '2-5': 'The conclusion only repeats the abstract.', '4-1': 'Says what was already shown in nicer words, and tells nothing new.', '4-2': 'A result given in a term the paper has not explained yet.', '4-4': 'The same sentence in two sections.', '4-5': 'The method figure carries what belongs in the text.', '1-3': 'Results, but not one concrete case shown.' };
 for (const it of ITEMS) it.short = SHORT[it.id];
 const BY_ID = Object.fromEntries(ITEMS.map(i => [i.id, i]));
@@ -429,7 +417,7 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
 const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code', H45 = 'Haiku 4.5';
-const MV = '1107ut42';   // bump with the run data so browsers do not keep an old measure/*.json
+const MV = '1107nine31';   // bump with the run data so browsers do not keep an old measure/*.json
 const MEASURE = {
 
   '1-2b': { unit: 'paper', units: 'papers', breadth: true,
@@ -476,14 +464,6 @@ const MEASURE = {
       ['Grade the match', [[Q, 'Judge reads transcript, caption and those sentences: consistent · conflicting · unverifiable.']]],
       ['Decide PASS / FAIL / U', [[CD, 'conflicting, with a valid text id → FAIL. consistent → PASS. No matching sentence → U.'], [CD, 'Candidate item: reported separately, outside the 17-item score.']]]],
     line: 'Qwen2.5-VL transcribes the overview figure; Qwen2.5-32B matches each proposition to the text. Three runs vote. Candidate item, reported separately.' },
-  '3-1': { unit: 'choice', units: 'choices',
-    stages: [['Choice', 'a setting that shapes the result', Q], ['Kind', 'data · baseline · value · metric · backbone', Q], ['Reason', 'why this, not another?', QC], ['Verdict', '3 runs vote', CD]],
-    how: [
-      ['Select the choices', [[CD, 'Candidates: setting words (“we use / set / choose”, threshold, window, k=, dataset and baseline names) with a number or formula.'], [Q, 'Keep choices that affect the conclusion: data, subsets, sizes · baselines · method-specific values (layer, keep rate, threshold, k) · metrics and criteria · backbone.'], [CD, 'Minor settings → NA.']]],
-      ['Classify', [[Q, 'Class a–e; importance central / minor.']]],
-      ['Find the reason', [[Q, 'Point to every id that gives a reason, appendix included: ablation table, cited standard, constraint, argument.'], [Q, 'Judge reads the reason with the choice sentence and 4 surrounding sentences: specific reason (why this value, not another) · description only · generic phrase. Quotes the reason verbatim.'], [CD, 'The quote must occur in the text.']]],
-      ['Decide PASS / FAIL / U', [[CD, 'Stock phrase (“for efficiency”, unsourced “following common practice”) → FAIL.'], [CD, 'Baselines, metrics, backbones: source → PASS; no reason → U (standard comparisons not failed by rule).'], [CD, 'Data and key values: description only or generic → FAIL; specific reason → PASS.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
-    line: 'Qwen2.5-32B lists the choices and quotes the stated reason; code fails stock phrases and verifies the quote. Three runs vote.' },
   '4-1': { unit: 'sentence', units: 'candidate sentences', plain: true, tags: true,
     stages: [['Find the claim', '', CD], ['Separate result from interpretation', '', CD], ['Does it explain the result?', '', H45], ['Verdict', '', CD]],
     how: [
@@ -629,10 +609,6 @@ Piling another citation into the sentence is not a fix.`,
 List the method and experiment sections, subsections, numbered equations and algorithms.
 For each, find where a later section uses it, and point back there: "the ratio formula (Eq. 1)", "the setup in Section 3.2".
 Pointers placed where the component is not used are not a fix.`,
-  '3-1': `# Fix · Unexplained Design Choices (3-1)
-List the choices that affect the conclusion: architecture, data selection, exclusions, comparison conditions, metrics.
-For each, give the actual rationale, constraint, or comparison. "For efficiency" alone is not a reason.
-Do not invent alternatives that were never run; a value that is given but unexplained is the target here, not a missing value.`,
   '4-1': `# Fix · Generic Filler (4-1)
 Look at each sentence that says "this shows that ...", "..., demonstrating that ...", "the key finding is ..." or "informing future research".
 Delete it and reread the paragraph. If nothing is missing, leave it out.
@@ -813,7 +789,7 @@ function openHash() {
 document.addEventListener('click', e => { const a = e.target.closest('a[data-xref], a.ql, a.atile'); if (!a) return; e.preventDefault(); history.pushState({}, '', a.getAttribute('href')); openHash(); });
 addEventListener('hashchange', openHash);
 // ------------------------------------------------------------------ studio: the specimen page under a lens, one slop at a time, votes beside it
-const PAGE_ORDER = ['2-5', '4-1', '1-4', '4-2', '4-5', '1-2', '3-1', '2-3', '4-4', '1-3'];
+const PAGE_ORDER = ['2-5', '4-1', '1-4', '4-2', '4-5', '1-2', '2-3', '4-4', '1-3'];
 const tally = id => hub.votes[id] || { up: 0, down: 0 };
 const nCases = id => hub.cases.filter(c => c.item === id).length;
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
@@ -888,8 +864,8 @@ function showFix(id) { const box = $('#sp-body .sp-fix'); if (box) { box.hidden 
 const clip = (t, n) => (t = String(t || '').replace(/\s+/g, ' ').trim()).length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t;
 const cap1 = t => t.charAt(0).toUpperCase() + t.slice(1);
 function srcParts(src) { const m = String(src || '').split(' · '); return [h('span', { class: 'snip-who', text: m[0] || '' }), h('span', { text: m.slice(1).join(' · ') })]; }
-// six v1 measures → ten slops, drawn as a hand-ruled tree; the caption under the page says what the chosen slop is
-const TREE = [['Argument graph', ['1-2']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4', '2-5']], ['Figure exposition', ['4-5']], ['Evidence gap', ['1-3']], [null, ['3-1', '4-1', '4-2']]];
+// six v1 measures → nine slops, drawn as a hand-ruled tree; the caption under the page says what the chosen slop is
+const TREE = [['Argument graph', ['1-2']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4', '2-5']], ['Figure exposition', ['4-5']], ['Evidence gap', ['1-3']], [null, ['4-1', '4-2']]];
 // results so far, on the 123 AI / human pairs; an item stays blank until its measure is final
 // 11-06: columns as in v1 Table 2 (PairAcc, AUROC, TPR at 5% FPR), from each item's saved per-paper scores (v2/verification/table_site_rows_1106.py)
 const RESULTS = { '4-2': { pa: '0.65', auc: '0.64', tpr: '0.31' }, '1-4': { pa: '0.85', auc: '0.87', tpr: '0.59' }, '1-2': { pa: '0.88', auc: '0.88', tpr: '0.50' }, '2-3': { pa: '0.88', auc: '0.88', tpr: '0.00' }, '4-1': { pa: '0.82', auc: '0.82', tpr: '0.34' }, '4-4': { pa: '0.91', auc: '0.90', tpr: '0.29' }, '2-5': { pa: '0.91', auc: '0.90', tpr: '0.76' }, '1-3': { pa: '0.76', auc: '0.75', tpr: '0.00' }, '4-5': { pa: '0.91', auc: '0.90', tpr: '0.54' } };
