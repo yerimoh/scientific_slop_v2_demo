@@ -1,253 +1,58 @@
 {
-"meta": {
-"item": "2-3",
-"paper": "2512.19443",
-"side": "human paper",
-"title": "D²Pruner (visual token pruning)",
-"n_runs": 3,
-"F": 2,
-"P": 46,
-"U": 9,
-"NA": 0,
-"pre": {
-"FAIL": 0,
-"PASS": 44,
-"UNRESOLVED": 0,
-"NOT_APPLICABLE": 0
-},
-"source": "v2/runs/v2_deep2/HU_2512.19443/2-3.json"
-},
-"units": [
-{
-"id": "T1",
-"sec": "Table T1",
-"kind": "table label",
-"text": "MMB",
-"runs": [
-"FAIL",
-"FAIL",
-"FAIL"
-],
-"final": "FAIL",
-"final_reason": "no sentence identifies what this name refers to",
-"s2": "caption: Performance comparisons on LLaVA-1.5-7B and LLaVA-Next-7B across several understanding benchmarks.",
-"found": [],
-"found_note": "",
-"judge_line": "judge: nothing identifies it"
-},
-{
-"id": "T1",
-"sec": "Table T1",
-"kind": "table label",
-"text": "MMB-CN",
-"runs": [
-"FAIL",
-"FAIL",
-"FAIL"
-],
-"final": "FAIL",
-"final_reason": "no sentence identifies what this name refers to",
-"s2": "caption: Performance comparisons on LLaVA-1.5-7B and LLaVA-Next-7B across several understanding benchmarks.",
-"found": [],
-"found_note": "",
-"judge_line": "judge: nothing identifies it"
-},
-{
-"id": "T1",
-"sec": "Table T1",
-"kind": "table label",
-"text": "PDrop (CVPR25)",
-"runs": [
-"PASS",
-"PASS",
-"PASS"
-],
-"final": "PASS",
-"final_reason": "identified: A token reduction method",
-"s2": "caption: Performance comparisons on LLaVA-1.5-7B and LLaVA-Next-7B across several understanding benchmarks.",
-"found": [
-"S3.142"
-],
-"found_note": "",
-"judge_line": ""
-},
-{
-"id": "T1",
-"sec": "Table T1",
-"kind": "table label",
-"text": "SQA",
-"runs": [
-"NOT_APPLICABLE",
-"NOT_APPLICABLE",
-"FAIL"
-],
-"final": "UNRESOLVED",
-"final_reason": "standard benchmark/model/method name",
-"s2": "caption: Performance comparisons on LLaVA-1.5-7B and LLaVA-Next-7B across several understanding benchmarks.",
-"found": [],
-"found_note": "",
-"judge_line": "judge: standard name"
-},
-{
-"id": "T1",
-"sec": "Table T1",
-"kind": "table label",
-"text": "VQA ^ Text",
-"runs": [
-"FAIL",
-"FAIL",
-"PASS"
-],
-"final": "UNRESOLVED",
-"final_reason": "runs disagree: ['FAIL', 'FAIL', 'PASS']",
-"s2": "caption: Performance comparisons on LLaVA-1.5-7B and LLaVA-Next-7B across several understanding benchmarks.",
-"found": [
-"S2.074",
-"S2.081",
-"S2.099"
-],
-"found_note": "",
-"judge_line": "judge: nothing identifies it"
-},
-{
-"id": "T1",
-"sec": "Table T1",
-"kind": "table label",
-"text": "VQA ^ V2",
-"runs": [
-"FAIL",
-"FAIL",
-"PASS"
-],
-"final": "UNRESOLVED",
-"final_reason": "runs disagree: ['FAIL', 'FAIL', 'PASS']",
-"s2": "caption: Performance comparisons on LLaVA-1.5-7B and LLaVA-Next-7B across several understanding benchmarks.",
-"found": [],
-"found_note": "",
-"judge_line": "judge: nothing identifies it"
-},
-{
-"id": "T3",
-"sec": "Table T3",
-"kind": "table label",
-"text": "Upper Bound",
-"runs": [
-"FAIL",
-"FAIL",
-"PASS"
-],
-"final": "UNRESOLVED",
-"final_reason": "runs disagree: ['FAIL', 'FAIL', 'PASS']",
-"s2": "caption: Performance comparisons on LLaVA-1.5-7B and InternVL2.5-8B across localization benchmarks.",
-"found": [],
-"found_note": "",
-"judge_line": "judge: nothing identifies it"
-},
-{
-"id": "T3",
-"sec": "Table T3",
-"kind": "table label",
-"text": "test",
-"runs": [
-"FAIL",
-"FAIL",
-"PASS"
-],
-"final": "UNRESOLVED",
-"final_reason": "runs disagree: ['FAIL', 'FAIL', 'PASS']",
-"s2": "caption: Performance comparisons on LLaVA-1.5-7B and InternVL2.5-8B across localization benchmarks.",
-"found": [],
-"found_note": "",
-"judge_line": "judge: nothing identifies it"
-},
-{
-"id": "T3",
-"sec": "Table T3",
-"kind": "table label",
-"text": "testA",
-"runs": [
-"FAIL",
-"FAIL",
-"PASS"
-],
-"final": "UNRESOLVED",
-"final_reason": "runs disagree: ['FAIL', 'FAIL', 'PASS']",
-"s2": "caption: Performance comparisons on LLaVA-1.5-7B and InternVL2.5-8B across localization benchmarks.",
-"found": [],
-"found_note": "",
-"judge_line": "judge: nothing identifies it"
-},
-{
-"id": "T3",
-"sec": "Table T3",
-"kind": "table label",
-"text": "testB",
-"runs": [
-"UNRESOLVED",
-"UNRESOLVED",
-"PASS"
-],
-"final": "UNRESOLVED",
-"final_reason": "runs disagree: ['UNRESOLVED', 'UNRESOLVED', 'PASS']",
-"s2": "caption: Performance comparisons on LLaVA-1.5-7B and InternVL2.5-8B across localization benchmarks.",
-"found": [],
-"found_note": "",
-"judge_line": ""
-},
-{
-"id": "T3",
-"sec": "Table T3",
-"kind": "table label",
-"text": "val",
-"runs": [
-"UNRESOLVED",
-"UNRESOLVED",
-"PASS"
-],
-"final": "UNRESOLVED",
-"final_reason": "runs disagree: ['UNRESOLVED', 'UNRESOLVED', 'PASS']",
-"s2": "caption: Performance comparisons on LLaVA-1.5-7B and InternVL2.5-8B across localization benchmarks.",
-"found": [],
-"found_note": "",
-"judge_line": ""
-},
-{
-"id": "T4",
-"sec": "Table T4",
-"kind": "table label",
-"text": "Prefilling Time",
-"runs": [
-"UNRESOLVED",
-"UNRESOLVED",
-"PASS"
-],
-"final": "UNRESOLVED",
-"final_reason": "runs disagree: ['UNRESOLVED', 'UNRESOLVED', 'PASS']",
-"s2": "caption: Efficiency comparisons on LLaVA-Next-7B. We report the actual prefillling time, total runtime, theoretical FLOPs, KV ca…",
-"found": [],
-"found_note": "",
-"judge_line": ""
-},
-{
-"id": "S3.134",
-"sec": "Table S3.134",
-"kind": "prose name",
-"text": "DI-only variant",
-"runs": [
-"PASS",
-"PASS",
-"PASS"
-],
-"final": "PASS",
-"final_reason": "identified: A method that uses only Debiased Importance without Structural Diversity",
-"s2": "caption: Our full method (DI+SD) consistently outperforms FastV and the DI-only variant, especially at low token rataining ratio…",
-"found": [
-"S2.095",
-"S2.096",
-"S2.097"
-],
-"found_note": "",
-"judge_line": ""
-}
-]
+ "meta": {
+  "item": "2-3",
+  "paper": "FA0280",
+  "side": "AI paper",
+  "title": "Deep-Layer Attention Pruning for Vision-Language Models",
+  "n_runs": 1,
+  "F": 2,
+  "P": 1,
+  "U": 0,
+  "NA": 0,
+  "pre": {},
+  "source": "v2/runs/xsec_v1_full/objects.jsonl (v1 xsec_ref parser, rule F)"
+ },
+ "units": [
+  {
+   "id": "S:2",
+   "sec": "§3 Method",
+   "kind": "section",
+   "text": "§3 Method · defines the ratio formula (Eq. 1) and deep-layer token selection",
+   "runs": [],
+   "final": "FAIL",
+   "final_reason": "no other section points to it → FAIL",
+   "s2": "From other sections: none. Inside §3: none.",
+   "found": [],
+   "found_note": "§4 uses the formula without pointing back: “The ratio formula A_mid / (A_shallow + ε) degrades performance at every tested configuration.”",
+   "judge_line": ""
+  },
+  {
+   "id": "S:3",
+   "sec": "§4 Experiments",
+   "kind": "section",
+   "text": "§4 Experiments · main results, ablation, diagnostics",
+   "runs": [],
+   "final": "FAIL",
+   "final_reason": "no other section points to it → FAIL",
+   "s2": "From other sections: none. Inside §4: Table 1, Table 2, Table 3, Figure 2, Figure 3 (own tables and figures).",
+   "found": [],
+   "found_note": "§1 states the main result without pointing to §4: “We demonstrate that deep-layer attention pruning achieves 66.32% grounding accuracy on RefCOCO …”",
+   "judge_line": ""
+  },
+  {
+   "id": "eq:ratio",
+   "sec": "§3 Method",
+   "kind": "equation",
+   "text": "Equation 1 · A_debiased(i) = A_mid(i) / (A_shallow(i) + ε)",
+   "runs": [],
+   "final": "PASS",
+   "final_reason": "pointed to → PASS",
+   "s2": "§3: “Consequently, the ratio formula in Equation 1 does not remove positional bias …”",
+   "found": [
+    "§3 · \\ref"
+   ],
+   "found_note": "An equation counts as used wherever it is pointed to, its own section included.",
+   "judge_line": ""
+  }
+ ]
 }

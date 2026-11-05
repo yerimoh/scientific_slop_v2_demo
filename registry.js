@@ -89,7 +89,7 @@ const PIC = {
       K.chip(xo, MID - 6.25, 'ours', { fc: C.arg, ec: C.arg, tc: '#fff', bold: true, w: ow, h: 9.5 }) +
       K.arrow([x0 + cw, MID - 6.5], [xo - .5, MID - 3], { color: C.arg, dashed: true, rad: -.1 }) + K.arrow([x0 + cw, MID + 3], [xo - .5, MID], { color: C.arg, dashed: true, rad: .1 }) + K.cross(x0 + cw + gap / 2, MID - 5.5) + K.cross(x0 + cw + gap / 2, MID + 2.5); },
   '2-1': () => row([E.card('Abstract', inner.chip('46% · 93% kept', C.struct, { outline: true })), E.miss(C.struct, { left: true }), E.card('§4 Results', inner.chip('MQ: 12.1 → 3.65', C.struct))]),
-  '2-3': () => row([E.card('§3 Method', inner.lines(3)), E.miss(C.struct, { left: true }), E.card('Table 3', inner.chip('Phase-0 analysis', C.struct))]),
+  '2-3': () => row([E.card('§3 · Method', inner.chip('Eq. 1', C.struct)), E.miss(C.struct, { left: true }), E.card('§4 · Experiments', inner.chip('ratio formula', C.struct))]),
   '3-1': () => row([E.chip('layer 12 of 32', C.art), E.miss(C.art), E.ask(['why 12?'])]),
   '4-1': () => row([E.para('§1 Introduction', 'this holds exciting promise …', C.struct)]),
   '4-2': () => row([E.chip('retrieval rate', C.art), E.miss(C.art), E.ask(['= ?'])]),
@@ -102,7 +102,7 @@ const PIC = {
   '5-4': () => row([E.chip('0.3, "typically considered"', C.arg), E.miss(C.arg), E.ask(['by whom?', '[ ? ]'])]),
 };
 // what the pattern looks like, one line under each scene
-const CAP = { '1-1': 'a claim with nothing behind it', '1-2': 'claim wider than its evidence', '1-3': 'numbers only, no example', '1-4': 'cited, related to nothing', '2-1': 'the bad news never reaches the front', '2-3': 'a name that points at nothing', '3-1': 'a choice with no reason', '4-1': 'delete it and nothing is lost', '4-2': 'a term with no meaning', '4-3': 'detail the reader never needs', '4-4': 'the same sentence, another section', '4-5': 'a result only the figure reports', '5-1': 'important, but never shown', '5-2': 'the contrast is not true', '5-3': 'nothing moved, yet it explains', '5-4': 'a source that is not there' };
+const CAP = { '1-1': 'a claim with nothing behind it', '1-2': 'claim wider than its evidence', '1-3': 'numbers only, no example', '1-4': 'cited, related to nothing', '2-1': 'the bad news never reaches the front', '2-3': 'used later, never pointed back to', '3-1': 'a choice with no reason', '4-1': 'delete it and nothing is lost', '4-2': 'a term with no meaning', '4-3': 'detail the reader never needs', '4-4': 'the same sentence, another section', '4-5': 'a result only the figure reports', '5-1': 'important, but never shown', '5-2': 'the contrast is not true', '5-3': 'nothing moved, yet it explains', '5-4': 'a source that is not there' };
 // hero: a paper spine with the five kinds of broken connection
 function heroSvg() {
   const secs = [['Abstract', 4], ['Introduction', 42], ['Method', 80], ['Experiments', 118], ['Conclusion', 156]];
@@ -157,12 +157,12 @@ const ITEMS = [
     not: ['Detailed numbers or side analyses left to the body.', 'An accurate summary at a higher level.'],
     fix: ['Bring the finding and its condition to the front.', 'Not a fix: adding one number; turning an association into a mechanism.'],
     borders: [['1-2', 'the omission lets the claim exceed its support']] },
-  { id: '2-3', area: 2, name: 'Missing Cross-Section Links', v1: 'Cross-section references', what: 'One section needs a definition or result from another, and the reader cannot match them.',
-    ex: { spec: 'w/o regularization 68.0', specnote: '§3 defines two losses, L_a and L_b. Which one was removed? The text never says.', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments', pre: 'Table 3 presents diagnostic metrics from our ', mark: 'Phase-0 analysis', post: ' on 30 COCO images with 5 prompt templates (150 forward passes).', note: '“Phase-0” is named nowhere else. Nothing in the method section corresponds to it.' },
-    judge: ['Find the spots that depend on information elsewhere.', 'Can the reader confirm the correspondence? Consistent naming counts as a link.'],
-    not: ['A figure or table that works in place.', 'A clear correspondence without a numbered reference.'],
-    fix: ['Name the actual counterpart.', 'Not a fix: extra references to unrelated tables.'],
-    borders: [] },
+  { id: '2-3', area: 2, name: 'Missing Cross-Section Links', v1: 'Cross-section references', what: 'A section or a numbered equation from the method or experiments is never pointed to from anywhere it is used.',
+    ex: { spec: 'w/o regularization 68.0', specnote: '§3 adds the regularizers. §4 removes one and never points back to §3.', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments', pre: 'Table 2 examines why ratio-based debiasing fails. ', mark: 'The ratio formula A_mid / (A_shallow + ε)', post: ' degrades performance at every tested configuration.', note: '§3 defines this formula as Equation 1. §4 writes it out again and points to neither §3 nor Equation 1. No other section points to §3 or §4.' },
+    judge: ['Units: method, experiment and other body sections and labelled subsections; numbered equations and algorithms.', 'A section counts as used when another section points to it. An equation counts when anything points to it.', 'Pointers: \\ref, “Section 3”, “the previous section”, “in the Method section”.'],
+    not: ['Introduction, related work, conclusion, statements: not checked.', 'Figures and tables used only in their own section.', 'The introduction’s roadmap: not counted as use.'],
+    fix: ['Point back where a later section uses it: “the ratio formula (Eq. 1)”, “the setup in §3.2”.', 'Not a fix: pointers where the component is not used.'],
+    borders: [['4-4', 'said again rather than pointed back to']] },
 
   { id: '3-1', area: 3, name: 'Unexplained Design Choices', what: 'A choice that affects validity is made, and no reason is given.',
     ex: { spec: 'Inputs longer than 512 tokens are excluded.', specnote: 'The method is sold for long inputs. Why exclude them, and what does that do to the evaluation?', src: 'AI paper · SciSlopBench FA0280 · §3 Method', pre: 'Our approach is straightforward: ', mark: 'extract attention weights from layer 12 (out of 32 LLM layers in InternVL2.5-8B)', post: ' and apply MIS selection directly without any debiasing.', note: 'Why layer 12 is never said, and no comparison across layers appears in the text. The overview figure shows an L8 bar that beats L12 and is reported nowhere.' },
@@ -245,10 +245,10 @@ const DEF = {
     q: [{ pre: 'On RULER long-context benchmarks, our method achieves ', mark: '46% cache reduction on Variable Tracking while preserving 93% baseline accuracy', post: ' (16.52% vs. 17.72%).', src: 'AI paper · SciSlopBench FA0002 · Abstract' },
         { pre: 'On Multi-Query, we achieve 70% reduction but with ', mark: 'larger accuracy loss (3.65% vs. 12.10%)', post: ', indicating that distributed-information tasks inherently require higher cache coverage.', src: 'Same paper · §4 Experiments' }],
     note: 'Read the abstract and the method works. Read §4 and on the second task accuracy falls to a third. The abstract never mentions the second task.' },
-  '2-3': { what: 'One section refers to something in another section by a name the other section never uses.',
-    q: [{ pre: 'Table 3 presents diagnostic metrics from our ', mark: 'Phase-0 analysis', post: ' on 30 COCO images with 5 prompt templates (150 forward passes).', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments' },
-        { pre: '', mark: 'Diagnostic analysis on 30 COCO images with 5 prompt templates', post: ' revealed that shallow-layer attention in InternVL2.5-8B is highly prompt-stable but exhibits weak positional bias.', src: 'Same paper · §3 Method' }],
-    note: 'The two sentences describe the same analysis. “Phase-0” appears only in §4, so the reader has to guess that they match.' },
+  '2-3': { what: 'The paper sets something up in one section and never points back to it where it is used.',
+    q: [{ pre: 'Table 2 examines why ratio-based debiasing fails. ', mark: 'The ratio formula A_mid / (A_shallow + ε)', post: ' degrades performance at every tested configuration.', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments' },
+        { pre: 'Our proposed debiasing formula was: ', mark: 'A_debiased(i) = A_mid(i) / (A_shallow(i) + ε)   (1)', post: '', src: 'Same paper · §3 Method' }],
+    note: '§4 tests the formula from §3 but writes it out again instead of pointing to Equation 1 or §3. No other section points to §3 or §4 at all.' },
   '3-1': { what: 'The paper makes a choice its results depend on and gives no reason for it.',
     q: [{ pre: 'Our approach is straightforward: extract attention weights from ', mark: 'layer 12 (out of 32 LLM layers in InternVL2.5-8B)', post: ' and apply MIS selection directly without any debiasing.', src: 'AI paper · SciSlopBench FA0280 · §3 Method' },
         { pre: 'Key Insight: Deeper Layers = Better Token Selection · L2 55% · L4 39% · ', mark: 'L8 69% · L12 66%', post: '', src: 'Same paper · Figure 1, text inside the figure' }],
@@ -381,7 +381,7 @@ const FAIL = {
   '1-3': { to: 'g13', label: 'counts only, no example to check' },
   '1-4': { to: 'g14', label: 'the relation to A and B is never stated' },
   '2-1': { to: 'gneg', label: 'this finding never reaches the Abstract' },
-  '2-3': { to: 'gloss', label: 'two losses in §3: which one was removed?' },
+  '2-3': { to: 'gloss', label: 'uses §3’s losses, never points back to §3' },
   '3-1': { to: 'g31', label: 'excluded, no reason given' },
   '4-1': { to: 'g41', label: 'says nothing about this paper' },
   '4-2': { to: 'g42', label: 'never defined' },
@@ -406,7 +406,7 @@ const GROUPS = [
 ];
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
 const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'The claim goes further than the evidence.', '1-3': 'Results, but not one example shown.', '1-4': 'Cited, but never related to this paper.',
-  '2-1': 'The key finding is missing from the abstract.', '2-3': 'Refers to something the reader cannot locate.', '3-1': 'A design choice with no reason given.',
+  '2-1': 'The key finding is missing from the abstract.', '2-3': 'Set up in one section, never pointed back to.', '3-1': 'A design choice with no reason given.',
   '4-1': 'Says nothing about this paper.', '4-2': 'A term that is never defined.', '4-3': 'Detail that no result depends on.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
   '5-1': 'Called important, but which problem?', '5-2': 'A claimed difference that does not hold.', '5-3': 'A result read as a mechanism never tested.', '5-4': 'The cited source says something else.' };
 for (const it of ITEMS) it.short = SHORT[it.id];
@@ -550,14 +550,14 @@ const MEASURE = {
       ['Check the abstract and introduction', [[Q, 'Compare each finding against the abstract and introduction:'], [Q, 'Is the finding conveyed in substance? Exact numbers are not required.'], [Q, 'Is its key condition conveyed?'], [CD, 'Compute word overlap with each abstract / intro sentence.']]],
       ['Decide PASS / FAIL / U', [[CD, 'Finding or condition not conveyed → FAIL.'], [CD, '≥40% content-word overlap → human review (U).'], [CD, 'Three independent runs vote; score = FAIL / (FAIL + PASS).']]]],
     line: 'Qwen2.5-32B reads the body first, then checks the abstract and introduction; code guards with word overlap. Three runs vote.' },
-  '2-3': { unit: 'name', units: 'names',
-    stages: [['Name', 'a label that needs a definition', CD], ['Where', 'table or sentence', CD], ['Defined?', 'a sentence saying what it is', QC], ['Verdict', '3 runs vote', CD]],
+  '2-3': { unit: 'component', units: 'components',
+    stages: [['Component', 'a method / experiment section or a numbered equation', CD], ['Pointers', 'where the paper points to it', CD], ['Used?', 'section: from another section · equation: anywhere', CD], ['Verdict', 'rule, one run', CD]],
     how: [
-      ['Collect the names', [[CD, 'Row and column labels of result tables (variant names, metric abbreviations); names in results prose (“Phase-0 analysis”, “retrieval margin”).'], [CD, 'Excluded: formatting residue, generic labels (Avg., Ours, Vanilla), standard benchmark abbreviations (MMLU, SQA…).']]],
-      ['Locate each use', [[CD, 'The table with its caption, or the sentence using the name.']]],
-      ['Search for a definition', [[CD, 'Prose sentence containing all content words of the label → resolved by code, no model call.'], [Q, 'Otherwise search the whole paper for the defining sentence.'], [Q, 'Still none: judge checks the nearest candidates and whether the name is standard.']]],
-      ['Decide PASS / FAIL / NA / U', [[CD, 'Definition, consistent name or reference → PASS. Standard name → NA. Unidentified → FAIL.'], [CD, 'Broken \\ref → U (possible parser limit).'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS). Code-resolved labels: counted, not animated.']]]],
-    line: 'Code collects the labels and resolves the easy ones; Qwen2.5-32B searches for the rest. Three runs vote.' },
+      ['Collect the components', [[CD, 'Body sections and labelled subsections: method, experiments, others.'], [CD, 'Labelled equations and algorithms.'], [CD, 'Not checked: introduction, related work, conclusion, appendix, statements; figures and tables.']]],
+      ['Find the pointers', [[CD, '\\ref, \\cref, \\autoref and similar macros.'], [CD, 'Printed numbers: “Section 4”, “Sec. 3.2”.'], [CD, 'Names: “the previous section”, “in the Method section”.'], [CD, 'Ignored: the introduction’s roadmap, pointers into the appendix.']]],
+      ['Check: used?', [[CD, 'Section → pointed to from another section.'], [CD, 'Equation, algorithm → pointed to anywhere.'], [CD, 'No model judgment.']]],
+      ['Decide PASS / FAIL', [[CD, 'Not used → FAIL. Used → PASS.'], [CD, 'score = FAIL ÷ components.'], [CD, 'Deterministic: one run.']]]],
+    line: 'Code only (v1 cross-section parser). A section fails when no other section points to it; an equation fails when nothing points to it.' },
   '2-4': { unit: 'proposition', units: 'propositions',
     stages: [['Figure says', 'one claim of the overview', QV], ['Text says', 'Method / Setup sentence', Q], ['Match?', 'consistent · conflicting · unverifiable', Q], ['Verdict', '3 runs vote', CD]],
     how: [
@@ -743,9 +743,9 @@ Identify the key findings of the body from the research question and the main re
 Check the Abstract and Introduction: if a key finding or its condition is missing, add it in one sentence.
 Adding a single number is not enough; do not turn an observed association into a mechanism.`,
   '2-3': `# Fix · Missing Cross-Section Links (2-3)
-Find every place that depends on a definition, method, or result given elsewhere (an ablation row, a symbol, a setting).
-Name the counterpart exactly (which loss, which equation, which table) so the reader can match them.
-Do not add references to unrelated tables or sections.`,
+List the method and experiment sections, subsections, numbered equations and algorithms.
+For each, find where a later section uses it, and point back there: "the ratio formula (Eq. 1)", "the setup in Section 3.2".
+Pointers placed where the component is not used are not a fix.`,
   '3-1': `# Fix · Unexplained Design Choices (3-1)
 List the choices that affect the conclusion: architecture, data selection, exclusions, comparison conditions, metrics.
 For each, give the actual rationale, constraint, or comparison. "For efficiency" alone is not a reason.
