@@ -155,7 +155,7 @@ const ITEMS = [
     fix: ['Point back where a later section uses it: “the ratio formula (Eq. 1)”, “the setup in §3.2”.', 'Not a fix: pointers where the component is not used.'],
     borders: [['4-4', 'said again rather than pointed back to']] },
 
-  { id: '2-5', area: 2, name: 'Echo Conclusion', v1: 'Macro redundancy', what: 'The conclusion copies the abstract or the introduction instead of drawing the results together.',
+  { id: '2-5', area: 2, name: 'Empty Conclusion', v1: 'Macro redundancy', what: 'The conclusion says nothing new: it repeats the abstract or the introduction instead of drawing the results together.',
     ex: { spec: 'Our method consistently outperforms baselines across domains, with gains of up to 4 points.', specnote: 'The abstract says this word for word. The conclusion adds nothing to it.', src: 'AI paper · SciSlopBench FA0064 · §5 Conclusion', pre: '', mark: 'The method outperforms fixed periodic patterns by 10.4 percentage points and attention-based heuristics by 26.4 percentage points.', post: '', note: 'The abstract already says this, with the same two numbers. Four of the six conclusion sentences are copies like this one.' },
     judge: ['Compare each conclusion sentence with the abstract and the introduction.', 'A copy counts. The same point with a new number, condition or implication does not.'],
     not: ['A conclusion that recalls the main result in new words and says what it means.', 'Limitations and future work that are not in the abstract.'],
@@ -358,7 +358,7 @@ const GROUPS = [
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
 const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'The paper claims more than its experiments can show.', '1-4': 'A cited work tied to no other work.',
   '2-1': 'The key finding is missing from the abstract.', '2-3': 'Set up in one section, never pointed back to.', '3-1': 'A design choice with no reason given.',
-  '2-5': 'The conclusion copies the abstract.', '4-1': 'Says the last result again, in vaguer words.', '4-2': 'A term that is never defined.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
+  '2-5': 'The conclusion only repeats the abstract.', '4-1': 'Says the last result again, in vaguer words.', '4-2': 'A term that is never defined.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
   '5-4': 'The cited source says something else.' };
 for (const it of ITEMS) it.short = SHORT[it.id];
 const BY_ID = Object.fromEntries(ITEMS.map(i => [i.id, i]));
@@ -694,7 +694,7 @@ If you keep it, say what the result means here: when it holds, why, or where it 
   '4-2': `# Fix · Undefined Terms (4-2)
 For every term or abbreviation the intended reader cannot interpret from context, give its operation, object, or role where it first appears, or cite the definition.
 Expanding an acronym or swapping in another abstract word is not enough. If one thing has several names, pick one.`,
-  '2-5': `# Fix · Echo Conclusion (2-5)
+  '2-5': `# Fix · Empty Conclusion (2-5)
 Compare each conclusion sentence with the abstract and the introduction. Where a sentence repeats one of them, delete it.
 In its place, say what the results mean together: what holds, where it stops, and what follows from it. Rewording the abstract is not a fix.`,
   '4-4': `# Fix · Redundant Repetition (4-4)
