@@ -22,7 +22,7 @@
    "text": "AI paper FA0163 · Execution-Signature Recycling",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "no case anywhere",
+   "final_reason": "numbers only",
    "s2": "",
    "found": [],
    "found_note": "",
@@ -56,64 +56,51 @@
          "87.60 ± 1.27"
         ]
        ],
-       "note": "2 result tables in the main text → applies."
+       "note": "Numerical results → checked."
       }
      }
     ],
     [
      {
-      "quote": {
-       "sec": "§3 Experiments",
-       "id": "Analysis",
-       "segs": [
+      "shown": [
+       [
+        "Reported",
         [
-         "Among tasks with failures, ",
-         false
-        ],
-        [
-         "the median number of unique execution signatures is 1.0",
-         true
-        ],
-        [
-         ", validating ESR’s premise that failure modes cluster strongly.",
-         false
+         [
+          "Pass@1: 87.60 ± 1.27",
+          true
+         ],
+         [
+          "Failure statistics: median 1.0 execution signature per failing task",
+          true
+         ]
         ]
        ],
-       "note": "The paper counts signatures and failure banks. It never prints one."
-      }
-     },
-     {
-      "checks": [
        [
-        "Box or code block",
-        false,
-        "none"
-       ],
-       [
-        "Example caption",
-        false,
-        "none"
-       ],
-       [
-        "Long quotation",
-        false,
-        "none"
+        "Not shown",
+        [
+         [
+          "An actual failed program",
+          false
+         ],
+         [
+          "An actual model output",
+          false
+         ],
+         [
+          "An actual execution signature or failure",
+          false
+         ]
+        ]
        ]
       ]
      }
     ],
     [
      {
-      "head": "0 cases in the paper.",
-      "sub": "No signature, failing test or generated program is shown, appendix included."
-     }
-    ],
-    [
-     {
       "verdict": {
-       "score": "0 cases",
-       "v": "FAIL",
-       "note": "Numbers only."
+       "score": "Numbers only",
+       "v": "FAIL"
       }
      }
     ]
@@ -125,7 +112,7 @@
    "text": "Human pair · Self-Debug (Chen et al., 2023)",
    "runs": [],
    "final": "PASS",
-   "final_reason": "cases shown",
+   "final_reason": "examples shown",
    "s2": "",
    "found": [],
    "found_note": "",
@@ -159,58 +146,48 @@
          "84.1"
         ]
        ],
-       "note": "Result tables in the main text → applies."
+       "note": "Numerical results → checked."
       }
      }
     ],
     [
      {
-      "quote": {
-       "sec": "§4 Applications",
-       "id": "figure caption",
-       "segs": [
+      "shown": [
+       [
+        "Reported",
         [
-         "An example of Self-Debugging prompting for text-to-SQL generation.",
-         true
-        ],
-        [
-         " The SQL query, explanation and feedback are all predicted by the model.",
-         false
+         [
+          "Spider accuracy: 84.1",
+          true
+         ]
         ]
-       ]
-      }
-     },
-     {
-      "checks": [
-       [
-        "Box or code block",
-        true,
-        "360, first in §4"
        ],
        [
-        "Example caption",
-        true,
-        "7"
-       ],
-       [
-        "Long quotation",
-        true,
-        "2, first in §3"
+        "Shown",
+        [
+         [
+          "A full text-to-SQL prompt",
+          true
+         ],
+         [
+          "The model’s SQL query",
+          true
+         ],
+         [
+          "The model’s explanation and feedback",
+          true
+         ]
+        ]
        ]
       ]
      }
     ],
     [
      {
-      "head": "369 cases shown.",
-      "sub": "The first box holds a full text-to-SQL prompt with the model’s query, explanation and feedback."
-     }
-    ],
-    [
-     {
       "verdict": {
-       "score": "369 cases",
-       "v": "PASS"
+       "score": "Examples shown",
+       "v": "PASS",
+       "note": "The first one is in §4 Applications."
       }
      }
     ]

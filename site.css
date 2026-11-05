@@ -1413,6 +1413,7 @@ mark.cx-e { color: inherit; background: rgba(255, 214, 10, .38); border-radius: 
 .eb-chk { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 13px; }
 .eb-chk li { display: grid; grid-template-columns: 18px 1fr; column-gap: 6px; align-items: baseline; }
 .eb-chk li small { grid-column: 2; color: var(--ink-3, var(--ink-2)); font-size: 12px; }
+.eb-sh { display: grid; gap: 10px; } .eb-shg .eb-l { display: block; margin-bottom: 4px; }
 .eb-mk { font-weight: 800; } .eb-chk li.y .eb-mk { color: #3F9A5A; } .eb-chk li.n .eb-mk { color: #D93A3A; }
 .eb-cnt table { border-collapse: collapse; font-size: 13px; }
 .eb-cnt td { padding: 2px 10px 2px 0; color: var(--ink-2); }

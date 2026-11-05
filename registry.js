@@ -428,7 +428,7 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
 const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code', H45 = 'Haiku 4.5';
-const MV = '1107f45';   // bump with the run data so browsers do not keep an old measure/*.json
+const MV = '1107f45eg';   // bump with the run data so browsers do not keep an old measure/*.json
 const MEASURE = {
 
   '1-2b': { unit: 'paper', units: 'papers', breadth: true,
@@ -516,14 +516,13 @@ const MEASURE = {
       ['Score the section', [[CD, '≥1 repeat in the section → FAIL. Otherwise → PASS.'], [CD, 'score = FAIL sections ÷ body sections.'], [CD, 'Deterministic: one run.']]]],
     line: 'Code only. A body section fails when one of its sentences is a near-copy of a sentence in an earlier section or the abstract.' },
   '1-3': { unit: 'paper', units: 'papers', paper: true,
-    stages: [['Find the results', '', CD], ['Look for a case', '', CD], ['Is there one?', '', CD], ['Verdict', '', CD]],
-    ask: ['What do we evaluate?', 'The paper reports results. Does it show even one concrete case behind them?'],
+    stages: [['Check for quantitative results', '', CD], ['Look for actual examples', '', CD], ['Decide', '', CD]],
+    ask: ['Question', 'Does the paper show actual examples, not just aggregate results?'],
     doc: [
-      [{ p: 'Look for a result table in the main text.' }, { l: 'Counts if', t: 'at least two rows and four numbers.' }, { s: 'No result table → NA' }],
-      [{ p: 'Search the whole paper, appendix included.' }, { l: 'A case is', list: ['a prompt, input or output in a box or code block', 'a caption that says example, case study, failure case or qualitative', 'a long quotation outside Related Work'] }, { s: 'Quotations in Related Work belong to other papers and do not count.' }],
-      [{ p: 'One case anywhere is enough.' }, { s: 'A plot or a table of per-example scores is not a case.' }],
-      [{ p: 'No case anywhere → FAIL' }, { p: 'At least one → PASS' }, { s: 'One verdict per paper.' }]],
-    how: [], line: 'A paper with results fails when it never shows one concrete case. All four steps are rules; no model is used.' },
+      [{ p: 'Apply this check only to papers that report numerical experimental results.' }, { s: 'No result table → NA' }],
+      [{ p: 'Search the main paper and appendix for actual inputs, outputs, successes, or failures.' }, { l: 'Examples include', list: ['prompts / inputs / outputs', 'generated outputs', 'success or failure cases', 'qualitative examples / case studies'] }, { s: 'Analysis text or a table of aggregate scores does not count.' }],
+      [{ p: 'At least one actual example → PASS' }, { p: 'Numbers only → FAIL' }]],
+    how: [], line: 'Does the paper only say 87.6%, or does it also show what the model actually produced?' },
   '4-5': { unit: 'figure', units: 'method figures', kinds: true,
     stages: [['Find the method figure', '', CD], ['Read the figure as text', '', QV], ['Check six kinds', '', 'code+reader'], ['Score', '', CD]],
     ask: ['What do we evaluate?', 'Does the method figure show only the method, or does it also carry what the text should say?'],
@@ -1300,6 +1299,7 @@ function blkView(b) {
       h('p', { class: 'eb-tot' }, c.total, ' → ', h('b', { class: 'v-' + (c.verdict === 'PASS' ? 'P' : 'F'), text: c.verdict })), c.hint ? h('small', { class: 'eb-n', text: c.hint }) : null); }
   if (b.head) return h('div', { class: 'eb-res' }, h('p', { class: 'eb-rh', text: b.head }), b.sub ? h('small', { class: 'eb-n', text: b.sub }) : null,
     b.out ? h('p', { class: 'eb-ro' }, '→ ', h('b', { class: b.out === 'FAIL' ? 'v-F' : b.out === 'PASS' ? 'v-P' : '', text: b.out })) : null);
+  if (b.shown) return h('div', { class: 'eb-sh' }, ...b.shown.map(([l, items]) => h('div', { class: 'eb-shg' }, h('span', { class: 'eb-l', text: l }), h('ul', { class: 'eb-chk' }, ...items.map(([t, ok]) => h('li', { class: ok ? 'y' : 'n' }, h('span', { class: 'eb-mk', text: ok ? '✓' : '✕' }), h('b', { text: t })))))));
   if (b.line) return h('p', { class: 'eb-line', text: b.line });
   if (b.img) return h('figure', { class: 'eb-img' }, h('img', { src: b.img.src, alt: b.img.alt, loading: 'lazy' }), b.img.cap ? h('figcaption', { class: 'eb-n', text: b.img.cap }) : null);
   if (b.stat) return h('div', { class: 'eb-stat' }, ...b.stat.map(([n, main, sub]) => h('div', {}, h('span', { class: 'eb-sn', text: n }), h('b', { text: main }), sub ? h('small', { text: sub }) : null)));
@@ -1433,7 +1433,7 @@ function measureSteps(it) {
     if (m.breadth) { breadthLine(data, score); return; }
     if (m.kinds) { const mt = data.meta; score.replaceChildren(`${mt.side} ${mt.paper} · ${mt.kinds} of 6 kinds → score `, h('b', { text: (mt.kinds / 6).toFixed(2) }), ` · Human pair ${mt.hu_paper}: ${mt.hu_kinds} of 6 → ${(mt.hu_kinds / 6).toFixed(2)}`); return; }
     if (m.cost) { score.replaceChildren(`${data.meta.side} ${data.meta.paper} · Missing Cost Accounting `, h('b', { class: 'big', text: String(data.meta.cost) }), ' / 100 → ', h('b', { class: 'v-F', text: data.meta.cost ? 'PASS' : 'FAIL' })); return; }
-    if (m.paper) { const g = data.meta.rate; score.replaceChildren('One verdict per paper. Across the benchmark, ', h('b', { class: 'big', text: g.ai }), ` of AI papers (${g.n_ai}) and `, h('b', { class: 'big', text: g.hu }), ` of human papers (${g.n_hu}) show no case.`); return; }
+    if (m.paper) { const g = data.meta.rate; score.replaceChildren('One verdict per paper. Across the benchmark, ', h('b', { class: 'big', text: g.ai }), ` of AI papers (${g.n_ai}) and `, h('b', { class: 'big', text: g.hu }), ` of human papers (${g.n_hu}) report numbers only.`); return; }
     if (data.meta.score_den) { const N = data.meta.score_den; score.replaceChildren(h('b', { class: 'big', text: `${F} of ${N}` }), ` ${m.units} are isolated → `, h('b', { class: 'big', text: Math.round(100 * F / N) + '%' }), h('small', { class: 'ms-sub', text: `${data.meta.side} ${data.meta.paper} · Human pair: ${Math.round(100 * (data.meta.hu_score || 0))}%` })); return; }
     if (m.plain) { score.replaceChildren(`Score = FAIL / (FAIL + PASS). ${data.meta.side} ${data.meta.paper}: ${F} / ${D} = ${D ? (F / D).toFixed(2) : '—'}` + (UU ? `, ${UU} U not counted.` : '.')); return; }
     score.replaceChildren(`${data.meta.side} ${data.meta.paper} · ${U.length} ${m.units} · score = FAIL ÷ (FAIL + PASS) = `, h('b', { text: `${F} ÷ ${D}` }), ' = ', h('b', { class: 'big', text: D ? (F / D).toFixed(2) : '—' }), UU ? ` · ${UU} U, not counted` : '');
