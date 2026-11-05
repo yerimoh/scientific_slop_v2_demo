@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="app.css?v=1107q41b">
 <link rel="stylesheet" href="v11.css?v=1107q41b">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,600..900&family=Instrument+Serif:ital@0;1&family=Caveat:wght@500;700&display=swap">
-<link rel="stylesheet" href="site.css?v=1107unifyp">
+<link rel="stylesheet" href="site.css?v=1107unifypt">
 <script>
   // same theme key as the main app, applied before paint
   try { const t = localStorage.getItem('ssi-theme'); if (t) document.documentElement.dataset.theme = JSON.parse(t); } catch (e) { try { const t = localStorage.getItem('ssi-theme'); if (t) document.documentElement.dataset.theme = t.replace(/"/g, ''); } catch (_) {} }
@@ -157,11 +157,15 @@
     </div>
   </section>
 
-  <div class="wrap reg-sec reg-cta">
-    <h2 class="sec-h left">Seen a slop this registry misses?</h2>
-    <div class="reg-actions">
-      <a class="btn" href="#tag" data-xref="tag">Tag a sentence</a>
-      <a class="btn ghost" href="https://scientific-slop-demo.onrender.com/propose">Propose a pattern</a>
+  <div class="wrap team">
+    <h2 class="sec-h left">Team</h2>
+    <p class="team-sub">The people behind <i>Science or Slop?</i> and this site.</p>
+    <div class="team-grid">
+        <a class="tm" href="https://yerimoh.github.io/yerimoyCV.github.io/" target="_blank" rel="noopener" title="Yerim Oh ↗"><div class="tm-avatar"><span>YO</span><img src="img/team/yerim-oh.jpg" alt="Yerim Oh" loading="lazy" onerror="this.remove()"></div><span class="tm-name">Yerim Oh</span><span class="tm-aff">Seoul National University</span></a>
+        <a class="tm" href="https://passing2961.github.io/" target="_blank" rel="noopener" title="Young-Jun Lee ↗"><div class="tm-avatar"><span>YJ</span><img src="img/team/young-jun-lee.jpg" alt="Young-Jun Lee" loading="lazy" onerror="this.remove()"></div><span class="tm-name">Young-Jun Lee</span><span class="tm-aff">University of Minnesota</span></a>
+        <a class="tm" href="https://ahnjaewoo.github.io/" target="_blank" rel="noopener" title="Jaewoo Ahn ↗"><div class="tm-avatar"><span>JA</span><img src="img/team/jaewoo-ahn.jpg" alt="Jaewoo Ahn" loading="lazy" onerror="this.remove()"></div><span class="tm-name">Jaewoo Ahn</span><span class="tm-aff">Seoul National University</span></a>
+        <a class="tm" href="https://vision.snu.ac.kr/gunhee/" target="_blank" rel="noopener" title="Gunhee Kim ↗"><div class="tm-avatar"><span>GK</span><img src="img/team/gunhee-kim.jpg" alt="Gunhee Kim" loading="lazy" onerror="this.remove()"></div><span class="tm-name">Gunhee Kim</span><span class="tm-aff">Seoul National University</span></a>
+        <a class="tm" href="https://dykang.github.io/" target="_blank" rel="noopener" title="Dongyeop Kang ↗"><div class="tm-avatar"><span>DK</span><img src="img/team/dongyeop-kang.jpg" alt="Dongyeop Kang" loading="lazy" onerror="this.remove()"></div><span class="tm-name">Dongyeop Kang</span><span class="tm-aff">University of Minnesota</span></a>
     </div>
   </div>
 </main>
