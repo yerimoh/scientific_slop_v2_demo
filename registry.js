@@ -903,9 +903,6 @@ function renderPanel() {
     h('div', { class: 'cap-t' }, h('b', { class: 'cap-n', text: it.name })),
     h('p', { class: 'cap-d', text: it.short }),
     it.parts ? h('div', { class: 'cap-parts' }, ...it.parts.map(p => h('p', { class: 'cap-pt' }, h('b', { text: p.name }), h('span', { text: p.what })))) : null,
-    h('div', { class: 'cap-vs' },
-      h('p', { class: 'says' }, h('span', { text: 'The paper says' }), h('q', { text: it.ex.spec || clip(it.ex.mark, 90) })),
-      h('p', { class: 'but' }, h('span', { text: 'What’s there' }), h('em', { text: cap1(f.label || it.what) }))),
     h('div', { class: 'cap-a' },
       h('button', { type: 'button', class: 'cap-v' + (mine === 1 ? ' on' : ''), disabled: !hub.canWrite, onclick: () => vote(it.id, 1) }, (mine === 1 ? '✓ Seen it' : 'Seen it'), h('b', { text: String(t.up) })),
       h('button', { type: 'button', class: 'cap-how', 'aria-expanded': String($('#rg-entry').classList.contains('open')), onclick: e => { const on = $('#rg-entry').classList.toggle('open'); e.currentTarget.setAttribute('aria-expanded', on); e.currentTarget.textContent = on ? 'Hide the measurement ↑' : 'How it is measured ↓'; }, text: $('#rg-entry').classList.contains('open') ? 'Hide the measurement ↑' : 'How it is measured ↓' }))));

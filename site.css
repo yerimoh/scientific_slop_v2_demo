@@ -1528,3 +1528,7 @@ a.tm:hover .tm-name { text-decoration: underline; text-underline-offset: 3px; }
 .cap-a .cap-v:hover, .re-v:hover { border-color: var(--ink-3); }
 .cap-a .cap-v b, .re-v b { font-weight: 700; color: var(--ink); }
 .cap-a .cap-v.on, .re-v.on { background: var(--ink); color: var(--bg); border-color: var(--ink); } .cap-a .cap-v.on b, .re-v.on b { color: var(--bg); }
+.cap-a { margin-top: 14px; }
+.team-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 820px; align-items: start; }
+.tm { align-content: start; }
+@media (max-width: 640px) { .team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
