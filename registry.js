@@ -158,7 +158,7 @@ const ITEMS = [
     fix: ['Bring the finding and its condition to the front.', 'Not a fix: adding one number; turning an association into a mechanism.'],
     borders: [['1-2', 'the omission lets the claim exceed its support']] },
   { id: '2-3', area: 2, name: 'Missing Cross-Section Links', v1: 'Cross-section references', what: 'A section or a numbered equation from the method or experiments is never pointed to from anywhere it is used.',
-    ex: { spec: 'w/o regularization 68.0', specnote: '§3 adds the regularizers. §4 removes one and never points back to §3.', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments', pre: 'Table 2 examines why ratio-based debiasing fails. ', mark: 'The ratio formula A_mid / (A_shallow + ε)', post: ' degrades performance at every tested configuration.', note: '§3 defines this formula as Equation 1. §4 writes it out again and points to neither §3 nor Equation 1. No other section points to §3 or §4.' },
+    ex: { spec: 'With λ = 0.1, R@10 rises from 68.0 to 71.2.', specnote: 'λ is defined only in Eq. 2 of §3. §4 uses it and never points back to Eq. 2.', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments', pre: 'Table 2 examines why ratio-based debiasing fails. ', mark: 'The ratio formula A_mid / (A_shallow + ε)', post: ' degrades performance at every tested configuration.', note: '§3 defines this formula as Equation 1. §4 writes it out again and points to neither §3 nor Equation 1. No other section points to §3 or §4.' },
     judge: ['Units: method, experiment and other body sections and labelled subsections; numbered equations and algorithms.', 'A section counts as used when another section points to it. An equation counts when anything points to it.', 'Pointers: \\ref, “Section 3”, “the previous section”, “in the Method section”.'],
     not: ['Introduction, related work, conclusion, statements: not checked.', 'Figures and tables used only in their own section.', 'The introduction’s roadmap: not counted as use.'],
     fix: ['Point back where a later section uses it: “the ratio formula (Eq. 1)”, “the setup in §3.2”.', 'Not a fix: pointers where the component is not used.'],
@@ -358,14 +358,14 @@ const PAGE = {
     { p: [M('4-1'), ' ', G('g41', 'delete it: nothing is lost')], lines: 1 },
     { h: '2  Related Work', p: ['Method A [3] uses contrastive pairs; method B [7] adds a memory module. ', A('gab', 'Both compute their weights w = f(x) from the input.'), ' ', M('1-4'), ' ', G('g14', 'follows A or B? what differs?')], lines: 1 },
     { p: [M('5-4')], lines: 1 },
-    { h: '3  Method', p: ['We apply ', M('4-2'), ' ', G('g42', 'definition'), ' before fusion and then project to the shared space. ', A('gloss', 'Two regularizers, L_a and L_b, are added to the loss.')], lines: 1 },
+    { h: '3  Method', p: ['We apply ', M('4-2'), ' ', G('g42', 'definition'), ' before fusion and then project to the shared space. ', A('gloss', 'We add an alignment term: L = L_task + λ·L_align (Eq. 2).')], lines: 1 },
     { p: [M('5-2'), ' our method learns input-dependent weights.'], lines: 1 },
     { fig: true, cap: [M('4-5'), ' Solid and dashed arrows; blue, green, and orange blocks.'] },
   ],
   right: [
     { h: '4  Experiments', sub: '4.1  Setup', p: [A('gqa', 'We evaluate on long-document QA.'), ' ', M('3-1'), ' ', G('g31', 'why? effect on the long-input claim?'), ' ', G('g11', 'no label-noise experiment')], lines: 1 },
     { p: ['After tokenization, ', M('4-3'), ' before training.'], lines: 1 },
-    { sub: '4.2  Results', table: true },
+    { sub: '4.2  Results', p: ['Table 3 ablates the alignment term. ', M('2-3')], lines: 1 },
     { p: ['Adding the auxiliary loss improves BLEU by 1.8 points, ', M('5-3'), ' ', G('g53', 'no analysis of alignment')], lines: 1 },
     { p: ['Table 2 reports the main results. ', M('4-4')], lines: 1 },
     { sub: '4.3  Analysis', p: ['We find 31% ', M('1-3'), ' and 12% entity substitutions (Table 4). ', G('g13', 'no example input · output')], lines: 1 },
@@ -381,7 +381,7 @@ const FAIL = {
   '1-3': { to: 'g13', label: 'counts only, no example to check' },
   '1-4': { to: 'g14', label: 'the relation to A and B is never stated' },
   '2-1': { to: 'gneg', label: 'this finding never reaches the Abstract' },
-  '2-3': { to: 'gloss', label: 'uses §3’s losses, never points back to §3' },
+  '2-3': { to: 'gloss', label: 'Eq. 2 defines λ here · §4 never points back', miss: true },
   '3-1': { to: 'g31', label: 'excluded, no reason given' },
   '4-1': { to: 'g41', label: 'says nothing about this paper' },
   '4-2': { to: 'g42', label: 'never defined' },
@@ -473,6 +473,8 @@ function drawOver(id) {
     else if (tl > m1.r) { const gx = (m1.r + tl) / 2, sy = (m1.t + m1.b) / 2; pts = [[m1.r + 3, sy], [gx, sy], [gx, cy], [tl - 5, cy]]; }
     else { const gx = (trr + m0.l) / 2, sy = (m0.t + m0.b) / 2; pts = [[m0.l - 3, sy], [gx, sy], [gx, cy], [trr + 5, cy]]; }
     g += arrow(pts, f.eq ? 1.7 : .55);
+    if (f.miss) { const [p, q] = pts.length > 2 ? [pts[1], pts[2]] : pts, mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2;   // the pointer that should be there and is not
+      g += `<g transform="translate(${mx.toFixed(1)} ${my.toFixed(1)})"><g class="mx" style="--d:1.25s"><circle r="10" fill="#d93a3a" stroke="#fff" stroke-width="2"/><path d="M-4 -4L4 4M-4 4L4 -4" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></g></g>`; }
   }
   o.innerHTML = `<svg class="over-svg pen-over" width="${W}" height="${wrap.offsetHeight}" viewBox="0 0 ${W} ${wrap.offsetHeight}">${g}</svg>`;
 }

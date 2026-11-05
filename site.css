@@ -1318,3 +1318,5 @@ body::after { display: none; }
 .xm-cap { display: flex; gap: 10px; align-items: baseline; margin: 6px 2px 0; font-size: 15px; line-height: 1.45; color: var(--ink); min-height: 2.9em; }
 .xm-n { flex: none; display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: var(--surface); font-size: 12px; font-weight: 700; transform: translateY(-1px); }
 @media (prefers-reduced-motion: reduce) { .xm *, .xm path.pen { transition: none !important; } }
+.pen-over .mx { opacity: 0; animation: ohand .35s ease-out forwards; animation-delay: var(--d); }
+@media (prefers-reduced-motion: reduce) { .pen-over .mx { animation: none; opacity: 1; } }
