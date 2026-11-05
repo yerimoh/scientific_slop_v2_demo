@@ -98,7 +98,7 @@ const PIC = {
   '5-4': () => row([E.chip('0.3, "typically considered"', C.arg), E.miss(C.arg), E.ask(['by whom?', '[ ? ]'])]),
 };
 // what the pattern looks like, one line under each scene
-const CAP = { '2-5': 'the abstract again, at the end', '1-1': 'a claim with nothing behind it', '1-2': 'one setting tried, cost left out', '1-4': 'cited, related to nothing', '2-1': 'the bad news never reaches the front', '2-3': 'used later, never pointed back to', '3-1': 'a choice with no reason', '4-1': 'delete it and nothing is lost', '4-2': 'a term with no meaning', '4-4': 'the same sentence, another section', '4-5': 'a result only the figure reports', '5-4': 'a source that is not there' };
+const CAP = { '2-5': 'the abstract again, at the end', '1-1': 'a claim with nothing behind it', '1-2': 'one setting tried, cost left out', '1-4': 'cited, related to nothing', '2-1': 'the bad news never reaches the front', '2-3': 'used later, never pointed back to', '3-1': 'a choice with no reason', '4-1': 'nicer words, nothing new', '4-2': 'a term with no meaning', '4-4': 'the same sentence, another section', '4-5': 'a result only the figure reports', '5-4': 'a source that is not there' };
 // hero: a paper spine with the five kinds of broken connection
 function heroSvg() {
   const secs = [['Abstract', 4], ['Introduction', 42], ['Method', 80], ['Experiments', 118], ['Conclusion', 156]];
@@ -168,7 +168,7 @@ const ITEMS = [
     fix: ['Give the real rationale, constraint, or comparison.', 'Not a fix: inventing alternatives that were never run.'] },
 
   { id: '4-1', area: 4, name: 'Generic Filler', what: 'A sentence that repackages what was already shown in nicer words and tells the reader nothing new.',
-    ex: { spec: 'This confirms the effectiveness of our approach.', specnote: 'It only repeats “Our model beats all baselines.” Delete it and nothing is missing.', src: 'AI paper · SciSlopBench FA0064 · §4 Experiments', pre: 'Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%), ', mark: 'demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.', post: '', note: 'The first half gives the result. The marked half says the same thing in vaguer words.' },
+    ex: { spec: 'This confirms the effectiveness of our approach.', specnote: 'It only repackages “Our model beats all baselines.” and adds nothing new.', src: 'AI paper · SciSlopBench FA0064 · §4 Experiments', pre: 'Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%), ', mark: 'demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.', post: '', note: 'The first half gives the result. The marked half says the same thing in vaguer words.' },
     judge: ['Candidates are interpretive tails after a result or method (“…, highlighting …”, “This demonstrates that …”). The phrase list follows “Superficial analyses” in Wikipedia’s Signs of AI writing.', 'A candidate passes only if it adds one thing the text before it did not say: why (the mechanism), how far (scope or limit), what it rules out (an alternative explanation), or what follows (a decision for the next design or experiment). Otherwise FAIL.', 'The stock phrase only picks candidates. It does not decide.'],
     not: ['The sentence adds a why, a how far, a ruled-out alternative, or a what next.', 'The claim is too strong but still adds something (that is 1-2).'],
     fix: ['Delete it, or replace it with one of the four. “This indicates minimal interference between tasks.” → “So the drop in Section 5 is not caused by task interference.”', 'Not a fix: changing “shows” to “suggests”, re-adding the numbers, or inserting model and dataset names.'],
@@ -222,10 +222,10 @@ const DEF = {
     q: [{ pre: 'Our approach is straightforward: extract attention weights from ', mark: 'layer 12 (out of 32 LLM layers in InternVL2.5-8B)', post: ' and apply MIS selection directly without any debiasing.', src: 'AI paper · SciSlopBench FA0280 · §3 Method' },
         { pre: 'Key Insight: Deeper Layers = Better Token Selection · L2 55% · L4 39% · ', mark: 'L8 69% · L12 66%', post: '', src: 'Same paper · Figure 1, text inside the figure' }],
     note: 'The method is the choice of layer, and the paper never says why 12. Its own figure shows layer 8 scoring higher, and the text never mentions it.' },
-  '4-1': { what: 'The sentence repeats the result right before it.',
+  '4-1': { what: 'The sentence repackages the result right before it and adds nothing new.',
     q: [{ pre: 'Compared to other 1/4-FA methods, NLL-Guided outperforms the best periodic pattern by 10.4 percentage points (64.6% vs 54.2%), ', mark: 'demonstrating that data-driven selection substantially outperforms fixed patterns under the same FA budget.', post: '', src: 'AI paper · SciSlopBench FA0064 · §4 Experiments' },
         { pre: '', mark: 'This demonstrates that intelligent layer selection can substantially reduce computational cost with minimal accuracy loss.', post: '', src: 'Same paper · §4 Experiments, right after the accuracy and FA-budget numbers' }],
-    note: 'Both come right after the numbers and say them again in vaguer words. Deleting them loses nothing.' },
+    note: 'Both come right after the numbers and say them again in vaguer words. Neither adds a why, a how far, a ruled-out alternative, or a what next.' },
   '4-2': { what: 'The paper leans on a term it never defines.',
     q: [{ pre: 'This occurs because LLaMA-3.1-8B-Instruct has a ', mark: 'low retrieval rate (<14%)', post: ', limiting the effectiveness of consensus-based validation.', src: 'AI paper · SciSlopBench FA0083 · §4 Experiments' }],
     note: 'The paper’s main negative result is explained by this number. “Retrieval rate” is never defined and no table reports it, so the reader cannot tell what 14% is a share of.' },
@@ -312,7 +312,7 @@ const PAGE = {
   left: [
     { h: 'Abstract', p: ['Cross-lingual retrieval models weight every token the same. We introduce ', M('2-1'), ' on three benchmarks. ', A('g25', 'Our method consistently outperforms baselines across domains, with gains of up to 4 points.')], lines: 1 },
     { h: '1  Introduction', p: ['We propose a framework that learns token weights for cross-lingual retrieval. ', A('g44', 'Our model beats all baselines on both datasets.')], lines: 1 },
-    { p: [M('4-1'), ' ', G('g41', 'delete it: nothing is lost')], lines: 1 },
+    { p: [M('4-1'), ' ', G('g41', 'nicer words, nothing new')], lines: 1 },
     { h: '2  Related Work', p: ['Method A [3] uses contrastive pairs. ', M('1-4'), ' ', G('g14', 'B alone; ours vs B never said')], lines: 1 },
     { p: [M('5-4')], lines: 1 },
     { h: '3  Method', p: ['We apply ', M('4-2'), ' ', G('g42', 'definition'), ' before fusion and then project to the shared space. ', A('gloss', 'We add an alignment term: L = L_task + λ·L_align (Eq. 2).')], lines: 1 },
@@ -337,7 +337,7 @@ const FAIL = {
   '2-1': { to: 'gneg', label: 'this finding never reaches the Abstract' },
   '2-3': { to: 'gloss', label: 'Eq. 2 defines λ here · §4 never points back', miss: true },
   '3-1': { to: 'g31', label: 'excluded, no reason given' },
-  '4-1': { to: 'g41', label: 'says the sentence before again' },
+  '4-1': { to: 'g41', label: 'Repackages the result, adds nothing new' },
   '4-2': { to: 'g42', label: 'never defined' },
   '2-5': { to: 'g25', label: 'the Abstract sentence, copied', eq: true, from: 'Abstract', at: '6 Conclusion' },
   '4-4': { to: 'g44', label: 'the same sentence as in §1', eq: true, from: '§1 Introduction', at: '§4.2 Results' },
@@ -532,13 +532,13 @@ const MEASURE = {
       ['Decide PASS / FAIL / U', [[CD, 'Stock phrase (“for efficiency”, unsourced “following common practice”) → FAIL.'], [CD, 'Baselines, metrics, backbones: source → PASS; no reason → U (standard comparisons not failed by rule).'], [CD, 'Data and key values: description only or generic → FAIL; specific reason → PASS.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
     line: 'Qwen2.5-32B lists the choices and quotes the stated reason; code fails stock phrases and verifies the quote. Three runs vote.' },
   '4-1': { unit: 'sentence', units: 'candidate sentences', plain: true,
-    stages: [['Find it', '', CD], ['Read around it', '', CD], ['Delete it', '', HC], ['Anything lost?', '', CD]],
+    stages: [['Find it', '', CD], ['Read around it', '', CD], ['What does it add?', '', HC], ['Anything new?', '', CD]],
     how: [
       ['', [[CD, 'Look for sentences that use stock phrases such as “This shows that…”, “The key finding is…”, or “We verify…”.']]],
       ['', [[CD, 'Use the two preceding sentences and the following sentence.'], [CD, 'Judge only what the framing phrase adds, not information already stated nearby.']]],
-      ['', [[H, 'Ask one question: does deleting the phrase remove any actual information?'], [H, 'A number, condition, reason, mechanism, comparison, limitation, or new claim counts as information. Simply calling something a “finding” or “confirmation” does not.']]],
-      ['', [[CD, 'Nothing is lost → FAIL'], [CD, 'Information is lost → PASS'], [CD, 'Runs disagree → U']]]],
-    line: 'Delete the stock phrase, then check whether any information went with it.' },
+      ['', [[H, 'Ask one question: does the sentence add something the text before it did not say?'], [H, 'It counts only if it is one of four: why (the mechanism), how far (scope or limit), what it rules out (an alternative explanation), or what follows (a decision for the next design or experiment). Saying the numbers again, or calling them a “finding” or “confirmation”, does not count.']]],
+      ['', [[CD, 'Nothing new → FAIL'], [CD, 'Adds one of the four → PASS'], [CD, 'Runs disagree → U']]]],
+    line: 'Find the stock phrase, then check whether the sentence adds a why, a how far, a ruled-out alternative, or a what next.' },
   '4-2': { unit: 'term', units: 'terms',
     stages: [['Term', 'needs a meaning to be understood', CD], ['Used', 'where and how often', CD], ['Defined?', 'a sentence giving the meaning', QC], ['Verdict', '3 runs vote', CD]],
     how: [
@@ -1367,7 +1367,7 @@ function cxView(u, step) {
   const fact = c.clause ? c.target.segs[0][0] : null, frame = c.clause ? c.target.segs[1][0] : null;
   const tgtSegs = c.clause ? [h('mark', { class: 'cx-e', text: fact }), h('mark', { class: 'cx-f', text: frame })] : cxSegs(c.target.segs, 'cx-f');
   const ctxLine = (b, lab) => h('p', { class: 'cx-c' }, h('span', { class: 'cx-lab', text: lab }), cut(b.text));
-  const lost = fail ? 'Nothing is missing. The rest still says it.' : (c.kept && c.kept.length ? 'Missing without it: ' + c.kept.join(', ') : 'Something goes missing without it.');
+  const lost = fail ? 'Nothing new: no why, how far, ruled-out alternative, or what next.' : (c.kept && c.kept.length ? 'Missing without it: ' + c.kept.join(', ') : 'Something goes missing without it.');
   if (step === 0) return h('div', {}, h('q', { class: 'mw-q' }, ...(c.clause ? [fact, h('mark', { class: 'cx-f', text: frame })] : tgtSegs)), h('small', { text: `${u.id} · ${u.sec} · red: the part that is checked` }));
   if (step === 1) return c.clause
     ? h('div', { class: 'cx-p' }, h('p', { class: 'cx-t' }, ...tgtSegs), h('small', { text: 'yellow: the result · red: the part that is checked' }))
