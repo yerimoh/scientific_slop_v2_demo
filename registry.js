@@ -195,7 +195,7 @@ const DEF = {
   '1-1': { what: 'The paper states a result and never shows the experiment, proof, or source behind it.',
     q: [{ pre: '', mark: 'This achieves near-high-k robustness at near-low-k average cost.', post: '', src: 'AI paper · SciSlopBench FA0083 · §3 Method' }],
     note: '“Cost” promises a measurement: latency, compute, or memory. No table or figure in the paper measures any of them, so the sentence is the only evidence for itself.' },
-  '1-2': { what: 'The paper’s evidence is narrower than its claim: one model or one dataset, or an added cost that is never measured.',
+  '1-2': { what: 'The paper claims more than its experiments can show: the method is tried in too few settings, or what it costs is left out.',
     q: [{ pre: 'We use ', mark: 'Qwen2.5-VL-7B-Instruct as the judge model', post: ', deployed via vLLM with tensor parallelism across 2 GPUs using bfloat16 precision.', src: 'AI paper · SciSlopBench FA0043 · §4 Experiments' },
         { pre: 'We propose ', mark: 'a two-pass architecture', post: ' where the judge first generates its own answer using only trusted inputs, then uses this uncontaminated reference when evaluating candidates.', src: 'Same paper · §3 Method' }],
     note: 'One judge model on one benchmark (VL-RewardBench), and the defense doubles the model calls per example. The paper reports the accuracy it costs, never the compute.' },
@@ -343,7 +343,7 @@ const GROUPS = [
   { n: 3, key: 'artifacts', cls: 'p-artifacts', title: 'Artifacts', q: 'Can the method and the evidence be inspected?' },
 ];
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
-const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'One model or one dataset, or an added cost never reported.', '1-4': 'A cited work tied to no other work.',
+const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'The paper claims more than its experiments can show.', '1-4': 'A cited work tied to no other work.',
   '2-1': 'The key finding is missing from the abstract.', '2-3': 'Set up in one section, never pointed back to.', '3-1': 'A design choice with no reason given.',
   '4-1': 'Says the last result again, in vaguer words.', '4-2': 'A term that is never defined.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
   '5-4': 'The cited source says something else.' };
@@ -449,7 +449,7 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
 const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code';
-const MV = '1106e';   // bump with the run data so browsers do not keep an old measure/*.json
+const MV = '1106h';   // bump with the run data so browsers do not keep an old measure/*.json
 const MEASURE = {
   '1-1': { unit: 'claim', units: 'claims',
     stages: [['Claim', 'stated as fact', 'paper'], ['Needs', 'what would prove it?', Q], ['Found', 'in the paper?', QC], ['Verdict', '3 runs vote', CD]],
@@ -476,7 +476,7 @@ const MEASURE = {
       ['Score the cost part', [[CD, 'A checked cost report or matched-budget comparison → 100 (PASS).'], [CD, 'Something added and neither found → 0 (FAIL).'], [CD, 'Deterministic once the model has answered: one run.']]]],
     line: 'Claude Haiku lists what the method adds and where its cost is reported; code checks every quote against the paper.' },
   '1-2': { parts: ['1-2b', '1-2d'],
-    line: 'Two parts, scored 0–100 each. Overstated Claims = the mean of evaluation breadth (1-2b) and cost reporting (1-2d); a part that does not apply is left out.' },
+    line: 'Two parts, scored 0–100 each. Overstated Claims = the mean of evaluation breadth and cost reporting; a part that does not apply is left out.' },
   '1-4': { unit: 'sentence', units: 'citing sentences',
     stages: [['Sentence', 'a citing sentence in the introduction or related work', CD], ['Other works', 'cited or named in it', CD], ['Woven?', 'two works, a named work, or a relational cue', CD], ['Verdict', 'rule, one run', CD]],
     how: [
@@ -950,7 +950,7 @@ function renderPanel() {
   $('#sp-body').replaceChildren(h('div', { class: 'cap-in' },
     h('div', { class: 'cap-t' }, h('b', { class: 'cap-n', text: it.name }), h('span', { class: 'cap-pl' }, h('i'), it.ar.title + (V1OF[it.id] ? ' · v1 ' + V1OF[it.id] : ' · new in v1.1'))),
     h('p', { class: 'cap-d', text: it.short }),
-    it.parts ? h('div', { class: 'cap-parts' }, ...it.parts.map(p => h('p', { class: 'cap-pt' }, h('span', { class: 'pt-id', text: p.id }), h('b', { text: p.name }), h('span', { text: p.what })))) : null,
+    it.parts ? h('div', { class: 'cap-parts' }, ...it.parts.map(p => h('p', { class: 'cap-pt' }, h('b', { text: p.name }), h('span', { text: p.what })))) : null,
     h('div', { class: 'cap-vs' },
       h('p', { class: 'says' }, h('span', { text: 'The paper says' }), h('q', { text: it.ex.spec || clip(it.ex.mark, 90) })),
       h('p', { class: 'but' }, h('span', { text: 'What’s there' }), h('em', { text: cap1(f.label || it.what) }))),
@@ -1232,6 +1232,90 @@ function xmap(map) {
   const sel = i => el.querySelectorAll('[data-u]').forEach(n => n.classList.toggle('sel', n.dataset.u !== '' && +n.dataset.u === i));
   return { el, step, sel };
 }
+
+// 1-2 parts: a drawn figure per part, redrawn as the step player advances (same mechanism and look as the 2-3 map)
+function stepFig(body, caps, aria, H = 262) {
+  const svg = h('div', { class: 'xm-fig', html: `<svg viewBox="0 0 600 ${H}" role="img" aria-label="${esc(aria)}">${body}</svg>` });
+  const cap = h('p', { class: 'xm-cap' }), el = h('figure', { class: 'xm' }, svg, cap);
+  const step = k => { el.dataset.s = k; el.querySelectorAll('[data-m]').forEach(n => n.classList.toggle('on', +n.dataset.m <= k));
+    cap.replaceChildren(h('span', { class: 'xm-n', text: String(Math.max(0, k) + 1) }), h('span', { text: caps[Math.max(0, Math.min(k, caps.length - 1))] || '' })); };
+  return { el, step, sel: () => {} };
+}
+const FX = { ink: '#3A3D42', hair: '#C9CDD1', arg: '#C97C86', red: '#D93A3A', ok: '#3F9A5A', soft: '#9aa0a6' };
+const fxW = (t, fs = 10) => [...String(t)].reduce((a, ch) => a + (/[il.,:;|'’ ()]/.test(ch) ? .32 : /[mwMW]/.test(ch) ? .9 : /[A-Z0-9]/.test(ch) ? .66 : .55), 0) * fs;
+const fxSheet = (x, y, w, hh, title, kind) => {   // a page fragment: a result table (grid) or a block of text (lines)
+  let g = `<rect class="xm-paper" x="${x}" y="${y}" width="${w}" height="${hh}" rx="3"/><text x="${x + 8}" y="${y + 15}" class="xm-tt">${esc(title)}</text>`;
+  if (kind === 'table') { for (let i = 0; i < 4; i++) g += `<line x1="${x + 8}" y1="${y + 28 + i * 13}" x2="${x + w - 8}" y2="${y + 28 + i * 13}" stroke="${FX.hair}" stroke-width="${i ? 1 : 1.6}"/>`;
+    for (let j = 1; j < 4; j++) g += `<line x1="${x + 8 + j * (w - 16) / 4}" y1="${y + 22}" x2="${x + 8 + j * (w - 16) / 4}" y2="${y + 70}" stroke="${FX.hair}" stroke-width="1"/>`; }
+  else for (let i = 0; i < 5; i++) g += `<line x1="${x + 8}" y1="${y + 30 + i * 9}" x2="${x + w - 8 - (i === 4 ? 30 : (i * 9) % 20)}" y2="${y + 30 + i * 9}" stroke="${FX.hair}" stroke-width="2.2" stroke-linecap="round"/>`;
+  return g;
+};
+const fxChip = (x, y, t, col, o = {}) => { const w = fxW(t, 10.5) + 16; return { w, svg: `<rect x="${x}" y="${y}" width="${w}" height="20" rx="10" fill="${o.fill ? col : '#fff'}" stroke="${col}" stroke-width="1.4" ${o.dash ? 'stroke-dasharray="4 3"' : ''}/><text x="${x + w / 2}" y="${y + 10.5}" font-size="10.5" font-weight="650" fill="${o.fill ? '#fff' : FX.ink}" text-anchor="middle" dominant-baseline="central">${esc(t)}</text>` }; };
+const fxPen = (x0, y0, x1, y1, col = FX.arg) => `<path class="pen" pathLength="1" d="M${x0} ${y0} C${x0} ${(y0 + y1) / 2} ${x1} ${(y0 + y1) / 2} ${x1} ${y1 + 4}" stroke="${col}"/><circle cx="${x1}" cy="${y1 + 3}" r="2.4" fill="${col}"/>`;
+const fxMark = (x, y, ok) => `<g transform="translate(${x} ${y})"><circle r="8" fill="${ok ? FX.ok : FX.red}" stroke="#fff" stroke-width="1.5"/>` + (ok ? `<path d="M-3.6 0L-1 2.8L3.8 -3" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>` : `<path d="M-3 -3L3 3M-3 3L3 -3" stroke="#fff" stroke-width="2" stroke-linecap="round"/>`) + `</g>`;
+const fxG = (m, inner) => `<g data-m="${m}">${inner}</g>`;
+function figBreadth(f) {
+  // the paper's result tables and setup text → the names pulled out → where each is found → the counts
+  const SW = 124, GAP = 16, X0 = (600 - (f.sheets.length * SW + (f.sheets.length - 1) * GAP)) / 2, Y = 14, SH = 80;
+  const S = {}; let out = '';
+  f.sheets.forEach((sh, i) => { const x = X0 + i * (SW + GAP); S[sh.id] = { x, y: Y, w: SW, h: SH }; out += fxSheet(x, Y, SW, SH, sh.title, sh.kind); });
+  out += fxG(0, f.sheets.filter(sh => sh.kind === 'table').map(sh => { const b = S[sh.id]; return `<rect class="xm-frame" style="stroke:${FX.arg}" x="${b.x - 3}" y="${b.y - 3}" width="${b.w + 6}" height="${b.h + 6}" rx="5"/>`; }).join('') +
+    `<text class="xm-hand" x="${X0}" y="${Y + SH + 22}">${esc(f.hand0)}</text>`);
+  // names
+  let names = '', pens = '', marks = '';
+  const rows = [['MODELS', f.models, 'model'], ['DATASETS', f.datasets, 'dataset']], cy = 152, colX = [70, 340];
+  rows.forEach(([lab, list, ax], r) => {
+    let x = colX[r]; names += `<text x="${x}" y="${cy - 10}" font-size="9.5" font-weight="700" letter-spacing=".08em" fill="${FX.soft}">${lab}</text>`;
+    list.forEach(n => { const c = fxChip(x, cy, n.name, FX.arg); names += c.svg;
+      n.at.forEach(id => { const b = S[id]; if (b) pens += fxPen(x + c.w / 2, cy, b.x + b.w / 2 + (r ? 10 : -10), b.y + b.h); });
+      marks += fxMark(x + c.w, cy, true); x += c.w + 12; });
+  });
+  out += fxG(1, names) + fxG(2, pens + marks);
+  // counts
+  let cnt = '';
+  const gauge = (x, y, lab, n, val) => `<text x="${x}" y="${y}" font-size="11" fill="${FX.ink}"><tspan font-weight="700">${esc(lab)}</tspan>  ${esc(n)}</text>` +
+    `<rect x="${x}" y="${y + 8}" width="150" height="8" rx="4" fill="#E6E2E3"/><rect x="${x}" y="${y + 8}" width="${Math.max(3, 150 * val / 100)}" height="8" rx="4" fill="${val ? FX.arg : FX.red}"/>` +
+    `<text x="${x + 158}" y="${y + 13}" font-size="11" font-weight="700" font-family="ui-monospace, monospace" fill="${val ? FX.ink : FX.red}" dominant-baseline="central">${val.toFixed(0)}</text>`;
+  cnt += gauge(70, 206, 'Model axis', f.mlabel, f.axes.model) + gauge(340, 206, 'Dataset axis', f.dlabel, f.axes.dataset);
+  cnt += `<text x="300" y="252" text-anchor="middle" font-size="12" fill="${FX.ink}">breadth = (${f.axes.model.toFixed(0)} + ${f.axes.dataset.toFixed(0)}) ÷ 2 = <tspan font-weight="800" font-family="ui-monospace, monospace" fill="${FX.red}">${f.breadth.toFixed(1)}</tspan> / 100  ·  below 35 → </text>` +
+    `<text class="xm-stamp f" x="${300 + 140}" y="252">${f.breadth < 35 ? 'FAIL' : 'PASS'}</text>`;
+  out += fxG(3, cnt);
+  return stepFig(out, f.caps, f.aria, 266);
+}
+function figCost(f) {
+  // the baseline and the method as call pipelines → the added call → the result table with no cost column → the cost words that are not costs → verdict
+  let out = '';
+  const pipe = (y, label, boxes, added) => { let x = 24, g = `<text x="24" y="${y - 8}" font-size="10" font-weight="700" letter-spacing=".06em" fill="${FX.soft}">${esc(label)}</text>`, add = '';
+    boxes.forEach((b, i) => { const w = fxW(b, 10.5) + 18, isAdd = added.includes(i);
+      g += `<rect x="${x}" y="${y}" width="${w}" height="24" rx="5" fill="#fff" stroke="${FX.soft}" stroke-width="1.2"/><text x="${x + w / 2}" y="${y + 12.5}" font-size="10.5" font-weight="600" fill="${FX.ink}" text-anchor="middle" dominant-baseline="central">${esc(b)}</text>`;
+      if (isAdd) add += `<rect x="${x - 3}" y="${y - 3}" width="${w + 6}" height="30" rx="7" fill="rgba(217,58,58,.08)" stroke="${FX.red}" stroke-width="2"/>`;
+      if (i < boxes.length - 1) g += `<path d="M${x + w + 3} ${y + 12} L${x + w + 15} ${y + 12}" stroke="${FX.soft}" stroke-width="1.3"/><path d="M${x + w + 11} ${y + 8} L${x + w + 15} ${y + 12} L${x + w + 11} ${y + 16}" fill="none" stroke="${FX.soft}" stroke-width="1.3"/>`;
+      x += w + 18; });
+    return [g, add, x]; };
+  const [g1] = pipe(30, f.base.label, f.base.boxes, []), [g2, add2, x2] = pipe(92, f.method.label, f.method.boxes, f.method.added);
+  out += g1 + g2;
+  out += fxG(0, add2 + `<text class="xm-hand" x="${x2 - 6}" y="${92 + 13}" dominant-baseline="central">${esc(f.hand0)}</text>`);
+  // result table with the missing cost column
+  const tx = 24, ty = 150, cw = 74, cols = f.table.cols;
+  let tb = `<text x="${tx}" y="${ty - 8}" font-size="10" font-weight="700" letter-spacing=".06em" fill="${FX.soft}">${esc(f.table.title)}</text>`;
+  cols.forEach((c, j) => { tb += `<rect x="${tx + j * cw}" y="${ty}" width="${cw}" height="22" fill="#fff" stroke="${FX.hair}"/><text x="${tx + j * cw + cw / 2}" y="${ty + 11.5}" font-size="10" font-weight="650" fill="${FX.ink}" text-anchor="middle" dominant-baseline="central">${esc(c)}</text>`;
+    for (let r = 1; r < 3; r++) tb += `<rect x="${tx + j * cw}" y="${ty + r * 18 + 4}" width="${cw}" height="18" fill="#fff" stroke="${FX.hair}"/><line x1="${tx + j * cw + 18}" y1="${ty + r * 18 + 13}" x2="${tx + j * cw + cw - 18}" y2="${ty + r * 18 + 13}" stroke="${FX.hair}" stroke-width="2.2" stroke-linecap="round"/>`; });
+  out += tb;
+  const gx = tx + cols.length * cw;
+  out += fxG(1, `<rect x="${gx + 6}" y="${ty}" width="${cw + 10}" height="58" rx="3" fill="none" stroke="${FX.red}" stroke-width="1.6" stroke-dasharray="5 4"/>` +
+    `<text x="${gx + 6 + (cw + 10) / 2}" y="${ty + 11.5}" font-size="10" font-weight="700" fill="${FX.red}" text-anchor="middle" dominant-baseline="central">${esc(f.table.ghost)}</text>` + fxMark(gx + 6 + (cw + 10) / 2, ty + 38, false) +
+    `<text class="xm-hand" x="${gx + cw + 24}" y="${ty + 30}" dominant-baseline="central">${esc(f.hand1)}</text>`);
+  // cost words in the text that are not cost reports
+  let mw = ''; let my = 236;
+  f.mentions.forEach((m, k) => { const x = 24 + k * 290, w = fxW(m.text, 10.5) + 30;
+    mw += `<text x="${x}" y="${my - 10}" font-size="9.5" fill="${FX.soft}">${esc(m.id)}</text><rect x="${x}" y="${my}" width="${w}" height="20" rx="4" fill="#fff" stroke="${FX.soft}"/>` +
+      `<text x="${x + 8}" y="${my + 10.5}" font-size="10.5" fill="${FX.ink}" dominant-baseline="central">${esc(m.text)}</text><line x1="${x + 4}" y1="${my + 10}" x2="${x + w - 4}" y2="${my + 10}" stroke="${FX.red}" stroke-width="1.8"/>` +
+      `<text class="xm-hand" x="${x + w + 8}" y="${my + 10}" dominant-baseline="central" style="font-size:15px">${esc(m.why)}</text>`; });
+  out += fxG(2, mw);
+  out += fxG(3, `<text class="xm-stamp f" x="576" y="${ty + 66}" text-anchor="end" style="font-size:16px">cost 0 · FAIL</text>`);
+  return stepFig(out, f.caps, f.aria, 268);
+}
+const FIGS = { breadth: figBreadth, cost: figCost };
 // 4-1: the passage around a framed sentence, so the reader can see what deleting it loses
 const cxSegs = (segs, cls) => segs.map(([t, on]) => on ? h('mark', { class: cls, text: t }) : t);
 function cxView(u, step) {
@@ -1282,7 +1366,7 @@ function partsView(it) {
   const panel = h('div', { class: 'pt-panel' }), tabs = h('div', { class: 'pt-tabs', role: 'tablist' });
   const comb = h('p', { class: 'pt-comb' }, h('span', { class: 'rs-wait', text: '…' }));
   const show = k => { tabs.querySelectorAll('button').forEach((b, j) => { b.classList.toggle('on', j === k); b.setAttribute('aria-selected', String(j === k)); }); panel.replaceChildren(measureSteps({ id: parts[k].id, judge: [] })); };
-  parts.forEach((p, k) => tabs.append(h('button', { type: 'button', role: 'tab', onclick: () => show(k) }, h('span', { class: 'pt-id', text: p.id }), h('b', { text: p.name }), p.what ? h('span', { class: 'pt-w', text: p.what }) : null)));
+  parts.forEach((p, k) => tabs.append(h('button', { type: 'button', role: 'tab', title: p.what || '', onclick: () => show(k), text: p.name })));
   Promise.all(parts.map(p => fetch('measure/' + p.id + '.json?v=' + MV).then(r => r.json()))).then(([b, d]) => {
     const B = b.meta.breadth, Cs = d.meta.cost, S = (B + Cs) / 2;
     comb.replaceChildren(h('span', { class: 'pt-cl', text: `${b.meta.side} ${b.meta.paper} · ${it.name || 'combined'}` }),
@@ -1324,19 +1408,19 @@ function measureSteps(it) {
   requestAnimationFrame(() => seen.observe(box));
   fetch('measure/' + it.id + '.json?v=' + MV).then(r => r.json()).then(data => {
     const U = data.units, pre = data.meta.pre || {};
-    if (data.map) { XM = xmap(data.map); box.insertBefore(XM.el, head); XM.step(seq.s < 0 ? rows.length - 1 : seq.s); }
+    if (data.map || data.fig) { XM = data.map ? xmap(data.map) : FIGS[data.fig.kind](data.fig); box.insertBefore(XM.el, head); XM.step(seq.s < 0 ? rows.length - 1 : seq.s); }
     if (data.cimap) { XM = ciMap(data.cimap); box.insertBefore(XM.el, head); XM.step(seq.s < 0 ? rows.length - 1 : seq.s); }
     if (!U.length) { ex.forEach(e => e.replaceChildren(h('span', { class: 'rs-wait', text: 'no units in this paper' }))); return; }
     const VW = { FAIL: 'slop', PASS: 'fine', UNRESOLVED: 'open', NOT_APPLICABLE: 'n/a' };
     pick.replaceChildren(...U.map((u, k) => h('option', { value: k, text: `${VW[u.final]} · ${u.text.slice(0, 48)}…` })));
     const sh = t => t.length > 140 ? t.slice(0, 138).replace(/\s+\S*$/, '') + '…' : t;
     const fill = k => { const u = U[k]; const vals = u.ctx ? [cxView(u, 0), cxView(u, 1), cxView(u, 2), null] : u.ci ? [ciView(u, 0), ciView(u, 1), ciView(u, 2), null] : [
-      u.pair ? pairQ(u.pair.later, 'later') : h('div', {}, h('q', { class: 'mw-q', text: sh(u.text) }), h('small', { text: [u.id, u.sec].filter(Boolean).join(' · ') })),
+      u.pair ? pairQ(u.pair.later, 'later') : u.segs ? h('div', { class: 'pv' }, h('span', { class: 'pv-sec' }, h('b', { text: u.sec }), ' · ' + u.id), h('q', { class: 'mw-q' }, ...u.segs.map(([t, on]) => on ? h('mark', { class: 'pv-m', text: t }) : t))) : h('div', {}, h('q', { class: 'mw-q', text: sh(u.text) }), h('small', { text: [u.id, u.sec].filter(Boolean).join(' · ') })),
       u.pair ? pairQ(u.pair.earlier, 'earlier') : h('div', {}, h('span', { text: u.s2 || '—' })),
       h('div', {}, u.found.length ? h('span', { class: 'mw-ids' }, ...u.found.map(x => h('code', { text: x }))) : h('span', { class: 'mw-none', text: 'nothing' }), u.found_note ? h('small', { text: tidyNote(u.found_note) }) : null, u.judge_line ? h('small', { text: tidyNote(u.judge_line) }) : null),
       h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: tidyNote(u.final_reason) }) : null)];
       if (u.ctx || u.ci) vals[3] = h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: tidyNote(u.final_reason) }) : null);
-      ex.forEach((e, j) => e.replaceChildren(vals[j] || h('span', { text: '—' }))); if (XM && (data.cimap || data.map.units[k])) XM.sel(k); };
+      ex.forEach((e, j) => e.replaceChildren(vals[j] || h('span', { text: '—' }))); if (XM && (data.cimap || (data.map && data.map.units[k]))) XM.sel(k); };
     pick.addEventListener('change', () => { fill(+pick.value); run(); });
     const kd = data.meta.default ? U.findIndex(u => u.id === data.meta.default) : -1;
     const k0 = kd >= 0 ? kd : Math.max(0, U.findIndex(u => u.final === 'FAIL')); pick.value = k0; fill(k0);

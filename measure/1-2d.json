@@ -26,7 +26,73 @@
    "judge_line": "Condition C has the same two passes, but nothing is compared with the single-pass baseline at the same number of calls.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "one extra model call per example, no cost number, no matched budget → cost 0 → FAIL"
+   "final_reason": "one extra model call per example, no cost number, no matched budget → cost 0 → FAIL",
+   "segs": [
+    [
+     "We propose ",
+     false
+    ],
+    [
+     "a two-pass architecture",
+     true
+    ],
+    [
+     " where the judge first generates its own answer using only trusted inputs, then uses this uncontaminated reference when evaluating candidates.",
+     false
+    ]
+   ]
   }
- ]
+ ],
+ "fig": {
+  "kind": "cost",
+  "aria": "FA0043: the single-pass baseline and the two-pass defense, the added call marked; the main table has no cost column; two cost words in the text are not measured costs.",
+  "base": {
+   "label": "CONDITION A · BASELINE · 1 MODEL CALL",
+   "boxes": [
+    "image + query + 2 answers",
+    "judge → verdict"
+   ]
+  },
+  "method": {
+   "label": "CONDITION B · THE DEFENSE · 2 MODEL CALLS",
+   "boxes": [
+    "image + query",
+    "Pass 1: self-answer",
+    "Pass 2: judge vs self-answer"
+   ],
+   "added": [
+    1
+   ]
+  },
+  "hand0": "+1 call / example",
+  "table": {
+   "title": "T1 · MAIN RESULTS",
+   "cols": [
+    "Condition",
+    "CleanAcc",
+    "ASR",
+    "ASR_cond"
+   ],
+   "ghost": "tokens / time?"
+  },
+  "hand1": "never measured",
+  "mentions": [
+   {
+    "id": "S2.053",
+    "text": "“additional compute”",
+    "why": "no number"
+   },
+   {
+    "id": "S3.089",
+    "text": "“comes at a cost”",
+    "why": "accuracy, not compute"
+   }
+  ],
+  "caps": [
+   "The baseline judges in one call. The defense adds Pass 1 before the judgment: one more model call for every example.",
+   "Is that extra call measured anywhere? The result tables report accuracy and attack success only: no tokens, time or number of calls.",
+   "Two sentences say “compute” or “cost”, but neither measures what the defense costs to run.",
+   "Something is added and its cost is never reported → cost 0 → FAIL."
+  ]
+ }
 }
