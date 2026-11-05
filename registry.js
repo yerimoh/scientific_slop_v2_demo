@@ -1107,7 +1107,7 @@ const tidyNote = t => t && t.replace(/^runs disagree: \[.*\]$/, 'split vote → 
 // step 0 = which parts are units, 1 = the pointers the parser found, 2 = used or not (with the uses that carry no pointer), 3 = verdicts
 function xmap(map) {
   // the paper as five low sheets; parts sit in one row inside each sheet, verdicts sit under the sheet, nothing overlaps
-  const W = 600, SW = 108, GAP = 12, SY = 92, SH = 96, NS = map.sections.length;
+  const W = 600, SW = 108, GAP = 12, SY = 92, SH = 112, NS = map.sections.length;
   const sx = i => 10 + i * (SW + GAP) + (5 - NS) * (SW + GAP) / 2;
   const S = {}; map.sections.forEach((sec, i) => { S[sec.id] = { ...sec, x: sx(i), y: SY, w: SW, h: SH }; });
   const short = l => l.replace(/^Tab\.\s*/, 'T').replace(/^Fig\.\s*/, 'F').replace(/^Eq\.\s*/, 'Eq');
@@ -1127,7 +1127,7 @@ function xmap(map) {
     let lines = ''; for (let i = 0; i < 4; i++) lines += `<line x1="${b.x + 10}" y1="${b.y + 28 + i * 7.5}" x2="${b.x + b.w - 10 - (i === 3 ? 30 : (i * 7) % 18)}" y2="${b.y + 28 + i * 7.5}" stroke="${hair}" stroke-width="2.2" stroke-linecap="round"/>`;
     out += `<g class="xm-sheet${unit ? ' unit' : ' skip'}" data-u="${unit ? U[sec.id].i : ''}"><rect class="xm-paper" x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" rx="3"/>` +
       `<text x="${b.x + 9}" y="${b.y + 16}" class="xm-tt">${esc(sec.title)}</text>${lines}` +
-      (unit ? '' : `<text x="${b.x + b.w / 2}" y="${b.y + 74}" class="xm-skipt" text-anchor="middle">not checked</text>`) + `</g>`;
+      (unit ? '' : `<text x="${b.x + b.w / 2}" y="${b.y + 82}" class="xm-skipt" text-anchor="middle">not checked</text>`) + `</g>`;
   }
   for (const c of Object.values(P)) {
     const unit = !!U[c.id];
@@ -1163,13 +1163,13 @@ function xmap(map) {
   // step 4: verdicts under each unit (sheet: below it; part: just under the chip)
   let stamps = '';
   for (const u of map.units) {
-    const b = at(u.id), pass = u.final === 'PASS', sheet = !!S[u.id], cx = b.x + b.w / 2, y = sheet ? b.y + b.h + 17 : b.y + b.h + 11;
+    const b = at(u.id), pass = u.final === 'PASS', sheet = !!S[u.id], cx = b.x + b.w / 2, y = sheet ? b.y + b.h + 18 : b.y + b.h + 15;
     const mk = pass ? `<circle r="5.5" fill="${ok}"/><path d="M-2.6 0L-.7 2L2.8 -2.2" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`
       : `<circle r="5.5" fill="${red}"/><path d="M-2.3 -2.3L2.3 2.3M-2.3 2.3L2.3 -2.3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>`;
-    stamps += `<g transform="translate(${cx - (sheet ? 22 : 18)} ${y - 4})">${mk}</g><text class="xm-stamp ${pass ? 'p' : 'f'}${sheet ? '' : ' sm'}" x="${cx - (sheet ? 12 : 9)}" y="${y}">${pass ? 'PASS' : 'FAIL'}</text>`;
+    stamps += `<g transform="translate(${cx - 22} ${y - 4})">${mk}</g><text class="xm-stamp ${pass ? 'p' : 'f'}" x="${cx - 12}" y="${y}">${pass ? 'PASS' : 'FAIL'}</text>`;
   }
   out += g(3, stamps);
-  const svg = h('div', { class: 'xm-fig', html: `<svg viewBox="0 6 ${W} 212" role="img" aria-label="${esc(map.aria || 'The paper as sheets, with the pointers between its parts')}">${out}</svg>` });
+  const svg = h('div', { class: 'xm-fig', html: `<svg viewBox="0 6 ${W} 228" role="img" aria-label="${esc(map.aria || 'The paper as sheets, with the pointers between its parts')}">${out}</svg>` });
   const el = h('figure', { class: 'xm' }, svg);
   const step = k => { el.dataset.s = k; el.querySelectorAll('[data-m]').forEach(n => n.classList.toggle('on', +n.dataset.m <= k)); };
   const sel = i => el.querySelectorAll('[data-u]').forEach(n => n.classList.toggle('sel', n.dataset.u !== '' && +n.dataset.u === i));
