@@ -1553,3 +1553,4 @@ a.tm:hover .tm-name { text-decoration: underline; text-underline-offset: 3px; }
 .qx-t .qk { background: linear-gradient(90deg, var(--structure), var(--argument) 55%, var(--artifacts)); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; opacity: .55; transition: opacity .25s; }
 .qx-q:hover .qk, .qx-q.on .qk { opacity: 1; }
 .qx-q.on .qk { background-image: linear-gradient(90deg, var(--structure-deep), var(--argument-deep) 55%, var(--artifacts-deep)); }
+.xm .xm-stamp.sm { font-size: 10px; }

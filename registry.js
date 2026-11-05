@@ -1106,28 +1106,28 @@ const tidyNote = t => t && t.replace(/^runs disagree: \[.*\]$/, 'split vote → 
 // 2-3 (and any item whose run data carries a `map`): the paper drawn as sheets, redrawn as the step player advances
 // step 0 = which parts are units, 1 = the pointers the parser found, 2 = used or not (with the uses that carry no pointer), 3 = verdicts
 function xmap(map) {
-  const W = 600, SW = 100, GAP = 20, SY = 92, SH = 136, NS = map.sections.length;
+  // the paper as five low sheets; parts sit in one row inside each sheet, verdicts sit under the sheet, nothing overlaps
+  const W = 600, SW = 108, GAP = 12, SY = 92, SH = 96, NS = map.sections.length;
   const sx = i => 10 + i * (SW + GAP) + (5 - NS) * (SW + GAP) / 2;
   const S = {}; map.sections.forEach((sec, i) => { S[sec.id] = { ...sec, x: sx(i), y: SY, w: SW, h: SH }; });
-  const P = {};   // component boxes
+  const short = l => l.replace(/^Tab\.\s*/, 'T').replace(/^Fig\.\s*/, 'F').replace(/^Eq\.\s*/, 'Eq');
+  const P = {};   // component chips, one row per sheet
   for (const sec of map.sections) {
-    const cs = map.comps.filter(c => c.in === sec.id), b = S[sec.id];
-    const perRow = cs.length > 2 ? 3 : 2, cw = perRow === 3 ? 28 : 34, gx = (SW - perRow * cw) / (perRow + 1);
-    cs.forEach((c, k) => { const r = Math.floor(k / perRow), last = cs.length - r * perRow; let col = k % perRow; if (perRow === 3 && last === 2 && r > 0) col = col ? 2 : 0;   // a short last row sits at the edges so its pointers can come in from the margins
-      P[c.id] = { ...c, x: b.x + gx + col * (cw + gx), y: b.y + 84 + r * 24, w: cw, h: 17, row: r }; });
+    const cs = map.comps.filter(c => c.in === sec.id), b = S[sec.id], n = cs.length; if (!n) continue;
+    const abbr = n > 2, cw = abbr ? Math.min(24, (SW - 6 * (n + 1)) / n) : 36, gx = (SW - n * cw) / (n + 1);
+    cs.forEach((c, k) => { P[c.id] = { ...c, label: abbr ? short(c.label) : c.label, x: b.x + gx + k * (cw + gx), y: b.y + 62, w: cw, h: 17 }; });
   }
   const U = {}; map.units.forEach((u, i) => { U[u.id] = { ...u, i }; });
   const at = id => S[id] || P[id];
   const g = (m, inner, cls = '') => `<g data-m="${m}" class="${cls}">${inner}</g>`;
-  const ink = '#3A3D42', hair = '#C9CDD1', st = C.struct, red = '#D93A3A', ok = C.ok;
+  const hair = '#C9CDD1', st = C.struct, red = '#D93A3A', ok = C.ok;
   let out = '';
-  // sheets
   for (const sec of map.sections) {
     const b = S[sec.id], unit = !!U[sec.id];
-    let lines = ''; for (let i = 0; i < 6; i++) lines += `<line x1="${b.x + 10}" y1="${b.y + 30 + i * 8.5}" x2="${b.x + b.w - 10 - (i === 5 ? 34 : (i * 7) % 18)}" y2="${b.y + 30 + i * 8.5}" stroke="${hair}" stroke-width="2.2" stroke-linecap="round"/>`;
+    let lines = ''; for (let i = 0; i < 4; i++) lines += `<line x1="${b.x + 10}" y1="${b.y + 28 + i * 7.5}" x2="${b.x + b.w - 10 - (i === 3 ? 30 : (i * 7) % 18)}" y2="${b.y + 28 + i * 7.5}" stroke="${hair}" stroke-width="2.2" stroke-linecap="round"/>`;
     out += `<g class="xm-sheet${unit ? ' unit' : ' skip'}" data-u="${unit ? U[sec.id].i : ''}"><rect class="xm-paper" x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" rx="3"/>` +
       `<text x="${b.x + 9}" y="${b.y + 16}" class="xm-tt">${esc(sec.title)}</text>${lines}` +
-      (unit ? '' : `<text x="${b.x + b.w / 2}" y="${b.y + b.h / 2 + 22}" class="xm-skipt" text-anchor="middle">not checked</text>`) + `</g>`;
+      (unit ? '' : `<text x="${b.x + b.w / 2}" y="${b.y + 74}" class="xm-skipt" text-anchor="middle">not checked</text>`) + `</g>`;
   }
   for (const c of Object.values(P)) {
     const unit = !!U[c.id];
@@ -1137,64 +1137,41 @@ function xmap(map) {
   let frames = '';
   for (const u of map.units) { const b = at(u.id); frames += `<rect class="xm-frame" x="${b.x - 3}" y="${b.y - 3}" width="${b.w + 6}" height="${b.h + 6}" rx="5"/>`; }
   out += g(0, frames);
-  // step 2: the pointers the parser found (solid, drawn like a pen)
+  // step 2: the pointers the parser found, from the text lines straight down to each part
   let ptr = '';
   for (const p of map.pointers) {
-    const f = S[p.from], t = at(p.to), x0 = f.x + (p.fx || 18), y0 = f.y + 66;
-    if (t.row) {   // second row: come down the sheet margin and enter from the side
-      const leftSide = t.x + t.w / 2 < f.x + f.w / 2, mx = leftSide ? f.x + 4 : f.x + f.w - 4, x1 = leftSide ? t.x - 1 : t.x + t.w + 1, y1 = t.y + t.h / 2;
-      ptr += `<path class="pen" pathLength="1" d="M${x0} ${y0} C${mx} ${y0} ${mx} ${y1} ${x1 + (leftSide ? -3 : 3)} ${y1}" stroke="${st}"/><circle cx="${x1 + (leftSide ? -2 : 2)}" cy="${y1}" r="2.2" fill="${st}"/>`;
-    } else {
-      const x1 = t.x + t.w / 2, y1 = t.y - 1, cx = (x0 + x1) / 2 + (x1 > x0 ? -6 : 6), cy = Math.min(y0, y1) - 6;
-      ptr += `<path class="pen" pathLength="1" d="M${x0} ${y0} Q${cx} ${cy} ${x1} ${y1 - 3}" stroke="${st}"/><circle cx="${x1}" cy="${y1 - 2}" r="2.2" fill="${st}"/>`;
-    }
+    const f = S[p.from], t = at(p.to), x1 = t.x + t.w / 2, y0 = f.y + 51, y1 = t.y - 2, x0 = Math.max(f.x + 12, Math.min(f.x + f.w - 12, x1 + (p.fx > 50 ? 6 : -6)));
+    ptr += `<path class="pen" pathLength="1" d="M${x0} ${y0} Q${x0} ${y1 - 2} ${x1} ${y1}" stroke="${st}"/><circle cx="${x1}" cy="${y1}" r="2" fill="${st}"/>`;
   }
   out += g(1, ptr);
-  // step 3: uses with no pointer (red dashed arcs above the sheets) + used / not used marks
+  // step 3: uses with no pointer, nested arcs above the sheets (the shorter one inside), notes beside the arcs
   let miss = '';
+  const spanOf = o => Math.abs((at(o.from).x + at(o.from).w / 2) - (at(o.to).x + at(o.to).w / 2));
   map.missing.forEach((m, k) => {
-    // nested arcs that never cross: the shorter one sits low inside the longer one; notes sit beside the arcs, not on them
-    const f = at(m.from), t = at(m.to), span = Math.abs((f.x + f.w / 2) - (t.x + t.w / 2));
-    const other = map.missing[1 - k], oSpan = other ? Math.abs((at(other.from).x + at(other.from).w / 2) - (at(other.to).x + at(other.to).w / 2)) : 0;
-    const inner = other && span < oSpan, y = SY - 4, top = inner ? SY - 30 : SY - 74;
-    const shift = id => {   // a sheet shared by both arcs: the inner arc uses its near half, the outer arc its far half
-      if (!S[id] || !map.missing.some(o => o !== m && (o.from === id || o.to === id))) return 0;
-      const me = S[id], far = me === f ? t : f, dir = Math.sign((far.x + far.w / 2) - (me.x + me.w / 2));
-      return (inner ? 1 : -1) * dir * 24; };
-    const x0 = f.x + f.w / 2 + shift(m.from), x1 = t.x + t.w / 2 + shift(m.to), peak = .75 * top + .25 * y;
-    const xd = `<path d="M-3 -3L3 3M-3 3L3 -3" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>`;
+    const f = at(m.from), t = at(m.to), other = map.missing[1 - k], inner = !!other && spanOf(m) < spanOf(other);
+    const shift = id => { if (!S[id] || !other || !(other.from === id || other.to === id)) return 0;
+      const me = S[id], far = me === f ? t : f; return (inner ? 1 : -1) * Math.sign((far.x + far.w / 2) - (me.x + me.w / 2)) * 26; };
+    const x0 = f.x + f.w / 2 + shift(m.from), x1 = t.x + t.w / 2 + shift(m.to), y = SY - 4, top = inner ? SY - 30 : SY - 72, peak = .75 * top + .25 * y;
+    const xd = `<circle r="6.5" fill="${red}"/><path d="M-2.8 -2.8L2.8 2.8M-2.8 2.8L2.8 -2.8" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/>`;
     miss += `<path d="M${x0} ${y} C${x0} ${top} ${x1} ${top} ${x1} ${y - 4}" fill="none" stroke="${red}" stroke-width="1.8" stroke-dasharray="5 4"/>` +
       `<path d="M${x1 - 4} ${y - 10} L${x1} ${y - 3} L${x1 + 4} ${y - 10}" fill="none" stroke="${red}" stroke-width="1.8" stroke-linecap="round"/>`;
-    if (inner) {   // note to the left of the low arc, under the high one
-      const lx = Math.min(x0, x1) - 10;
-      miss += `<g transform="translate(${lx} ${SY - 16})"><circle cx="-8" r="7" fill="${red}"/><g transform="translate(-8 0)">${xd}</g><text class="xm-hand" x="-20" y="0" text-anchor="end" dominant-baseline="central">${esc(m.note)}</text></g>`;
-    } else {       // note above the high arc's crest
-      miss += `<g transform="translate(${(x0 + x1) / 2} ${peak - 14})"><circle cx="-8" r="7" fill="${red}"/><g transform="translate(-8 0)">${xd}</g><text class="xm-hand" x="4" y="0" dominant-baseline="central">${esc(m.note)}</text></g>`;
-    }
+    miss += inner
+      ? `<g transform="translate(${Math.min(x0, x1) - 16} ${SY - 18})">${xd}<text class="xm-hand" x="-11" y="0" text-anchor="end" dominant-baseline="central">${esc(m.note)}</text></g>`
+      : `<g transform="translate(${(x0 + x1) / 2 - 90} ${peak - 13})">${xd}<text class="xm-hand" x="11" y="0" dominant-baseline="central">${esc(m.note)}</text></g>`;
   });
-  let marks = '';
-  for (const u of map.units) {
-    const b = at(u.id), used = u.final === 'PASS', small = !S[u.id], x = b.x + b.w + (small ? -1 : 1), y = b.y - (small ? 2 : 1);
-    marks += `<g transform="translate(${x} ${y})${small ? ' scale(.8)' : ''}"><circle r="8" fill="${used ? ok : red}" stroke="#fff" stroke-width="1.5"/>` +
-      (used ? `<path d="M-3.6 0L-1 2.8L3.8 -3" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>` : `<path d="M-3 -3L3 3M-3 3L3 -3" stroke="#fff" stroke-width="2" stroke-linecap="round"/>`) + `</g>`;
-  }
-  out += g(2, miss + marks);
-  // step 4: verdict stamps under each unit
+  out += g(2, miss);
+  // step 4: verdicts under each unit (sheet: below it; part: just under the chip)
   let stamps = '';
   for (const u of map.units) {
-    const b = at(u.id), pass = u.final === 'PASS', y = S[u.id] ? b.y + b.h + 16 : b.y + b.h + 12;
-    stamps += `<text class="xm-stamp ${pass ? 'p' : 'f'}" x="${b.x + b.w / 2}" y="${y}" text-anchor="middle">${pass ? 'PASS' : 'FAIL'}</text>`;
+    const b = at(u.id), pass = u.final === 'PASS', sheet = !!S[u.id], cx = b.x + b.w / 2, y = sheet ? b.y + b.h + 17 : b.y + b.h + 11;
+    const mk = pass ? `<circle r="5.5" fill="${ok}"/><path d="M-2.6 0L-.7 2L2.8 -2.2" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`
+      : `<circle r="5.5" fill="${red}"/><path d="M-2.3 -2.3L2.3 2.3M-2.3 2.3L2.3 -2.3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>`;
+    stamps += `<g transform="translate(${cx - (sheet ? 22 : 18)} ${y - 4})">${mk}</g><text class="xm-stamp ${pass ? 'p' : 'f'}${sheet ? '' : ' sm'}" x="${cx - (sheet ? 12 : 9)}" y="${y}">${pass ? 'PASS' : 'FAIL'}</text>`;
   }
   out += g(3, stamps);
-  const svg = h('div', { class: 'xm-fig', html: `<svg viewBox="0 18 ${W} 236" role="img" aria-label="${esc(map.aria || 'The paper as sheets, with the pointers between its parts')}">${out}</svg>` });
-  const cap = h('p', { class: 'xm-cap' });
-  const el = h('figure', { class: 'xm' }, svg, cap);
-  const step = k => {
-    el.dataset.s = k;
-    el.querySelectorAll('[data-m]').forEach(n => n.classList.toggle('on', +n.dataset.m <= k));
-    const c = map.caps[Math.max(0, Math.min(k, map.caps.length - 1))] || '';
-    cap.replaceChildren(h('span', { class: 'xm-n', text: String(Math.max(0, k) + 1) }), h('span', { text: c }));
-  };
+  const svg = h('div', { class: 'xm-fig', html: `<svg viewBox="0 6 ${W} 212" role="img" aria-label="${esc(map.aria || 'The paper as sheets, with the pointers between its parts')}">${out}</svg>` });
+  const el = h('figure', { class: 'xm' }, svg);
+  const step = k => { el.dataset.s = k; el.querySelectorAll('[data-m]').forEach(n => n.classList.toggle('on', +n.dataset.m <= k)); };
   const sel = i => el.querySelectorAll('[data-u]').forEach(n => n.classList.toggle('sel', n.dataset.u !== '' && +n.dataset.u === i));
   return { el, step, sel };
 }
