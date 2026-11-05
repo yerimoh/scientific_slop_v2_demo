@@ -1022,13 +1022,13 @@ function srcParts(src) { const m = String(src || '').split(' · '); return [h('s
 // six v1 measures → sixteen slops, drawn as a hand-ruled tree; the caption under the page says what the chosen slop is
 const TREE = [['Argument graph', ['1-1', '1-2', '5-1', '5-2', '5-3', '5-4']], ['Evidence gap', ['1-3']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4']], ['Figure exposition', ['4-5']], [null, ['2-1', '3-1', '4-1', '4-2', '4-3']]];
 // results so far, on the 123 AI / human pairs; an item stays blank until its measure is final
-const RESULTS = { '4-4': { ai: '0.49', hu: '0.13', auc: '0.90', prec: '0.83' } };
+const RESULTS = { '2-3': { ai: '0.92', hu: '0.59', auc: '0.88', prec: '—' }, '4-4': { ai: '0.49', hu: '0.13', auc: '0.90', prec: '0.83' } };
 $('#sm-res').replaceChildren(h('table', { class: 'res-tbl' },
   h('thead', {}, h('tr', {}, ...['Slop', 'AI papers', 'Human papers', 'AUROC', 'Precision'].map(t => h('th', { text: t })))),
   h('tbody', {}, ...GROUPS.flatMap(g => [h('tr', { class: 'res-g ' + g.cls }, h('td', { colspan: 5, text: g.title })),
     ...ITEMS.filter(i => i.plane === g.key).map(it => { const r = RESULTS[it.id] || {};
       return h('tr', { class: RESULTS[it.id] ? 'has' : '' }, h('td', {}, h('span', { class: 'res-id', text: it.id }), it.name), h('td', { text: r.ai || '' }), h('td', { text: r.hu || '' }), h('td', { text: r.auc || '' }), h('td', { text: r.prec || '' })); })]))),
-  h('p', { class: 'res-note', text: '123 pairs of AI and human papers. AI and human columns: average share of body sections where the slop was found. Precision: the share of flagged cases that hold up when checked blind (35 cases). Blank rows are not measured yet.' }));
+  h('p', { class: 'res-note', text: '123 pairs of AI and human papers. AI and human columns: average share of units where the slop was found (4-4: body sections; 2-3: method and experiment sections and numbered equations). Precision: the share of flagged cases that hold up when checked blind (4-4: 35 cases; 2-3: not checked yet, —). 2-3 uses 115 pairs: 8 human sources have missing input files. Blank rows are not measured yet.' }));
 // the three areas, each in its own colour: Structure, Argument, Artifacts
 const TREE2 = GROUPS.map(g => [g, ITEMS.filter(i => i.plane === g.key).map(i => i.id)]);
 $('#tree-rows').replaceChildren(...TREE2.map(([g, ids]) => h('div', { class: 'tr ' + g.cls },
