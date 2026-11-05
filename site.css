@@ -1277,3 +1277,17 @@ body::after { display: none; }
 #spec-page .pa.hot.hlx.hl1 { animation-delay: .3s; } #spec-page .mk.sel.hlx.hl2 { animation-delay: 1.1s; }
 @keyframes hlsweep { to { background-size: 100% 100%; } }
 @media (prefers-reduced-motion: reduce) { #spec-page .mk.sel.hlx, #spec-page .pa.hot.hlx { animation: none; background-size: 100% 100%; } }
+
+/* results table under the studio heading */
+.sm-res { margin-top: 18px; max-width: 760px; }
+.res-tbl { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.4; font-variant-numeric: tabular-nums; }
+.res-tbl th { text-align: right; font-weight: 600; font-size: 12.5px; color: var(--ink-3); padding: 0 0 6px 14px; border-bottom: 1px solid var(--line); }
+.res-tbl th:first-child { text-align: left; padding-left: 0; }
+.res-tbl td { text-align: right; color: var(--ink); padding: 5px 0 5px 14px; border-bottom: 1px solid var(--line); }
+.res-tbl td:first-child { text-align: left; padding-left: 0; color: var(--ink-2); }
+.res-tbl tr.has td:first-child { color: var(--ink); font-weight: 600; }
+.res-tbl .res-id { display: inline-block; width: 30px; color: var(--ink-4); font-size: 12px; }
+.res-tbl tr.res-g td { text-align: left; padding: 12px 0 4px; font-size: 12px; font-weight: 600; letter-spacing: .02em; border-bottom: 0; }
+.res-tbl tr.res-g td { color: var(--ac); }
+.res-note { margin: 8px 0 0; font-size: 12.5px; color: var(--ink-3); line-height: 1.5; }
+@media (max-width: 600px) { .res-tbl { font-size: 13px; } .res-tbl th, .res-tbl td { padding-left: 8px; } .res-tbl .res-id { display: none; } }
