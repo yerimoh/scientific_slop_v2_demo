@@ -147,7 +147,7 @@ const ITEMS = [
     not: ['The sentence adds a why, a how far, a ruled-out alternative, or a what next.', 'The claim is too strong but still adds something (that is 1-2).'],
     fix: ['Delete it, or replace it with one of the four. “This indicates minimal interference between tasks.” → “So the drop in Section 5 is not caused by task interference.”', 'Not a fix: changing “shows” to “suggests”, re-adding the numbers, or inserting model and dataset names.'],
     borders: [['4-4', 'repeats another section, not the sentence right before'], ['1-2', 'too strong, not empty']] },
-  { id: '4-2', area: 4, name: 'Abrupt Terms', what: 'The paper reports a result in a term of its own before saying what the term means.',
+  { id: '4-2', area: 4, name: 'Unexplained Terms', what: 'The paper reports a result in a term of its own before saying what the term means.',
     ex: { spec: 'It cuts anchor drift by 41%.', specnote: 'Anchor drift is explained only in Section 3, after the reader has met the 41%.', src: 'AI paper · SciSlopBench FA0006 · §1 Introduction', pre: 'Demonstration that our method achieves 63% relative reduction in ', mark: 'attack sensitivity (Δ-FPR: 4.31% vs 11.71%)', post: ' while maintaining competitive F1 (72.13% vs 72.93%) …', note: 'Neither “attack sensitivity” nor Δ-FPR is explained here. What Δ-FPR measures is first said in a table caption in §4.' },
     judge: ['Find the terms the paper made up, or uses in a sense of its own.', 'Find where the paper first says what each one means, in any words.', 'FAIL when the term first appears with a result number and is explained only in a later section, or never.'],
     not: ['Standard terms, and names of existing methods or datasets.', 'A new term explained where it first appears, or later in the same section.', 'A method name previewed in the introduction without a result.'],
@@ -429,7 +429,7 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
 const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code', H45 = 'Haiku 4.5';
-const MV = '1107eg42';   // bump with the run data so browsers do not keep an old measure/*.json
+const MV = '1107ut42';   // bump with the run data so browsers do not keep an old measure/*.json
 const MEASURE = {
 
   '1-2b': { unit: 'paper', units: 'papers', breadth: true,
@@ -638,7 +638,7 @@ Look at each sentence that says "this shows that ...", "..., demonstrating that 
 Delete it and reread the paragraph. If nothing is missing, leave it out.
 If you keep it, it must add one thing the text before it did not say: why (the mechanism), how far (scope or limit), what it rules out (an alternative explanation), or what follows (a decision for the next design or experiment).
 Changing "shows" to "suggests", re-adding the numbers, or inserting model and dataset names is not a fix.`,
-  '4-2': `# Fix · Abrupt Terms (4-2)
+  '4-2': `# Fix · Unexplained Terms (4-2)
 List the terms this paper made up or uses in a sense of its own. For each, find the first sentence that reports a result in it (often in the abstract or the introduction).
 If the term is explained only later, or never, say what it means in that sentence or the one before: what it refers to and, for a quantity, how it is computed ("attack sensitivity, the rise in false positives under attack").
 Expanding an acronym, or moving the number out of the introduction, is not a fix.`,
