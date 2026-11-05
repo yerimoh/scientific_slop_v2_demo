@@ -1069,12 +1069,12 @@ const QSVG = {
 };
 const QCATCH = { f1: 'AI slop <em>≠</em> bad writing?', f2: 'Does slop <em>cost</em> points?', f3: 'Human <em>or</em> AI reviewer?', f4: 'What reviewers <em>flag</em>' };
 // four questions as a selector: the questions in large type on the left, the chosen one's study drawn large on the right
-const QSHORT = { f1: 'Is AI slop just bad writing?', f2: 'Does slop cost review points?', f3: 'Does an AI reviewer let more slop through?', f4: 'What do reviewers actually flag?' };
+const QSHORT = { f1: 'Is AI slop really different from bad human writing?', f2: 'How does scientific slop relate to different review scores?', f3: 'Are AI reviewers more forgiving of scientific slop?', f4: 'Do reviewers catch the scientific flaws we measure?' };
 let qCur = 0;
 const qStage = h('div', { class: 'qx-stage' });
 const qList = h('ol', { class: 'qx-list' }, ...FINDINGS.map((f, i) => h('li', {},
   h('button', { type: 'button', class: 'qx-q', 'data-i': i, onmouseenter: () => qShow(i), onfocus: () => qShow(i), onclick: () => { location.href = 'q.html#' + (i + 1); } },
-    h('span', { class: 'qx-n', text: String(i + 1) }), h('span', { class: 'qx-t', text: QSHORT[f.id] || f.q })))));
+    h('span', { class: 'qx-n', text: String(i + 1).padStart(2, '0') + '.' }), h('span', { class: 'qx-t', text: QSHORT[f.id] || f.q })))));
 function qShow(i) {
   if (i === qCur && qStage.firstChild) return; qCur = i; const f = FINDINGS[i];
   qList.querySelectorAll('.qx-q').forEach((b, k) => b.classList.toggle('on', k === i));

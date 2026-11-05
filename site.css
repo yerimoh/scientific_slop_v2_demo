@@ -1540,3 +1540,9 @@ a.tm:hover .tm-name { text-decoration: underline; text-underline-offset: 3px; }
 .tm-aff { font-size: 12px; line-height: 1.3; }
 @media (max-width: 1000px) { .team-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* questions on one line each: wider list, smaller sketch card */
+.qx { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 32px; }
+.qx-n { width: 2em; }
+.qx-t { font-size: clamp(16px, 1.45vw, 19px); white-space: nowrap; text-wrap: nowrap; }
+.qx-stage { min-height: 0; padding: 20px 22px 18px; }
+@media (max-width: 1000px) { .qx-t { white-space: normal; text-wrap: balance; } }

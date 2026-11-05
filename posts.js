@@ -56,7 +56,7 @@ const qOut = () => { const panel = (ox, title, poorSlop, verdict, d) => `
     'Two possible outcomes: poorly written human papers show the same slop as AI papers, or only AI papers do');
   f.append(h('figcaption', { class: 'qa-cap', text: 'Illustration of the two outcomes, not data.' })); return f; };
 const QPOST = {
-  f1: { title: 'Is AI slop just bad writing?', tag: 'v1 result · v2 running', body: () => [
+  f1: { title: 'Is AI slop really different from bad human writing?', tag: 'v1 result · v2 running', body: () => [
     h('p', { text: 'To test whether AI slop is simply bad writing, we compare AI papers not only with well-written human papers, but also with human papers that reviewers actually found poorly written. Each AI paper is paired with a similar accepted paper and a rejected paper whose reviews flag writing problems.' }),
     qDesign(),
     h('h4', { text: 'Data setup' }),
@@ -79,7 +79,7 @@ const QPOST = {
     h('p', { text: 'If the gap between AI and well-written human papers disappears for poorly written human papers, scientific slop is largely capturing bad writing. If AI papers still show more slop, bad writing alone does not explain the difference.' }),
     qOut(),
     h('h4', { text: 'Result' }), h('p', { class: 'qa-none', text: 'v2 running.' })] },
-  f2: { title: 'Does slop cost review points?', tag: 'v1 result · v2 running', body: () => [
+  f2: { title: 'How does scientific slop relate to different review scores?', tag: 'v1 result · v2 running', body: () => [
     h('p', { text: 'Reviewers never see a slop score. If slop is something they notice anyway, it should show up in the scores they give.' }),
     h('h4', { text: 'What v1 showed' }),
     h('p', { text: 'We scored 1,177 ICLR submissions from 2017 to 2025 and 691 from ICLR 2026, each with its review scores. AI-likeness falls from 26% for papers rated 2 to 12% for papers rated 9. On ICLR 2026 the index correlates negatively with all four review dimensions (overall, soundness, presentation, contribution); no other system in the comparison did that in all four.' }),
@@ -90,14 +90,14 @@ const QPOST = {
     h('h4', { text: 'What v2 adds' }),
     h('p', { text: 'Six counts can only say “more slop, lower score”. With 10 items we can ask which kind of slop goes with which dimension, for example whether overstated claims track soundness and undefined terms track presentation. The plan starts from ICLR 2027 submissions, then compares years and venues (NeurIPS, ICML, ACL).' }),
     h('h4', { text: 'Result' }), h('p', { class: 'qa-none', text: 'Not in yet.' })] },
-  f3: { title: 'Does an AI reviewer let more slop through?', tag: 'not run yet', body: () => [
+  f3: { title: 'Are AI reviewers more forgiving of scientific slop?', tag: 'not run yet', body: () => [
     h('p', { text: 'A growing share of reviews is written with an LLM, and some venues now use AI reviewers officially. If an AI reviewer goes easy on the failures an AI author makes, the two problems compound.' }),
     h('h4', { text: 'Setup' }),
     h('p', { text: 'Take one paper with its measured slop, one human review and one AI review. Compare two things: how much of the measured slop each review points out, and how much the score drops per unit of slop. Then check whether the gap widens when the author is an AI.' }),
     h('h4', { text: 'Data' }),
     h('p', { text: 'No single dataset has everything, so we use three. Agents4Science 2025 has AI-written papers with 456 AI reviews and 55 human reviews. Our 390 SciSlopBench pairs already have two AI reviewers run on both sides. ICLR 2026 has reviews labelled by Pangram as human-written (32,938) or AI-generated (15,899), often on the same paper.' }),
     h('h4', { text: 'Result' }), h('p', { class: 'qa-none', text: 'Not in yet.' })] },
-  f4: { title: 'What do reviewers actually flag?', tag: 'not run yet', body: () => [
+  f4: { title: 'Do reviewers catch the scientific flaws we measure?', tag: 'not run yet', body: () => [
     h('p', { text: 'A slop FAIL says where a paper breaks. The weakness section of a review says what the reviewer noticed. Lining the two up shows which slops reviewers name, which they miss, and the words they use.' }),
     h('p', { text: 'Does a paper that fails 1-2 (Overstated Claims) get “overclaims” more often than other papers? Does a 4-4 paper get “the paper is repetitive”?' }),
     h('h4', { text: 'Setup' }),
