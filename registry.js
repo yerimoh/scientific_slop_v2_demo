@@ -89,9 +89,6 @@ const PIC = {
       K.chip(xo, MID - 6.25, 'ours', { fc: C.arg, ec: C.arg, tc: '#fff', bold: true, w: ow, h: 9.5 }) +
       K.arrow([x0 + cw, MID - 6.5], [xo - .5, MID - 3], { color: C.arg, dashed: true, rad: -.1 }) + K.arrow([x0 + cw, MID + 3], [xo - .5, MID], { color: C.arg, dashed: true, rad: .1 }) + K.cross(x0 + cw + gap / 2, MID - 5.5) + K.cross(x0 + cw + gap / 2, MID + 2.5); },
   '2-1': () => row([E.card('Abstract', inner.chip('46% · 93% kept', C.struct, { outline: true })), E.miss(C.struct, { left: true }), E.card('§4 Results', inner.chip('MQ: 12.1 → 3.65', C.struct))]),
-  '2-2': () => { const q = 'Does A help with little data?', qw = tw(q, FS - .2, true) + 6, labs = ['+3.1 @ 1k', '−A: gain lost', 'gap→0 @ 100k'], ws = labs.map(l => tw(l, FS - .5) + 5), total = ws.reduce((a, b) => a + b, 0) + 2 * 3; let x = 50 - total / 2, s = K.chip(50 - qw / 2, 2, q, { fc: C.struct, ec: C.struct, tc: '#fff', bold: true, fs: FS - .2, w: qw, h: 8 });
-    labs.forEach((l, i) => { const cx = x + ws[i] / 2; s += K.box(x, 19.5, ws[i], 8, { r: 1.6 }) + K.text(cx, 23.6, l, { fs: FS - .5, anchor: 'middle' }) + K.arrow([cx, 19.5], [50 + (i - 1) * 9, 10.2], { color: C.struct, dashed: true, rad: (i - 1) * -.1 }); x += ws[i] + 3; });
-    return s + K.cross(50, 14.8); },
   '2-3': () => row([E.card('§3 Method', inner.lines(3)), E.miss(C.struct, { left: true }), E.card('Table 3', inner.chip('Phase-0 analysis', C.struct))]),
   '3-1': () => row([E.chip('layer 12 of 32', C.art), E.miss(C.art), E.ask(['why 12?'])]),
   '4-1': () => row([E.para('§1 Introduction', 'this holds exciting promise …', C.struct)]),
@@ -105,7 +102,7 @@ const PIC = {
   '5-4': () => row([E.chip('0.3, "typically considered"', C.arg), E.miss(C.arg), E.ask(['by whom?', '[ ? ]'])]),
 };
 // what the pattern looks like, one line under each scene
-const CAP = { '1-1': 'a claim with nothing behind it', '1-2': 'claim wider than its evidence', '1-3': 'numbers only, no example', '1-4': 'cited, related to nothing', '2-1': 'the bad news never reaches the front', '2-2': 'results never meet the question', '2-3': 'a name that points at nothing', '3-1': 'a choice with no reason', '4-1': 'delete it and nothing is lost', '4-2': 'a term with no meaning', '4-3': 'detail the reader never needs', '4-4': 'six places, one finding', '4-5': 'a result only the figure reports', '5-1': 'important, but never shown', '5-2': 'the contrast is not true', '5-3': 'nothing moved, yet it explains', '5-4': 'a source that is not there' };
+const CAP = { '1-1': 'a claim with nothing behind it', '1-2': 'claim wider than its evidence', '1-3': 'numbers only, no example', '1-4': 'cited, related to nothing', '2-1': 'the bad news never reaches the front', '2-3': 'a name that points at nothing', '3-1': 'a choice with no reason', '4-1': 'delete it and nothing is lost', '4-2': 'a term with no meaning', '4-3': 'detail the reader never needs', '4-4': 'six places, one finding', '4-5': 'a result only the figure reports', '5-1': 'important, but never shown', '5-2': 'the contrast is not true', '5-3': 'nothing moved, yet it explains', '5-4': 'a source that is not there' };
 // hero: a paper spine with the five kinds of broken connection
 function heroSvg() {
   const secs = [['Abstract', 4], ['Introduction', 42], ['Method', 80], ['Experiments', 118], ['Conclusion', 156]];
@@ -160,18 +157,12 @@ const ITEMS = [
     not: ['Detailed numbers or side analyses left to the body.', 'An accurate summary at a higher level.'],
     fix: ['Bring the finding and its condition to the front.', 'Not a fix: adding one number; turning an association into a mechanism.'],
     borders: [['1-2', 'the omission lets the claim exceed its support']] },
-  { id: '2-2', area: 2, name: 'Disconnected Experiments', what: 'Several results must be read together to answer the question, and no sentence connects them.',
-    ex: { made: true, src: 'Constructed example · no instance in the three verified pairs', sec: '§4 Experiments', pre: '§4.1: +3.1 with 1k examples. §4.2: removing A loses the gain. §4.3: the gap shrinks at 100k. ', mark: 'Each subsection ends with its own score.', post: '', note: 'The question was “does A help with little data?” The three results answer it together. No sentence does.' },
-    judge: ['Map the question, each experiment’s role, and where results must be read together.', 'Judge when the results are there but the link is not.', 'Reference counts and section order decide nothing.'],
-    not: ['Independent claims, each verified on its own.', 'Experiments in an unusual order.'],
-    fix: ['Say what each result contributes to the question.', 'Not a fix: “Together, these results demonstrate…” with no reasoning.'],
-    borders: [['1-1', 'a needed experiment is absent'], ['1-2', 'the conclusion exceeds the results']] },
   { id: '2-3', area: 2, name: 'Missing Cross-Section Links', v1: 'Cross-section references', what: 'One section needs a definition or result from another, and the reader cannot match them.',
     ex: { spec: 'w/o regularization 68.0', specnote: '§3 defines two losses, L_a and L_b. Which one was removed? The text never says.', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments', pre: 'Table 3 presents diagnostic metrics from our ', mark: 'Phase-0 analysis', post: ' on 30 COCO images with 5 prompt templates (150 forward passes).', note: '“Phase-0” is named nowhere else. Nothing in the method section corresponds to it.' },
     judge: ['Find the spots that depend on information elsewhere.', 'Can the reader confirm the correspondence? Consistent naming counts as a link.'],
     not: ['A figure or table that works in place.', 'A clear correspondence without a numbered reference.'],
     fix: ['Name the actual counterpart.', 'Not a fix: extra references to unrelated tables.'],
-    borders: [['2-2', 'how results are read, not where they sit']] },
+    borders: [] },
 
   { id: '3-1', area: 3, name: 'Unexplained Design Choices', what: 'A choice that affects validity is made, and no reason is given.',
     ex: { spec: 'Inputs longer than 512 tokens are excluded.', specnote: 'The method is sold for long inputs. Why exclude them, and what does that do to the evaluation?', src: 'AI paper · SciSlopBench FA0280 · §3 Method', pre: 'Our approach is straightforward: ', mark: 'extract attention weights from layer 12 (out of 32 LLM layers in InternVL2.5-8B)', post: ' and apply MIS selection directly without any debiasing.', note: 'Why layer 12 is never said, and no comparison across layers appears in the text. The overview figure shows an L8 bar that beats L12 and is reported nowhere.' },
@@ -226,7 +217,7 @@ const ITEMS = [
     judge: ['Separate the observation from the added interpretation.', 'What assumption or evidence does the step need, and is it anywhere in the paper?', 'Not measured directly is not a defect; sound inference is accepted.', 'Same standard for captions and conclusions.'],
     not: ['A summary within the observed range.', 'A mechanism backed by another analysis.', 'A possibility marked as unverified.'],
     fix: ['Limit the interpretation to what the results allow, or supply the support.', 'If it is withdrawn, fix the Abstract and Conclusion too.', 'Not a fix: “demonstrating” → “suggesting” with the same conclusion.'],
-    borders: [['1-2', 'same property, inflated'], ['1-1', 'no link to results at all'], ['2-2', 'no joint reading of experiments']] },
+    borders: [['1-2', 'same property, inflated'], ['1-1', 'no link to results at all']] },
   { id: '5-4', area: 5, v1: 'Argument graph', name: 'Misrepresented Evidence', link: ['the evidence as described', 'the actual source or experiments'], what: 'The paper says evidence exists, and the evidence does not say that.',
     ex: { spec: 'Prior studies established that update rule A converges under adaptive step sizes [12].', specnote: 'The theorem in [12] covers fixed step sizes only. Nothing extends it.', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments', pre: 'All values are well below ', mark: 'the 0.3 threshold typically considered indicative of meaningful positional bias.', post: '', note: 'No source for the threshold, and none for who considers it. The paper’s central diagnostic rests on it.' },
     judge: ['Check four things against the material: existence, content, scope, consensus.', '“Extensive”, “numerous”, and citation counts are not the criterion.', 'Source unreachable means undecidable, not a defect.'],
@@ -254,9 +245,6 @@ const DEF = {
     q: [{ pre: 'On RULER long-context benchmarks, our method achieves ', mark: '46% cache reduction on Variable Tracking while preserving 93% baseline accuracy', post: ' (16.52% vs. 17.72%).', src: 'AI paper · SciSlopBench FA0002 · Abstract' },
         { pre: 'On Multi-Query, we achieve 70% reduction but with ', mark: 'larger accuracy loss (3.65% vs. 12.10%)', post: ', indicating that distributed-information tasks inherently require higher cache coverage.', src: 'Same paper · §4 Experiments' }],
     note: 'Read the abstract and the method works. Read §4 and on the second task accuracy falls to a third. The abstract never mentions the second task.' },
-  '2-2': { what: 'The paper runs several experiments that answer one question together, and never puts them together.',
-    q: [{ pre: '§4.1: +3.1 with 1k examples. §4.2: removing A loses the gain. §4.3: the gap shrinks at 100k. ', mark: 'Each subsection ends with its own score.', post: '', src: 'Constructed example · no instance in the three verified pairs' }],
-    note: 'The question was whether A helps when data are scarce. The three results say yes, and only then, and no sentence in the paper says it.' },
   '2-3': { what: 'One section refers to something in another section by a name the other section never uses.',
     q: [{ pre: 'Table 3 presents diagnostic metrics from our ', mark: 'Phase-0 analysis', post: ' on 30 COCO images with 5 prompt templates (150 forward passes).', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments' },
         { pre: '', mark: 'Diagnostic analysis on 30 COCO images with 5 prompt templates', post: ' revealed that shallow-layer attention in InternVL2.5-8B is highly prompt-stable but exhibits weak positional bias.', src: 'Same paper · §3 Method' }],
@@ -338,7 +326,7 @@ function hbars(rows, o = {}) { // rows: [label, value, {color, bold, note}]
   return `<svg class="v-chart" viewBox="0 0 ${W} ${H}" font-family="Inter, system-ui, sans-serif">${s}</svg>`;
 }
 const FINDINGS = [
-  { id: 'f1', q: 'How does AI slop differ from human poor writing?', a: 'Human and AI papers on the same 17 items, author hidden.',
+  { id: 'f1', q: 'How does AI slop differ from human poor writing?', a: 'Human and AI papers on the same 16 items, author hidden.',
     compare: 'Human-written papers and AI-generated papers. The judge never sees the author; the label is joined afterwards.',
     measure: 'The distribution of each item in each group: how often, how severe, and in what concrete form. Which slop is shared, which is AI’s alone.',
     v1: 'Six counting measures already pick the AI paper in 85.9% of 390 matched pairs; the best AI-text detector reaches 68.7%.',
@@ -352,7 +340,7 @@ const FINDINGS = [
     compare: 'The same papers reviewed by humans and by AI reviewers, with the author (human or AI) joined afterwards.',
     measure: 'Which items each kind of review misses, and whether the AI reviewer’s misses grow when the paper is AI-written.',
     v1: null, chart: () => '', cap: '', status: 'planned' },
-  { id: 'f4', q: 'What problems do reviewers point out for each type of slop?', a: 'Reviewer weaknesses collected per item: does a 5-1 paper get “motivation unclear”, a 2-2 paper “disconnected”?',
+  { id: 'f4', q: 'What problems do reviewers point out for each type of slop?', a: 'Reviewer weaknesses collected per item: does a 5-1 paper get “motivation unclear”, a 4-4 paper “repetitive”?',
     compare: 'High-slop papers and the weakness sections of their reviews.',
     measure: 'Which remark each item draws, and which items reviewers never name even when the paper has them.',
     v1: null, chart: () => '', cap: '', status: 'planned' },
@@ -381,7 +369,7 @@ const PAGE = {
     { p: ['Adding the auxiliary loss improves BLEU by 1.8 points, ', M('5-3'), ' ', G('g53', 'no analysis of alignment')], lines: 1 },
     { p: [A('g44', 'Table 2 shows our model beats all baselines on both datasets.'), ' ', M('4-4')], lines: 1 },
     { sub: '4.3  Analysis', p: ['We find 31% ', M('1-3'), ' and 12% entity substitutions (Table 4). ', G('g13', 'no example input · output')], lines: 1 },
-    { p: [A('gneg', 'The gain concentrates on sentences that contain negation (Table 5).'), ' With 1k examples the gain is +3.1; removing A loses it; at 100k the gap shrinks. ', M('2-2'), ' ', G('g22', 'and together they mean…?')], lines: 1 },
+    { p: [A('gneg', 'The gain concentrates on sentences that contain negation (Table 5).')], lines: 1 },
     { h: '5  Discussion', p: ['Beyond accuracy, ', M('1-1'), ' and transfers to new domains.'], lines: 1 },
         { h: 'References', refs: ['[3] A. et al. Contrastive pairs for retrieval. 2023.', '[7] B. et al. Memory-augmented retrieval. 2024.', A('gref', '[12] C. et al. Convergence of rule A. Theorem 1: fixed step size.')], lines: 0, small: true },
   ],
@@ -393,7 +381,6 @@ const FAIL = {
   '1-3': { to: 'g13', label: 'counts only, no example to check' },
   '1-4': { to: 'g14', label: 'the relation to A and B is never stated' },
   '2-1': { to: 'gneg', label: 'this finding never reaches the Abstract' },
-  '2-2': { to: 'g22', label: 'three results, no sentence joins them' },
   '2-3': { to: 'gloss', label: 'two losses in §3: which one was removed?' },
   '3-1': { to: 'g31', label: 'excluded, no reason given' },
   '4-1': { to: 'g41', label: 'says nothing about this paper' },
@@ -407,11 +394,11 @@ const FAIL = {
   '5-4': { to: 'gref', label: '[12] covers fixed step sizes only' },
 };
 const PLANES = { structure: { title: 'Structure', q: 'Do the sections build on one another?' }, argument: { title: 'Argument', q: 'Are the claims and citations argued?' }, artifacts: { title: 'Artifacts', q: 'Can the method and the evidence be inspected?' } };
-const PLANE_OF = { '2-1': 'structure', '2-2': 'structure', '2-3': 'structure', '4-1': 'structure', '4-3': 'structure', '4-4': 'structure',
+const PLANE_OF = { '2-1': 'structure', '2-3': 'structure', '4-1': 'structure', '4-3': 'structure', '4-4': 'structure',
   '1-1': 'argument', '1-2': 'argument', '1-4': 'argument', '5-1': 'argument', '5-2': 'argument', '5-3': 'argument', '5-4': 'argument',
   '1-3': 'artifacts', '3-1': 'artifacts', '4-2': 'artifacts', '4-5': 'artifacts' };
 const PLANE_C = { structure: '#7E4E66', argument: '#E4959E', artifacts: '#56717B' };   // site planes: structure/artifacts in their deep shade so structure and argument separate
-// the page groups the seventeen items by the index's three planes; the 1-5 area numbers stay in the item ids
+// the page groups the sixteen items by the index's three planes; the 1-5 area numbers stay in the item ids
 const GROUPS = [
   { n: 1, key: 'structure', cls: 'p-structure', title: 'Structure', q: 'Do the sections build on one another?' },
   { n: 2, key: 'argument', cls: 'p-argument', title: 'Argument', q: 'Are the claims and citations argued?' },
@@ -419,7 +406,7 @@ const GROUPS = [
 ];
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
 const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'The claim goes further than the evidence.', '1-3': 'Results, but not one example shown.', '1-4': 'Cited, but never related to this paper.',
-  '2-1': 'The key finding is missing from the abstract.', '2-2': 'Experiments never tied back to the question.', '2-3': 'Refers to something the reader cannot locate.', '3-1': 'A design choice with no reason given.',
+  '2-1': 'The key finding is missing from the abstract.', '2-3': 'Refers to something the reader cannot locate.', '3-1': 'A design choice with no reason given.',
   '4-1': 'Says nothing about this paper.', '4-2': 'A term that is never defined.', '4-3': 'Detail that no result depends on.', '4-4': 'The same content said twice.', '4-5': 'Figure arrows and colors never explained.',
   '5-1': 'Called important, but which problem?', '5-2': 'A claimed difference that does not hold.', '5-3': 'A result read as a mechanism never tested.', '5-4': 'The cited source says something else.' };
 for (const it of ITEMS) it.short = SHORT[it.id];
@@ -491,7 +478,7 @@ renderPage();
 const PAPER = (x, y, w, h, label, marks) => K.card(x, y, w, h, label) + K.lines(x + 3, y + 7, w - 6, 3, { gap: 3.2, last: .6 }) + (marks || []).map(([mx, my, mw, col]) => K.box(x + mx, y + my, mw, 2.6, { fc: col, ec: col, r: .8 })).join('');
 const PERSON = (x, y, col) => `<circle cx="${x}" cy="${y}" r="2.6" fill="${col}"/><path d="M${x - 4.6} ${y + 9.5} a4.6 4.6 0 0 1 9.2 0z" fill="${col}"/>`;
 const ROBOT = (x, y, col) => K.box(x - 3.4, y - 2.6, 6.8, 6, { fc: col, ec: col, r: 1 }) + `<rect x="${x - 2}" y="${y - 1}" width="1.4" height="1.4" fill="#fff"/><rect x="${x + .6}" y="${y - 1}" width="1.4" height="1.4" fill="#fff"/><line x1="${x}" y1="${y - 2.6}" x2="${x}" y2="${y - 4.5}" stroke="${col}" stroke-width=".8"/>` + K.box(x - 4.6, y + 4.4, 9.2, 5, { fc: col, ec: col, r: 1 });
-const MINI_CAP = {"f1": "Human and AI papers, same 17 items, author hidden", "f2": "Slop against review scores, year by year and venue by venue", "f3": "One paper, one human review and one AI review", "f4": "Each review remark matched to the slop it points at"};
+const MINI_CAP = {"f1": "Human and AI papers, same 16 items, author hidden", "f2": "Slop against review scores, year by year and venue by venue", "f3": "One paper, one human review and one AI review", "f4": "Each review remark matched to the slop it points at"};
 const MINI = {
   f1: () => `<img src="img/q1.png" alt="An AI paper that looks polished next to a human paper full of red marks">`,
   f2: () => `<img src="img/q2_v2.png" alt="Clean and sloppy AI papers, reviewers' star ratings, and the scores plotted by year and by venue">`,
@@ -556,14 +543,6 @@ const MEASURE = {
       ['Check the abstract and introduction', [[Q, 'Compare each finding against the abstract and introduction:'], [Q, 'Is the finding conveyed in substance? Exact numbers are not required.'], [Q, 'Is its key condition conveyed?'], [CD, 'Compute word overlap with each abstract / intro sentence.']]],
       ['Decide PASS / FAIL / U', [[CD, 'Finding or condition not conveyed → FAIL.'], [CD, '≥40% content-word overlap → human review (U).'], [CD, 'Three independent runs vote; score = FAIL / (FAIL + PASS).']]]],
     line: 'Qwen2.5-32B reads the body first, then checks the abstract and introduction; code guards with word overlap. Three runs vote.' },
-  '2-2': { unit: 'question', units: 'questions',
-    stages: [['Question', 'needs 2+ results to answer', Q], ['Results', 'read together', Q], ['Joint sentence', 'connects them?', QC], ['Verdict', '3 runs vote', CD]],
-    how: [
-      ['Find the questions', [[Q, 'List research questions that need two or more results to answer (“does module A help when data is small?”).']]],
-      ['Link the results', [[Q, 'Name the result ids (tables, figures, sentences) bearing on each question; at least two.'], [CD, 'Fewer than two valid results → U.']]],
-      ['Check the joint reading', [[Q, 'Point to the sentence(s) that interpret the results together.'], [Q, 'Judge grades it against the result summaries: specific (names observed numbers, direction or condition) · generic · none.']]],
-      ['Decide PASS / FAIL / U', [[CD, 'specific → PASS. generic or none → FAIL.'], [CD, 'Generic: “Together, these results demonstrate the effectiveness of our approach.”'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
-    line: 'Qwen2.5-32B finds the questions and the sentence that reads the results together; code requires ≥2 results. Three runs vote.' },
   '2-3': { unit: 'name', units: 'names',
     stages: [['Name', 'a label that needs a definition', CD], ['Where', 'table or sentence', CD], ['Defined?', 'a sentence saying what it is', QC], ['Verdict', '3 runs vote', CD]],
     how: [
@@ -753,10 +732,6 @@ Adding "unlike prior work" without the relation, or deleting citations, is not a
 Identify the key findings of the body from the research question and the main results, including the condition under which each holds.
 Check the Abstract and Introduction: if a key finding or its condition is missing, add it in one sentence.
 Adding a single number is not enough; do not turn an observed association into a mechanism.`,
-  '2-2': `# Fix · Disconnected Experiments (2-2)
-State the research question. For each experiment, write what it examines and what its result contributes to the answer.
-Where several results must be read together, add the sentence that reads them together and says what they jointly support or limit.
-"Together, these results demonstrate…" without the reasoning is not a fix.`,
   '2-3': `# Fix · Missing Cross-Section Links (2-3)
 Find every place that depends on a definition, method, or result given elsewhere (an ablation row, a symbol, a setting).
 Name the counterpart exactly (which loss, which equation, which table) so the reader can match them.
@@ -957,7 +932,7 @@ function openHash() {
 document.addEventListener('click', e => { const a = e.target.closest('a[data-xref], a.ql, a.atile'); if (!a) return; e.preventDefault(); history.pushState({}, '', a.getAttribute('href')); openHash(); });
 addEventListener('hashchange', openHash);
 // ------------------------------------------------------------------ studio: the specimen page under a lens, one slop at a time, votes beside it
-const PAGE_ORDER = ['2-1', '1-2', '5-1', '4-1', '1-4', '5-4', '4-2', '5-2', '4-5', '3-1', '4-3', '2-3', '5-3', '4-4', '1-3', '2-2', '1-1'];
+const PAGE_ORDER = ['2-1', '1-2', '5-1', '4-1', '1-4', '5-4', '4-2', '5-2', '4-5', '3-1', '4-3', '2-3', '5-3', '4-4', '1-3', '1-1'];
 const tally = id => hub.votes[id] || { up: 0, down: 0 };
 const nCases = id => hub.cases.filter(c => c.item === id).length;
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
@@ -1032,8 +1007,8 @@ function showFix(id) { const box = $('#sp-body .sp-fix'); if (box) { box.hidden 
 const clip = (t, n) => (t = String(t || '').replace(/\s+/g, ' ').trim()).length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t;
 const cap1 = t => t.charAt(0).toUpperCase() + t.slice(1);
 function srcParts(src) { const m = String(src || '').split(' · '); return [h('span', { class: 'snip-who', text: m[0] || '' }), h('span', { text: m.slice(1).join(' · ') })]; }
-// six v1 measures → seventeen slops, drawn as a hand-ruled tree; the caption under the page says what the chosen slop is
-const TREE = [['Argument graph', ['1-1', '1-2', '5-1', '5-2', '5-3', '5-4']], ['Evidence gap', ['1-3']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4']], ['Figure exposition', ['4-5']], [null, ['2-1', '2-2', '3-1', '4-1', '4-2', '4-3']]];
+// six v1 measures → sixteen slops, drawn as a hand-ruled tree; the caption under the page says what the chosen slop is
+const TREE = [['Argument graph', ['1-1', '1-2', '5-1', '5-2', '5-3', '5-4']], ['Evidence gap', ['1-3']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4']], ['Figure exposition', ['4-5']], [null, ['2-1', '3-1', '4-1', '4-2', '4-3']]];
 // the three areas, each in its own colour: Structure, Argument, Artifacts
 const TREE2 = GROUPS.map(g => [g, ITEMS.filter(i => i.plane === g.key).map(i => i.id)]);
 $('#tree-rows').replaceChildren(...TREE2.map(([g, ids]) => h('div', { class: 'tr ' + g.cls },
@@ -1080,7 +1055,7 @@ function renderStrip() {
     c.classList.toggle('on', on); c.setAttribute('aria-pressed', String(on));
     c.querySelector('.bk-r').textContent = String(i + 1).padStart(2, '0');
     c.querySelector('.bk-v').textContent = up ? '▲' + up : '';
-    c.querySelector('.bk-cv').textContent = `${String(i + 1).padStart(2, '0')} / 17 · ${up} ran into it`;
+    c.querySelector('.bk-cv').textContent = `${String(i + 1).padStart(2, '0')} / 16 · ${up} ran into it`;
     strip.append(c);
   });
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) for (const [el, y] of before) { const dy = y - el.offsetTop; if (dy) el.animate([{ transform: `translateY(${dy}px)` }, { transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.2,.7,.2,1)' }); }
@@ -1220,8 +1195,8 @@ const QSVG = {
     ${bubble(28, 34, 76, 1)}${bubble(296, 34, 76, 1.3)}
     ${note(118, 186, 'same slop, same verdict?', 1.7, 'red', 21)}`,
   f4: () => `<rect class="qp" x="18" y="22" width="178" height="150" rx="8"/><text class="qm" x="30" y="42">REVIEW · Weaknesses</text>
-    ${[['– motivation unclear', 74], ['– disconnected', 112], ['– …', 150]].map(([t, y]) => `<text class="qhand2" x="30" y="${y}">${t}</text>`).join('')}
-    ${[['Unexplained Importance', 70, 'p-argument'], ['Disconnected Experiments', 108, 'p-structure']].map(([t, y, c]) => `<g class="${c}"><rect class="qchip" x="228" y="${y - 16}" width="166" height="26" rx="13"/><text class="qct" x="240" y="${y + 1}">${t}</text></g>`).join('')}
+    ${[['– motivation unclear', 74], ['– repetitive', 112], ['– …', 150]].map(([t, y]) => `<text class="qhand2" x="30" y="${y}">${t}</text>`).join('')}
+    ${[['Unexplained Importance', 70, 'p-argument'], ['Redundant Repetition', 108, 'p-structure']].map(([t, y, c]) => `<g class="${c}"><rect class="qchip" x="228" y="${y - 16}" width="166" height="26" rx="13"/><text class="qct" x="240" y="${y + 1}">${t}</text></g>`).join('')}
     <rect class="qchip ghost" x="228" y="130" width="166" height="26" rx="13"/>${arrow([[176, 70], [200, 66], [224, 68]], .3)}${arrow([[150, 108], [190, 112], [224, 108]], .7)}${arrow([[66, 146], [150, 152], [224, 144]], 1.1)}${note(302, 152, '?', 1.5, 'red', 34)}${note(214, 186, 'which slop gets named?', 1.8, 'red', 20)}`,
 };
 const QCATCH = { f1: 'AI slop <em>≠</em> bad writing?', f2: 'Does slop <em>cost</em> points?', f3: 'Human <em>or</em> AI reviewer?', f4: 'What reviewers <em>flag</em>' };
