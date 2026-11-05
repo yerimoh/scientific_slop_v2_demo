@@ -1,61 +1,61 @@
 {
  "meta": {
-  "item": "1-2b",
-  "paper": "FA0280",
+  "paper": "FA0043",
   "side": "AI paper",
-  "title": "Deep-Layer Attention Pruning for Vision-Language Models",
+  "title": "Isolated Solve-Then-Judge: A Simple Defense Against Candidate-Response Prompt Injection for Multimodal LLM Judges",
   "n_runs": 1,
+  "pre": {},
+  "item": "1-2b",
   "F": 1,
   "P": 0,
   "U": 0,
   "NA": 0,
-  "pre": {},
   "default": "S3.072",
-  "breadth": 19.8,
+  "breadth": 0.0,
   "axes": {
    "model": 0.0,
-   "dataset": 39.6
+   "dataset": 0.0
   },
   "fail_below": 35,
-  "aux": "seeds not stated · no ± · 1 baseline (FastV)",
-  "source": "v2/runs/m12b_v14_hf_full/AI_FA0280.json (m12b_v14.py, Claude Haiku 4.5 extraction, 11-06)"
+  "aux": "seeds not stated · no ± · 2 baselines",
+  "source": "v2/runs/m12b_v14_hf_full/AI_FA0043.json (m12b_v14.py, Claude Haiku 4.5, 11-06)"
  },
  "units": [
   {
    "id": "S3.072",
    "sec": "§4 Experiments · model axis",
    "kind": "model axis · 3 result tables (T1–T3)",
-   "text": "We evaluate on InternVL2.5-8B, a state-of-the-art vision-language model with 32 LLM layers (InternLM2 backbone) and 256 visual tokens per image tile.",
-   "s2": "Models: InternVL2.5-8B (family InternVL). FastV and D²Pruner are baselines, not models.",
-   "found": [
-    "S2.050",
-    "S2.058",
-    "S3.072",
-    "S3.114"
-   ],
-   "found_note": "1 model, 1 family → log₂ 1 = 0",
-   "judge_line": "The conclusion agrees: “Our evaluation is limited to one model family (InternVL).”",
-   "runs": [],
-   "final": "FAIL",
-   "final_reason": "model axis 0 · dataset axis 40 → breadth 19.8 < 35 → FAIL"
-  },
-  {
-   "id": "S3.075",
-   "sec": "§4 Experiments · dataset axis",
-   "kind": "dataset axis · 3 result tables (T1–T3)",
-   "text": "We evaluate on the RefCOCO family of visual grounding benchmarks: RefCOCO, RefCOCO+, and RefCOCOg.",
-   "s2": "Datasets: RefCOCO, RefCOCO+, RefCOCOg. The 8 splits (val, testA, testB, …) stay inside their dataset.",
+   "text": "We use Qwen2.5-VL-7B-Instruct as the judge model, deployed via vLLM with tensor parallelism across 2 GPUs using bfloat16 precision.",
+   "s2": "Models: Qwen2.5-VL-7B-Instruct (family Qwen2.5-VL). Nothing else is run as the judge.",
    "found": [
     "T1",
-    "T2",
-    "S3.075",
-    "S3.077"
+    "S3.072",
+    "S3.080"
    ],
-   "found_note": "3 datasets → log₂ 3 ÷ log₂ 16 = 0.40",
+   "found_note": "1 model, 1 family → log₂ 1 = 0",
    "judge_line": "",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "model axis 0 · dataset axis 40 → breadth 19.8 < 35 → FAIL"
+   "final_reason": "model axis 0 · dataset axis 0 → breadth 0 < 35 → FAIL"
+  },
+  {
+   "id": "S3.069",
+   "sec": "§4 Experiments · dataset axis",
+   "kind": "dataset axis · 3 result tables (T1–T3)",
+   "text": "We evaluate on VL-RewardBench, a challenging benchmark for vision-language generative reward models containing 1,247 pairwise preference examples across three categories: …",
+   "s2": "Datasets: VL-RewardBench. Its three categories (General, Hallucination, Reasoning) stay inside the one benchmark.",
+   "found": [
+    "T1",
+    "T2",
+    "S3.069",
+    "S3.080",
+    "S3.093"
+   ],
+   "found_note": "1 dataset → log₂ 1 = 0",
+   "judge_line": "",
+   "runs": [],
+   "final": "FAIL",
+   "final_reason": "model axis 0 · dataset axis 0 → breadth 0 < 35 → FAIL"
   }
  ]
 }

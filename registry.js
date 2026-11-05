@@ -82,8 +82,7 @@ const PIC = {
     s += K.chip(x, y - hh / 2, 'FAIL', { fs, fc: C.bad, ec: C.bad, tc: '#fff', bold: true, w: w4, h: hh }) + lab(x + w4 / 2, 'verdict');
     return k < 1 ? `<g transform="translate(50 13) scale(${k.toFixed(3)}) translate(-50 -13)">${s}</g>` : s;
   },
-  '1-2': () => row([E.card('tested', inner.chip('2 tasks: VT, MQ', C.arg, { outline: true })), E.miss(C.arg, { solid: true }), E.chip('all diffuse tasks', C.arg)]),
-  '1-2b': () => row([E.card('tested', inner.chip('1 model · 3 datasets', C.arg, { outline: true })), E.miss(C.arg, { solid: true }), E.ask(['another model?'])]),
+  '1-2': () => row([E.card('tested', inner.chip('1 model · 1 dataset', C.arg, { outline: true })), E.miss(C.arg, { solid: true }), E.ask(['another model?', 'cost?'])]),
   '1-4': () => { const cw = tw('SparseVLM', FS - .3) + 6, ow = tw('ours', FS, true) + 8, gap = 22, total = cw + gap + ow, x0 = 50 - total / 2, xo = x0 + cw + gap;
     return K.chip(x0, MID - 10.5, 'FEATHER', { fs: FS - .3, ec: C.arg, lw: .9, w: cw, h: 8 }) + K.chip(x0, MID - 1, 'SparseVLM', { fs: FS - .3, ec: C.arg, lw: .9, w: cw, h: 8 }) + K.text(x0 + cw / 2, MID + 10.3, '+ 6 more, listed', { fs: FS - .8, color: C.muted, anchor: 'middle' }) +
       K.chip(xo, MID - 6.25, 'ours', { fc: C.arg, ec: C.arg, tc: '#fff', bold: true, w: ow, h: 9.5 }) +
@@ -98,7 +97,7 @@ const PIC = {
   '5-4': () => row([E.chip('0.3, "typically considered"', C.arg), E.miss(C.arg), E.ask(['by whom?', '[ ? ]'])]),
 };
 // what the pattern looks like, one line under each scene
-const CAP = { '1-1': 'a claim with nothing behind it', '1-2': 'claim wider than its evidence', '1-2b': 'one model, nothing else tried', '1-4': 'cited, related to nothing', '2-1': 'the bad news never reaches the front', '2-3': 'used later, never pointed back to', '3-1': 'a choice with no reason', '4-1': 'delete it and nothing is lost', '4-2': 'a term with no meaning', '4-4': 'the same sentence, another section', '4-5': 'a result only the figure reports', '5-4': 'a source that is not there' };
+const CAP = { '1-1': 'a claim with nothing behind it', '1-2': 'one setting tried, cost left out', '1-4': 'cited, related to nothing', '2-1': 'the bad news never reaches the front', '2-3': 'used later, never pointed back to', '3-1': 'a choice with no reason', '4-1': 'delete it and nothing is lost', '4-2': 'a term with no meaning', '4-4': 'the same sentence, another section', '4-5': 'a result only the figure reports', '5-4': 'a source that is not there' };
 // hero: a paper spine with the five kinds of broken connection
 function heroSvg() {
   const secs = [['Abstract', 4], ['Introduction', 42], ['Method', 80], ['Experiments', 118], ['Conclusion', 156]];
@@ -128,18 +127,14 @@ const ITEMS = [
     not: ['Marked as a hypothesis or future work.', 'Backed by a proof, a citation, or an appendix result.'],
     fix: ['Connect the real support, or shrink the claim to it.', 'Not a fix: unrelated citations, invented runs, deleting the contribution.'],
     borders: [['5-4', 'support is described, but wrongly'], ['1-2', 'support exists, claim exceeds it']] },
-  { id: '1-2', area: 1, v1: 'Argument graph', name: 'Overstated Claims', what: 'Support exists, but the claim reaches past it in scope, strength, or certainty.',
-    ex: { spec: 'Our method consistently outperforms baselines across domains', specnote: 'Gains appear only in the few-shot setting on CIFAR-10. One dataset, one condition.', src: 'AI paper · SciSlopBench FA0002 · §1 Introduction', pre: 'Task-dependent analysis: ', mark: 'Diffuse-dependency tasks (Variable Tracking) benefit substantially from adaptive sizing, while distributed-information tasks (Multi-Query NIAH) require higher budgets', post: ', revealing a structural limit on cache reduction.', note: 'Two tasks were run, one per “class”. The classes are never defined, and no other task in either class is tested.' },
-    judge: ['Compare claim and support on four axes: scope, conditions, effect and direction, certainty.', 'Observed, statistical, or causal are three different claims.', 'A strong adjective by itself decides nothing.'],
-    not: ['Scope clear from context.', 'A generalization stated as a hypothesis after the verified range.'],
-    fix: ['State the evaluated range and the uncertainty.', 'Not a fix: deleting “significantly” while keeping “across domains”.'],
+  { id: '1-2', area: 1, v1: 'Argument graph', name: 'Overstated Claims', what: 'The results support less than the paper claims: they come from one model or one dataset, or the method adds compute it never accounts for.',
+    parts: [{ id: '1-2b', name: 'Narrow Evaluation', what: 'Every result comes from one model or one dataset.' },
+            { id: '1-2d', name: 'Missing Cost Accounting', what: 'The method adds model calls, passes or modules, and their cost is never reported.' }],
+    ex: { spec: 'All experiments use a single encoder, XLM-R base, with a second re-ranking pass.', specnote: 'One encoder, one benchmark, and the extra pass is never timed.', src: '', pre: '', mark: '', post: '', note: '' },
+    judge: ['Narrow Evaluation: count the models the experiments run with, their families, and the datasets the results are reported on.', 'Missing Cost Accounting: list what the method adds that costs compute, and look for a measured cost or a matched-budget comparison.', 'Score = the mean of the two parts (evaluation breadth and cost reporting, each 0–100).'],
+    not: ['A benchmark paper (dataset count not scored), or a study of one named model by design (model count not scored).', 'A method that adds no compute: cost part not scored.'],
+    fix: ['Run a second model or dataset; report runtime, tokens, FLOPs or memory for the method and the baseline.', 'Not a fix: more seeds on the same setting; saying “efficient” without a number.'],
     borders: [['1-1', 'no support at all'], ['5-4', 'evidence described wrongly']] },
-  { id: '1-2b', area: 1, name: 'Narrow Evaluation', what: 'Every result comes from one model or one dataset.',
-    ex: { spec: 'All experiments use a single encoder, XLM-R base.', specnote: 'One encoder, one benchmark. Whether the gain holds for another model or another dataset is never tested.', src: '', pre: '', mark: '', post: '', note: '' },
-    judge: ['Count the models the experiments run with, their families, and the datasets the results are reported on.', 'A name counts only if it appears in a result table, a caption, or the experiment text.', 'Seeds, ± and baselines are counted and shown. They do not change the score.'],
-    not: ['A benchmark paper: the new dataset is the point, so the dataset count is not scored.', 'A study of one named model by design: the model count is not scored.'],
-    fix: ['Run a second model, ideally from another family, or a second dataset.', 'Not a fix: more seeds on the same model and dataset; naming other models in related work.'],
-    borders: [['1-2', 'narrow evidence, then a wide claim'], ['5-4', 'scope words that do not match the tables']] },
   { id: '1-4', area: 1, name: 'Unclear Links to Prior Work', v1: 'Citation isolation', what: 'Prior work is cited, but how it relates to this study is never said.',
     ex: { spec: 'We propose C.', specnote: 'Does C follow A or B? Which limitation does it address? What differs? Not said.', src: 'AI paper · SciSlopBench FA0280 · §2 Related Work', pre: 'SparseVLM introduces text-aware sparsification that conditions token selection on the input query, and ', mark: 'FEATHER revisits pruning strategies with improved layer selection.', post: '', note: 'The paragraph lists eight pruning methods and never says how this paper relates to any of them. FEATHER also picks layers, which is this paper’s whole idea.' },
     judge: ['Does the citing passage explain the role of that work?', 'Relations among prior works are logged apart from relations to this study.', 'Judge when a relation needed to place the study is missing.'],
@@ -200,14 +195,10 @@ const DEF = {
   '1-1': { what: 'The paper states a result and never shows the experiment, proof, or source behind it.',
     q: [{ pre: '', mark: 'This achieves near-high-k robustness at near-low-k average cost.', post: '', src: 'AI paper · SciSlopBench FA0083 · §3 Method' }],
     note: '“Cost” promises a measurement: latency, compute, or memory. No table or figure in the paper measures any of them, so the sentence is the only evidence for itself.' },
-  '1-2': { what: 'The paper has evidence for a small claim and makes a bigger one.',
-    q: [{ pre: 'We focus on ', mark: 'two tasks', post: ' that stress recall.', src: 'AI paper · SciSlopBench FA0002 · §4 Experiments' },
-        { pre: 'Task-dependent analysis: ', mark: 'Diffuse-dependency tasks (Variable Tracking) benefit substantially from adaptive sizing, while distributed-information tasks (Multi-Query NIAH) require higher budgets', post: ', revealing a structural limit on cache reduction.', src: 'Same paper · §1 Introduction' }],
-    note: 'Two tasks were run, one of each kind. From one task each, the introduction states a rule for whole classes of tasks, and never says what else belongs to a class.' },
-  '1-2b': { what: 'The paper tests its method on one model or one dataset, so the reader cannot tell whether it works anywhere else.',
-    q: [{ pre: 'We evaluate on ', mark: 'InternVL2.5-8B', post: ', a state-of-the-art vision-language model with 32 LLM layers (InternLM2 backbone) and 256 visual tokens per image tile.', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments' },
-        { pre: '', mark: 'Our evaluation is limited to one model family (InternVL) and one task type (visual grounding).', post: '', src: 'Same paper · §5 Conclusion' }],
-    note: 'Every result comes from this one model, on the three RefCOCO benchmarks. The conclusion says so, but no second model is ever run, so nobody knows whether layer 12 is special to InternVL.' },
+  '1-2': { what: 'The paper’s evidence is narrower than its claim: one model or one dataset, or an added cost that is never measured.',
+    q: [{ pre: 'We use ', mark: 'Qwen2.5-VL-7B-Instruct as the judge model', post: ', deployed via vLLM with tensor parallelism across 2 GPUs using bfloat16 precision.', src: 'AI paper · SciSlopBench FA0043 · §4 Experiments' },
+        { pre: 'We propose ', mark: 'a two-pass architecture', post: ' where the judge first generates its own answer using only trusted inputs, then uses this uncontaminated reference when evaluating candidates.', src: 'Same paper · §3 Method' }],
+    note: 'One judge model on one benchmark (VL-RewardBench), and the defense doubles the model calls per example. The paper reports the accuracy it costs, never the compute.' },
   '1-4': { what: 'The paper cites related work and never says how its own work differs from it.',
     q: [{ pre: 'SparseVLM introduces text-aware sparsification that conditions token selection on the input query, and ', mark: 'FEATHER revisits pruning strategies with improved layer selection.', post: '', src: 'AI paper · SciSlopBench FA0280 · §2 Related Work' },
         { pre: 'Our approach is straightforward: ', mark: 'extract attention weights from layer 12', post: ' (out of 32 LLM layers in InternVL2.5-8B) and apply MIS selection directly without any debiasing.', src: 'Same paper · §3 Method' }],
@@ -281,7 +272,7 @@ function hbars(rows, o = {}) { // rows: [label, value, {color, bold, note}]
   return `<svg class="v-chart" viewBox="0 0 ${W} ${H}" font-family="Inter, system-ui, sans-serif">${s}</svg>`;
 }
 const FINDINGS = [
-  { id: 'f1', q: 'How does AI slop differ from human poor writing?', a: 'Human and AI papers on the same 12 items, author hidden.',
+  { id: 'f1', q: 'How does AI slop differ from human poor writing?', a: 'Human and AI papers on the same 11 items, author hidden.',
     compare: 'Human-written papers and AI-generated papers. The judge never sees the author; the label is joined afterwards.',
     measure: 'The distribution of each item in each group: how often, how severe, and in what concrete form. Which slop is shared, which is AI’s alone.',
     v1: 'Six counting measures already pick the AI paper in 85.9% of 390 matched pairs; the best AI-text detector reaches 68.7%.',
@@ -308,7 +299,7 @@ const G = (g, text) => ({ ghost: g, text });         // the place where somethin
 const PAGE = {
   title: 'Adaptive Token Weighting for Cross-Lingual Retrieval', authors: 'A. Author · B. Author · C. Author',
   left: [
-    { h: 'Abstract', p: ['Cross-lingual retrieval models weight every token the same. We introduce ', M('2-1'), ' on three benchmarks. ', M('1-2'), ', with gains of up to 4 points.'], lines: 1 },
+    { h: 'Abstract', p: ['Cross-lingual retrieval models weight every token the same. We introduce ', M('2-1'), ' on three benchmarks. Our method consistently outperforms baselines across domains, with gains of up to 4 points.'], lines: 1 },
     { h: '1  Introduction', p: ['We propose a framework that learns token weights for cross-lingual retrieval. ', A('g44', 'Our model beats all baselines on both datasets.')], lines: 1 },
     { p: [M('4-1'), ' ', G('g41', 'delete it: nothing is lost')], lines: 1 },
     { h: '2  Related Work', p: ['Method A [3] uses contrastive pairs; method B [7] adds a memory module. ', M('1-4'), ' ', G('g14', 'follows A or B? what differs?')], lines: 1 },
@@ -317,7 +308,7 @@ const PAGE = {
     { fig: true, cap: [M('4-5'), ' Solid and dashed arrows; blue, green, and orange blocks.'] },
   ],
   right: [
-    { h: '4  Experiments', sub: '4.1  Setup', p: [A('gqa', 'We evaluate on long-document QA.'), ' ', M('1-2b'), ' ', M('3-1'), ' ', G('g31', 'why? effect on the long-input claim?'), ' ', G('g11', 'no label-noise experiment')], lines: 1 },
+    { h: '4  Experiments', sub: '4.1  Setup', p: [A('gqa', 'We evaluate on long-document QA.'), ' ', M('1-2'), ' ', M('3-1'), ' ', G('g31', 'why? effect on the long-input claim?'), ' ', G('g11', 'no label-noise experiment')], lines: 1 },
     { sub: '4.2  Results', p: ['Table 3 ablates the alignment term. ', M('2-3')], lines: 1 },
     { p: ['Adding the auxiliary loss improves BLEU by 1.8 points.'], lines: 1 },
     { p: ['Table 2 reports the main results. ', M('4-4')], lines: 1 },
@@ -329,8 +320,7 @@ const PAGE = {
 // how each slop fails on this page: where the mark points, and what the reader finds there
 const FAIL = {
   '1-1': { to: 'g11', label: 'no label-noise experiment anywhere in §4' },
-  '1-2': { to: 'gqa', label: 'one task, one setting: not "across domains"' },
-  '1-2b': { to: 'gqa', label: 'one encoder, one benchmark: no second model or dataset' },
+  '1-2': { to: 'gqa', label: 'one encoder, one benchmark; the extra pass is never timed' },
   '1-4': { to: 'g14', label: 'the relation to A and B is never stated' },
   '2-1': { to: 'gneg', label: 'this finding never reaches the Abstract' },
   '2-3': { to: 'gloss', label: 'Eq. 2 defines λ here · §4 never points back', miss: true },
@@ -343,17 +333,17 @@ const FAIL = {
 };
 const PLANES = { structure: { title: 'Structure', q: 'Do the sections build on one another?' }, argument: { title: 'Argument', q: 'Are the claims and citations argued?' }, artifacts: { title: 'Artifacts', q: 'Can the method and the evidence be inspected?' } };
 const PLANE_OF = { '2-1': 'structure', '2-3': 'structure', '4-1': 'structure', '4-4': 'structure',
-  '1-1': 'argument', '1-2': 'argument', '1-2b': 'argument', '1-4': 'argument', '5-4': 'argument',
+  '1-1': 'argument', '1-2': 'argument', '1-4': 'argument', '5-4': 'argument',
   '3-1': 'artifacts', '4-2': 'artifacts', '4-5': 'artifacts' };
 const PLANE_C = { structure: '#7E4E66', argument: '#E4959E', artifacts: '#56717B' };   // site planes: structure/artifacts in their deep shade so structure and argument separate
-// the page groups the twelve items by the index's three planes; the 1-5 area numbers stay in the item ids
+// the page groups the eleven items by the index's three planes; the 1-5 area numbers stay in the item ids
 const GROUPS = [
   { n: 1, key: 'structure', cls: 'p-structure', title: 'Structure', q: 'Do the sections build on one another?' },
   { n: 2, key: 'argument', cls: 'p-argument', title: 'Argument', q: 'Are the claims and citations argued?' },
   { n: 3, key: 'artifacts', cls: 'p-artifacts', title: 'Artifacts', q: 'Can the method and the evidence be inspected?' },
 ];
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
-const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'The claim goes further than the evidence.', '1-2b': 'One model or one dataset behind every result.', '1-4': 'Cited, but never related to this paper.',
+const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'One model or one dataset, or an added cost never reported.', '1-4': 'Cited, but never related to this paper.',
   '2-1': 'The key finding is missing from the abstract.', '2-3': 'Set up in one section, never pointed back to.', '3-1': 'A design choice with no reason given.',
   '4-1': 'Says the last result again, in vaguer words.', '4-2': 'A term that is never defined.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
   '5-4': 'The cited source says something else.' };
@@ -435,7 +425,7 @@ renderPage();
 const PAPER = (x, y, w, h, label, marks) => K.card(x, y, w, h, label) + K.lines(x + 3, y + 7, w - 6, 3, { gap: 3.2, last: .6 }) + (marks || []).map(([mx, my, mw, col]) => K.box(x + mx, y + my, mw, 2.6, { fc: col, ec: col, r: .8 })).join('');
 const PERSON = (x, y, col) => `<circle cx="${x}" cy="${y}" r="2.6" fill="${col}"/><path d="M${x - 4.6} ${y + 9.5} a4.6 4.6 0 0 1 9.2 0z" fill="${col}"/>`;
 const ROBOT = (x, y, col) => K.box(x - 3.4, y - 2.6, 6.8, 6, { fc: col, ec: col, r: 1 }) + `<rect x="${x - 2}" y="${y - 1}" width="1.4" height="1.4" fill="#fff"/><rect x="${x + .6}" y="${y - 1}" width="1.4" height="1.4" fill="#fff"/><line x1="${x}" y1="${y - 2.6}" x2="${x}" y2="${y - 4.5}" stroke="${col}" stroke-width=".8"/>` + K.box(x - 4.6, y + 4.4, 9.2, 5, { fc: col, ec: col, r: 1 });
-const MINI_CAP = {"f1": "Human and AI papers, same 12 items, author hidden", "f2": "Slop against review scores, year by year and venue by venue", "f3": "One paper, one human review and one AI review", "f4": "Each review remark matched to the slop it points at"};
+const MINI_CAP = {"f1": "Human and AI papers, same 11 items, author hidden", "f2": "Slop against review scores, year by year and venue by venue", "f3": "One paper, one human review and one AI review", "f4": "Each review remark matched to the slop it points at"};
 const MINI = {
   f1: () => `<img src="img/q1.png" alt="An AI paper that looks polished next to a human paper full of red marks">`,
   f2: () => `<img src="img/q2_v2.png" alt="Clean and sloppy AI papers, reviewers' star ratings, and the scores plotted by year and by venue">`,
@@ -468,14 +458,6 @@ const MEASURE = {
       ['Search the paper', [[Q, 'Point to ids that bear on the claim: tables, figures, result sentences, method text, citations.'], [CD, 'Discard the claim itself, its restatements in abstract / intro / conclusion, and ids that do not exist.'], [CD, 'Add any table containing the claim’s numbers.'], [Q, 'Judge (second call) reads the remaining material verbatim: supported · partial · unsupported · ambiguous · common knowledge, plus what is missing.']]],
       ['Decide PASS / FAIL / U', [[CD, 'Rules, in order: cited prior-work fact → PASS · procedure or definition → NA · supported or partial → PASS · unsupported, no valid evidence → FAIL.'], [CD, 'Unsupported, but its numbers appear in a table or only a figure supports it → human review (U).'], [CD, 'Three runs (1 greedy, 2 sampled). FAIL needs ≥2 FAIL votes and no PASS. Found in <2 runs or split → U.'], [CD, 'score = FAIL / (FAIL + PASS). U reported as coverage; NA excluded.']]]],
     line: 'Qwen2.5-32B reads; code checks every id, applies the rules and counts. Three runs vote; split votes stay U.' },
-  '1-2': { unit: 'claim', units: 'supported claims',
-    stages: [['Claim', 'passed 1-1: evidence exists', 'paper'], ['Covers', 'what the evidence reaches', Q], ['Asserts', 'what the claim reaches', Q], ['Verdict', '3 runs vote', CD]],
-    how: [
-      ['Select the claims', [[CD, 'Input: claims that passed 1-1. Test: does the wording exceed the evidence?'], [CD, 'Claims with no evidence stay in 1-1 (no double counting).']]],
-      ['Read the covered range', [[Q, 'List what the evidence covers: datasets, tasks, models, conditions.'], [Q, 'Read the claim on four axes: scope, conditions, effect size and direction, certainty (“significantly”, “causes”, “guarantees”).']]],
-      ['Quote the overreach', [[Q, 'Quote verbatim the words that exceed the evidence, and the classes the claim speaks for (“adaptive attackers”, “across domains”).'], [CD, 'Verify the quote occurs in the claim. Exclude phrases over 8 words and proper names (RULER, CIFAR-10).']]],
-      ['Decide PASS / FAIL', [[CD, 'FAIL: quote found in the sentence, or a generic class + qualifier covered by ≤2 items.'], [CD, '“significantly” alone never fails; counted separately as sig_without_test.'], [CD, 'A limitation cancels the overreach only if it limits the same claim.'], [CD, 'Three runs vote, as in 1-1. score = FAIL / (FAIL + PASS).']]]],
-    line: 'Qwen2.5-32B compares evidence and claim and quotes the overreach; code verifies the quote and the class count. Three runs vote.' },
   '1-2b': { unit: 'axis', units: 'axes', breadth: true,
     stages: [['Results', 'tables with numbers, setup sentences', CD], ['Names', 'models and evaluation datasets', H], ['In the results?', 'each name in a table, caption or experiment text', CD], ['Breadth', 'counts → 0–100', CD]],
     how: [
@@ -484,6 +466,16 @@ const MEASURE = {
       ['Check each name', [[CD, 'Counts only if it appears in a result table, a caption, or experiment / method / appendix text. Related work does not count.'], [CD, 'Dropped: the paper’s own method, “(ours)”, “w/o …” variants, LaTeX debris.'], [CD, 'RefCOCO, RefCOCO+ and RefCOCOg → 3 datasets. “GSM8K test” → GSM8K.'], [CD, 'No model judgment.']]],
       ['Score the breadth', [[CD, 'Each count n → log₂ n ÷ log₂ cap, at most 1. One item → 0. Caps: models 8, families 4, datasets 16.'], [CD, 'Model axis = (models + families) ÷ 2. Dataset axis = datasets.'], [CD, 'Breadth = 100 × mean of the two axes. Below 35 → FAIL.'], [CD, 'Benchmark paper → dataset axis NA. Seeds, ± and baselines are shown, not scored.']]]],
     line: 'Claude Haiku lists the models and datasets once per paper; code checks every name against the results and turns the counts into a 0–100 breadth.' },
+  '1-2d': { unit: 'added part', units: 'added parts', cost: true,
+    stages: [['Adds', 'what the method adds that costs compute', H], ['Cost reported?', 'a measured cost, or a matched-budget comparison', H], ['In the paper?', 'the quote at that id, with a number', CD], ['Cost score', 'reported → 100 · not → 0', CD]],
+    how: [
+      ['List what the method adds', [[CD, 'Input: abstract, method sentences, result tables, and every sentence with a cost word and a number.'], [H, 'One call per paper. Adds: extra model calls or forward passes, an extra model or module, a training stage, sampling, search or voting, retrieval.'], [H, 'Nothing added (the method removes or reweights something, or no method is proposed) → NA.']]],
+      ['Find the cost reports', [[H, 'Where the paper measures what the method or a baseline costs, with a number: latency, runtime, throughput, FLOPs, memory, tokens, API cost, GPU hours, model calls.'], [H, 'Not a cost report: hardware (“on 4 A100 GPUs”), model or input size (“256 tokens per tile”), accuracy, “efficient” without a number.'], [H, 'Also: comparisons at the same compute, budget or number of samples.']]],
+      ['Check each quote', [[CD, 'The quote must occur at the given sentence or table, contain a number, and name what is measured (“tokens”, “latency”, “FLOPs” …).'], [CD, 'A table counts when its header or caption names the measure and it has numbers.'], [CD, 'No model judgment.']]],
+      ['Score the cost part', [[CD, 'A checked cost report or matched-budget comparison → 100 (PASS).'], [CD, 'Something added and neither found → 0 (FAIL).'], [CD, 'Deterministic once the model has answered: one run.']]]],
+    line: 'Claude Haiku lists what the method adds and where its cost is reported; code checks every quote against the paper.' },
+  '1-2': { parts: ['1-2b', '1-2d'],
+    line: 'Two parts, scored 0–100 each. Overstated Claims = the mean of evaluation breadth (1-2b) and cost reporting (1-2d); a part that does not apply is left out.' },
   '1-4': { unit: 'cited work', units: 'cited works',
     stages: [['Cited work', 'one citation key', 'paper'], ['Role', 'what it is to this paper', Q], ['Relation', 'stated in a sentence?', QC], ['Verdict', '3 runs vote', CD]],
     how: [
@@ -570,6 +562,7 @@ const VK = d => ({ FAIL: 'F', PASS: 'P', UNRESOLVED: 'U', NOT_APPLICABLE: 'N' })
 const vb = (d, big) => h('span', { class: 'ms-vb v-' + VK(d) + (big ? ' big' : ''), text: VLAB[d] || d });
 function measurePanel(it) {
   const m = MEASURE[it.id];
+  if (m.parts) return partsView(it);
   const wrap = h('div', { class: 'ms' }, h('p', { class: 'ms-loading', text: 'Loading…' }));
   fetch('measure/' + it.id + '.json').then(r => r.json()).then(data => buildFlow(m, data, wrap)).catch(() => wrap.replaceChildren(h('p', { class: 'ms-loading', text: 'The run data could not be loaded.' })));
   return wrap;
@@ -653,14 +646,10 @@ For every sentence that states a result or a property as fact:
 3. If it does not exist, narrow the claim to what the paper shows, or mark it as a hypothesis.
 Never add a citation you have not read, invent a run, or delete the contribution to escape the check.`,
   '1-2': `# Fix · Overstated Claims (1-2)
-For every claim with supporting results, compare four things against the evidence: subjects and scope, conditions, effect size and direction, certainty (observed, statistical, causal).
-Rewrite the claim to the evaluated range and state the uncertainty.
-Deleting "significantly" while keeping "across domains" is not a fix.`,
-  '1-2b': `# Fix · Narrow Evaluation (1-2b)
-List the models the experiments run with (with their families) and the datasets the results are reported on.
-If every result rests on one model or one dataset, add a second one: another model, ideally from a different family, or another dataset for the same task.
-If that is impossible, say so where the results are stated, not only in the limitations.
-More seeds on the same model and dataset, or naming other models in related work, is not a fix.`,
+Two checks.
+1. Narrow Evaluation: list the models the experiments run with (and their families) and the datasets the results are reported on. If every result rests on one model or one dataset, add another model, ideally from a different family, or another dataset. If that is impossible, say so where the results are stated.
+2. Missing Cost Accounting: list what the method adds that costs compute (extra calls, passes, modules, training stages, sampling). Report the cost for the method and the baseline with numbers (runtime, tokens, FLOPs, memory, calls), or compare at a matched budget.
+More seeds on the same setting, or calling the method "efficient" without a number, is not a fix.`,
   '1-4': `# Fix · Unclear Links to Prior Work (1-4)
 For every cited work that the study builds on, differs from, or compares against, write one sentence that says the relation: what this study follows, which limitation it addresses, or what it does differently.
 Adding "unlike prior work" without the relation, or deleting citations, is not a fix.`,
@@ -851,7 +840,7 @@ function openHash() {
 document.addEventListener('click', e => { const a = e.target.closest('a[data-xref], a.ql, a.atile'); if (!a) return; e.preventDefault(); history.pushState({}, '', a.getAttribute('href')); openHash(); });
 addEventListener('hashchange', openHash);
 // ------------------------------------------------------------------ studio: the specimen page under a lens, one slop at a time, votes beside it
-const PAGE_ORDER = ['2-1', '1-2', '4-1', '1-4', '5-4', '4-2', '4-5', '1-2b', '3-1', '2-3', '4-4', '1-1'];
+const PAGE_ORDER = ['2-1', '4-1', '1-4', '5-4', '4-2', '4-5', '1-2', '3-1', '2-3', '4-4', '1-1'];
 const tally = id => hub.votes[id] || { up: 0, down: 0 };
 const nCases = id => hub.cases.filter(c => c.item === id).length;
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
@@ -926,17 +915,17 @@ function showFix(id) { const box = $('#sp-body .sp-fix'); if (box) { box.hidden 
 const clip = (t, n) => (t = String(t || '').replace(/\s+/g, ' ').trim()).length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t;
 const cap1 = t => t.charAt(0).toUpperCase() + t.slice(1);
 function srcParts(src) { const m = String(src || '').split(' · '); return [h('span', { class: 'snip-who', text: m[0] || '' }), h('span', { text: m.slice(1).join(' · ') })]; }
-// six v1 measures → twelve slops, drawn as a hand-ruled tree; the caption under the page says what the chosen slop is
-const TREE = [['Argument graph', ['1-1', '1-2', '5-4']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4']], ['Figure exposition', ['4-5']], [null, ['2-1', '3-1', '4-1', '4-2', '1-2b']]];
+// six v1 measures → eleven slops, drawn as a hand-ruled tree; the caption under the page says what the chosen slop is
+const TREE = [['Argument graph', ['1-1', '1-2', '5-4']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4']], ['Figure exposition', ['4-5']], [null, ['2-1', '3-1', '4-1', '4-2']]];
 // results so far, on the 123 AI / human pairs; an item stays blank until its measure is final
 // 11-06: columns as in v1 Table 2 (PairAcc, AUROC, TPR at 5% FPR), from each item's saved per-paper scores (v2/verification/table_site_rows_1106.py)
-const RESULTS = { '1-2b': { pa: '0.96', auc: '0.96', tpr: '0.79' }, '2-3': { pa: '0.88', auc: '0.88', tpr: '0.00' }, '4-1': { pa: '0.82', auc: '0.82', tpr: '0.34' }, '4-4': { pa: '0.91', auc: '0.90', tpr: '0.29' } };
+const RESULTS = { '1-2': { pa: '0.88', auc: '0.88', tpr: '0.50' }, '2-3': { pa: '0.88', auc: '0.88', tpr: '0.00' }, '4-1': { pa: '0.82', auc: '0.82', tpr: '0.34' }, '4-4': { pa: '0.91', auc: '0.90', tpr: '0.29' } };
 $('#sm-res').replaceChildren(h('table', { class: 'res-tbl' },
   h('thead', {}, h('tr', {}, ...['Slop', 'PairAcc', 'AUROC', 'TPR@5%FPR'].map(t => h('th', { text: t })))),
   h('tbody', {}, ...GROUPS.flatMap(g => [h('tr', { class: 'res-g ' + g.cls }, h('td', { colspan: 4, text: g.title })),
     ...ITEMS.filter(i => i.plane === g.key).map(it => { const r = RESULTS[it.id] || {};
       return h('tr', { class: RESULTS[it.id] ? 'has' : '' }, h('td', {}, h('span', { class: 'res-id', text: it.id }), it.name), h('td', { text: r.pa || '' }), h('td', { text: r.auc || '' }), h('td', { text: r.tpr || '' })); })]))),
-  h('p', { class: 'res-note', text: 'Same measures as Table 2 of the v1 paper. PairAcc: share of AI–human pairs where the AI paper scores worse (ties count half). AUROC: every AI paper against every human paper. TPR@5%FPR: share of AI papers above the score that only 5% of human papers exceed; a paper tied at that score is not counted, so 2-3, where many human papers take the top score, gets 0. Pairs: 1-2b and 4-1 the 143 FARS pairs of the released SciSlopBench (1-2b: 131 where the human paper has a result table); 4-4 123 pairs; 2-3 115 pairs (8 human sources have missing input files). Blank rows are not measured yet.' }));
+  h('p', { class: 'res-note', text: 'Same measures as Table 2 of the v1 paper. PairAcc: share of AI–human pairs where the AI paper scores worse (ties count half). AUROC: every AI paper against every human paper. TPR@5%FPR: share of AI papers above the score that only 5% of human papers exceed; a paper tied at that score is not counted, so 2-3, where many human papers take the top score, gets 0. 1-2 = mean of its two parts: 1-2b Narrow Evaluation alone 0.96 / 0.96 / 0.79, 1-2d Missing Cost Accounting alone 0.59 / 0.62 / 0.00. Pairs: 1-2 and 4-1 the 143 FARS pairs of the released SciSlopBench (1-2: 131 where the human paper has a result table); 4-4 123 pairs; 2-3 115 pairs (8 human sources have missing input files). Blank rows are not measured yet.' }));
 // the three areas, each in its own colour: Structure, Argument, Artifacts
 const TREE2 = GROUPS.map(g => [g, ITEMS.filter(i => i.plane === g.key).map(i => i.id)]);
 $('#tree-rows').replaceChildren(...TREE2.map(([g, ids]) => h('div', { class: 'tr ' + g.cls },
@@ -960,6 +949,7 @@ function renderPanel() {
   $('#sp-body').replaceChildren(h('div', { class: 'cap-in' },
     h('div', { class: 'cap-t' }, h('b', { class: 'cap-n', text: it.name }), h('span', { class: 'cap-pl' }, h('i'), it.ar.title + (V1OF[it.id] ? ' · v1 ' + V1OF[it.id] : ' · new in v1.1'))),
     h('p', { class: 'cap-d', text: it.short }),
+    it.parts ? h('div', { class: 'cap-parts' }, ...it.parts.map(p => h('p', { class: 'cap-pt' }, h('span', { class: 'pt-id', text: p.id }), h('b', { text: p.name }), h('span', { text: p.what })))) : null,
     h('div', { class: 'cap-vs' },
       h('p', { class: 'says' }, h('span', { text: 'The paper says' }), h('q', { text: it.ex.spec || clip(it.ex.mark, 90) })),
       h('p', { class: 'but' }, h('span', { text: 'What’s there' }), h('em', { text: cap1(f.label || it.what) }))),
@@ -983,7 +973,7 @@ function renderStrip() {
     c.classList.toggle('on', on); c.setAttribute('aria-pressed', String(on));
     c.querySelector('.bk-r').textContent = String(i + 1).padStart(2, '0');
     c.querySelector('.bk-v').textContent = up ? '▲' + up : '';
-    c.querySelector('.bk-cv').textContent = `${String(i + 1).padStart(2, '0')} / 12 · ${up} ran into it`;
+    c.querySelector('.bk-cv').textContent = `${String(i + 1).padStart(2, '0')} / 11 · ${up} ran into it`;
     strip.append(c);
   });
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) for (const [el, y] of before) { const dy = y - el.offsetTop; if (dy) el.animate([{ transform: `translateY(${dy}px)` }, { transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.2,.7,.2,1)' }); }
@@ -1259,9 +1249,25 @@ function cxView(u, step) {
     h('p', { class: 'cx-t' }, h('span', { class: 'cx-lab', text: fail ? 'deleted' : 'kept' }), fail ? h('span', { class: 'cx-x', text: c.target.segs.map(x => x[0]).join('') }) : h('span', {}, ...tgtSegs)),
     h('small', { class: 'cx-verdict', text: lost }));
 }
+// 1-2: one tab per part, each a full step panel on its own run data, and the combined score under both
+function partsView(it) {
+  const m = MEASURE[it.id], parts = it.parts || m.parts.map(id => ({ id, name: id }));
+  const panel = h('div', { class: 'pt-panel' }), tabs = h('div', { class: 'pt-tabs', role: 'tablist' });
+  const comb = h('p', { class: 'pt-comb' }, h('span', { class: 'rs-wait', text: '…' }));
+  const show = k => { tabs.querySelectorAll('button').forEach((b, j) => { b.classList.toggle('on', j === k); b.setAttribute('aria-selected', String(j === k)); }); panel.replaceChildren(measureSteps({ id: parts[k].id, judge: [] })); };
+  parts.forEach((p, k) => tabs.append(h('button', { type: 'button', role: 'tab', onclick: () => show(k) }, h('span', { class: 'pt-id', text: p.id }), h('b', { text: p.name }), p.what ? h('span', { class: 'pt-w', text: p.what }) : null)));
+  Promise.all(parts.map(p => fetch('measure/' + p.id + '.json').then(r => r.json()))).then(([b, d]) => {
+    const B = b.meta.breadth, Cs = d.meta.cost, S = (B + Cs) / 2;
+    comb.replaceChildren(h('span', { class: 'pt-cl', text: `${b.meta.side} ${b.meta.paper} · ${it.name || 'combined'}` }),
+      'evaluation breadth ', h('b', { text: B.toFixed(1) }), ' + cost reporting ', h('b', { text: String(Cs) }), ' → (', B.toFixed(1), ' + ', String(Cs), ') ÷ 2 = ', h('b', { class: 'big', text: S.toFixed(1) }), ' / 100 · slop score 1 − ', S.toFixed(1), '/100 = ', h('b', { class: 'v-F', text: (1 - S / 100).toFixed(2) }));
+  }).catch(() => comb.replaceChildren('run data not loaded'));
+  show(0);
+  return h('div', { class: 'pt' }, h('p', { class: 'rs-line', text: m.line }), tabs, panel, comb);
+}
 function measureSteps(it) {
   // every step of the measurer, all of its rules, and what that step returned on one real paper
   const m = MEASURE[it.id];
+  if (m && m.parts) return partsView(BY_ID[it.id] || it);
   if (!m) return h('ol', { class: 'rs' }, ...(it.judge || []).map((t, k) => h('li', { class: 'rs-row' }, h('div', { class: 'rs-n' }, h('b', { text: String(k + 1) })), h('div', { class: 'rs-do' }, h('p', { text: t })))));
   const plain = !!m.plain;
   const whoTag = w => (plain || w === 'paper') ? null : h('span', { class: 'rs-who ' + (w === 'code' ? 'rule' : 'model'), text: w === 'code' ? 'rule' : w.includes('code') ? 'model + rule' : 'model' });
@@ -1309,6 +1315,7 @@ function measureSteps(it) {
     const c = { FAIL: 0, PASS: 0, UNRESOLVED: 0 }; U.forEach(u => { if (u.final in c) c[u.final]++; });
     const F = c.FAIL + (pre.FAIL || 0), P = c.PASS + (pre.PASS || 0), UU = c.UNRESOLVED + (pre.UNRESOLVED || 0), D = F + P;
     if (m.breadth) { breadthLine(data, score); return; }
+    if (m.cost) { score.replaceChildren(`${data.meta.side} ${data.meta.paper} · cost score = `, h('b', { class: 'big', text: String(data.meta.cost) }), ' / 100 → ', h('b', { class: 'v-F', text: data.meta.cost ? 'PASS' : 'FAIL' })); return; }
     if (m.plain) { score.replaceChildren(`Score = FAIL / (FAIL + PASS). ${data.meta.side} ${data.meta.paper}: ${F} / ${D} = ${D ? (F / D).toFixed(2) : '—'}` + (UU ? `, ${UU} U not counted.` : '.')); return; }
     score.replaceChildren(`${data.meta.side} ${data.meta.paper} · ${U.length} ${m.units} · score = FAIL ÷ (FAIL + PASS) = `, h('b', { text: `${F} ÷ ${D}` }), ' = ', h('b', { class: 'big', text: D ? (F / D).toFixed(2) : '—' }), UU ? ` · ${UU} U, not counted` : '');
   }).catch(() => ex.forEach(e => e.replaceChildren(h('span', { class: 'rs-wait', text: 'run data not loaded' }))));
