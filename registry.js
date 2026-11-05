@@ -94,7 +94,7 @@ const PIC = {
   '4-1': () => row([E.para('§1 Introduction', 'this holds exciting promise …', C.struct)]),
   '4-2': () => row([E.chip('retrieval rate', C.art), E.miss(C.art), E.ask(['= ?'])]),
   '4-3': () => row([E.para('§4.1 Data', 'folder layout · renamed files · scratch dirs', C.struct, { box: true })]),
-  '4-4': () => row([E.card('§4 · a line above', inner.chip('SRE, not attention', C.struct)), E.eq(), E.card('§4 · two lines below', inner.chip('SRE, not attention', C.struct))]),
+  '4-4': () => row([E.card('§3 · Method', inner.chip('destroys saliency', C.struct)), E.eq(), E.card('§4 · Experiments', inner.chip('destroys saliency', C.struct))]),
   '4-5': () => row([E.card('Figure 1', inner.bars(), { lines: false }), E.miss(C.art), E.ask(['L8 in the text?'])]),
   '5-1': () => row([E.chip('limits deployment flexibility', C.arg), E.miss(C.arg), E.ask(['where', 'does it fail?'])]),
   '5-2': () => row([E.chip('H2O prunes high-attn tokens', C.arg), E.clash(), E.card('H2O in §2', inner.text(['keeps them', 'same paper'], { bold0: true, mute1: true }), { lines: false })]),
@@ -102,7 +102,7 @@ const PIC = {
   '5-4': () => row([E.chip('0.3, "typically considered"', C.arg), E.miss(C.arg), E.ask(['by whom?', '[ ? ]'])]),
 };
 // what the pattern looks like, one line under each scene
-const CAP = { '1-1': 'a claim with nothing behind it', '1-2': 'claim wider than its evidence', '1-3': 'numbers only, no example', '1-4': 'cited, related to nothing', '2-1': 'the bad news never reaches the front', '2-3': 'a name that points at nothing', '3-1': 'a choice with no reason', '4-1': 'delete it and nothing is lost', '4-2': 'a term with no meaning', '4-3': 'detail the reader never needs', '4-4': 'six places, one finding', '4-5': 'a result only the figure reports', '5-1': 'important, but never shown', '5-2': 'the contrast is not true', '5-3': 'nothing moved, yet it explains', '5-4': 'a source that is not there' };
+const CAP = { '1-1': 'a claim with nothing behind it', '1-2': 'claim wider than its evidence', '1-3': 'numbers only, no example', '1-4': 'cited, related to nothing', '2-1': 'the bad news never reaches the front', '2-3': 'a name that points at nothing', '3-1': 'a choice with no reason', '4-1': 'delete it and nothing is lost', '4-2': 'a term with no meaning', '4-3': 'detail the reader never needs', '4-4': 'the same sentence, another section', '4-5': 'a result only the figure reports', '5-1': 'important, but never shown', '5-2': 'the contrast is not true', '5-3': 'nothing moved, yet it explains', '5-4': 'a source that is not there' };
 // hero: a paper spine with the five kinds of broken connection
 function heroSvg() {
   const secs = [['Abstract', 4], ['Introduction', 42], ['Method', 80], ['Experiments', 118], ['Conclusion', 156]];
@@ -189,9 +189,9 @@ const ITEMS = [
     fix: ['Remove content with no role; keep what reproduction needs.', 'Not a fix: cutting reproduction detail to shorten.'],
     borders: [['4-4', 'the same content again'], ['4-1', 'empty rather than extra']] },
   { id: '4-4', area: 4, name: 'Redundant Repetition', v1: 'Macro redundancy', what: 'Content is said again with no new information and no summary role.',
-    ex: { spec: 'In other words, our approach achieves higher scores than every compared method on the two benchmarks.', specnote: 'Same comparison, new words, no new analysis.', src: 'AI paper · SciSlopBench FA0002 · §4 Experiments', pre: '', mark: 'This validates the theoretical motivation: SRE directly measures the approximation gap, not just attention statistics.', post: '', note: 'The sentence two lines above says the same. So do the abstract, the introduction, the related work and the conclusion: six places, one finding.' },
-    judge: ['Match the repeat to the original. What does the later passage add?', 'Different wording still counts.', '8-gram overlap only finds candidates.'],
-    not: ['The Abstract, the contribution list, a needed recap in the Conclusion.', 'A brief reminder of a key definition.'],
+    ex: { spec: 'As Table 2 shows, our model beats all baselines on both datasets.', specnote: 'Almost the same words as the earlier sentence. Nothing new.', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments', pre: '', mark: 'These results demonstrate that the ratio formula does not remove positional bias---it destroys useful saliency signal.', post: '', note: 'The method section already states this conclusion with its numbers. The experiments section repeats it in the same words and drops the numbers.' },
+    judge: ['Find the closest earlier sentence in another section, abstract included.', 'A near-copy counts: 8-word runs cover half the sentence, or cosine ≥ 0.90.', 'One repeat makes the section slop.'],
+    not: ['The abstract and the conclusion (not scored).', 'The same point in new words with new content.'],
     fix: ['Cut it, or put the missing analysis there.', 'Not a fix: paraphrase.'],
     borders: [['4-1', 'empty regardless of repetition'], ['4-3', 'extra detail']] },
   { id: '4-5', area: 4, name: 'Unclear Figures', v1: 'Figure exposition', what: 'A figure’s parts and relations cannot be read from the figure, its caption, or the text.',
@@ -263,9 +263,9 @@ const DEF = {
     q: [{ pre: 'After tokenization, ', mark: 'we reorganized the working directory, renamed intermediate files by date, and merged two scratch folders', post: ' before training.', src: 'Constructed example · no instance in the three verified pairs' }],
     note: 'None of this changes a result. It sits between the preprocessing steps that do, and hides them.' },
   '4-4': { what: 'The paper says the same thing again, with nothing new and no reason to repeat it.',
-    q: [{ pre: 'This demonstrates that ', mark: 'the SRE signal is not interchangeable with attention weights', post: ': attention scores identify “heavy hitter” tokens that receive concentrated attention mass, while SRE identifies tokens whose values cannot be reconstructed from linear state.', src: 'AI paper · SciSlopBench FA0002 · §4 Experiments' },
-        { pre: '', mark: 'This validates the theoretical motivation: SRE directly measures the approximation gap, not just attention statistics.', post: '', src: 'Same paper · §4 Experiments, two sentences later' }],
-    note: 'Two sentences apart, the same finding is stated twice. The abstract, the introduction, the related work, and the conclusion each state it once more.' },
+    q: [{ pre: '', mark: 'These results demonstrate that the ratio formula does not remove positional bias---it destroys useful saliency signal.', post: '', src: 'AI paper · SciSlopBench FA0280 · §4 Experiments' },
+        { pre: 'Consequently, ', mark: 'the ratio formula in Equation 3 does not remove positional bias---it destroys useful saliency signal', post: ', resulting in only 13.24% grounding accuracy compared to 38.70% with raw attention at the same layer.', src: 'Same paper · §3 Method' }],
+    note: 'The method section already states this conclusion with its numbers. The experiments section repeats it in the same words and drops the numbers. The introduction also repeats three abstract sentences almost word for word.' },
   '4-5': { what: 'The figure shows something the reader cannot interpret from the figure, its caption, or the text.',
     q: [{ pre: 'Key Insight: Deeper Layers = Better Token Selection · ', mark: 'L2 55% · L4 39% · L8 69% · L12 66%', post: '', src: 'AI paper · SciSlopBench FA0280 · Figure 1, text inside the figure' }],
     note: 'Nothing says what the four bars measure, or that the L2 bar is a different method with debiasing. The highest bar, L8, is never mentioned in the text, so the reader cannot tell what the figure is showing.' },
@@ -591,14 +591,14 @@ const MEASURE = {
       ['Confirm in context', [[Q, 'Judge re-reads each flag in context. Preprocessing exceptions, hardware, data constraints, failure conditions count as needed.']]],
       ['Decide PASS / FAIL', [[CD, 'Confirmed → FAIL. Near zero in conference-length papers; the sample shows three unflagged sentences.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS) over all eligible sentences.']]]],
     line: 'Qwen2.5-32B flags sentences that serve no reader need; a second call confirms in context. Rare in conference papers.' },
-  '4-4': { unit: 'sentence', units: 'later sentences',
-    stages: [['Sentence', 'a later one', CD], ['Earlier twin', 'the sentence it overlaps', CD], ['Adds?', 'info · interpretation · reminder · summary · nothing', Q], ['Verdict', '3 runs vote', CD]],
+  '4-4': { unit: 'section', units: 'body sections',
+    stages: [['Section', 'a body section, sentence by sentence', CD], ['Earlier twin', 'closest sentence in an earlier section', CD], ['Same?', '8-word runs ≥ 50% or cosine ≥ 0.90', CD], ['Verdict', 'one repeat → slop section', CD]],
     how: [
-      ['Select later sentences', [[CD, 'Every later sentence that overlaps an earlier one. Excluded: abstract, captions, formula-heavy sentences, code-release lines.'], [CD, 'No overlapping earlier sentence → PASS by rule (counted, not animated).']]],
-      ['Pair with the earlier twin', [[CD, 'Candidate pairs: shared 8-gram across paragraphs, or MiniLM cosine ≥ 0.75 with content-word Jaccard ≥ 0.2.'], [CD, 'Tag the later sentence’s slot: [conclusion], [section opening], [contribution list].']]],
-      ['Label what it adds', [[Q, 'Read both: info · interpretation · needed reminder · summary function (summary slots only) · nothing.']]],
-      ['Decide PASS / FAIL / U', [[CD, 'nothing → FAIL. Summary function → PASS for: abstract → intro preview, abstract / intro → first numeric result, the conclusion’s first paragraph, the contribution list.'], [CD, 'Deterministic guard: cosine ≥ 0.85, ≤2 new content words, no new number → FAIL regardless of the model.'], [CD, 'Loose paraphrase (cosine < 0.80, Jaccard < 0.4) labelled “nothing” → U.'], [CD, 'Three runs vote. score = FAIL / (FAIL + PASS).']]]],
-    line: 'Code finds overlapping pairs; Qwen2.5-32B labels what the later sentence adds; a deterministic guard catches near-copies. Three runs vote.' },
+      ['Select the sections', [[CD, 'Body sections: introduction, related work, method, experiments, others.'], [CD, 'Not scored: abstract, conclusion, appendix, ethics / reproducibility statements.'], [CD, 'Sentences of ≥8 tokens. Excluded: captions, formula-heavy sentences, explicit recaps (“as mentioned”).']]],
+      ['Find the earlier twin', [[CD, 'For each sentence: the closest earlier sentence in a different section. The abstract counts as an earlier section.'], [CD, 'Candidates: a shared 8-word run, or MiniLM cosine ≥ 0.75 with content-word Jaccard ≥ 0.2.']]],
+      ['Check: same sentence?', [[CD, 'Repeat → 8-word runs shared with earlier sections cover ≥ 50% of the sentence, or MiniLM cosine ≥ 0.90.'], [CD, 'Same topic in new words with new content → below both bars → not a repeat.'], [CD, 'No model judgment.']]],
+      ['Score the section', [[CD, '≥1 repeat in the section → FAIL. Otherwise → PASS.'], [CD, 'score = FAIL sections ÷ body sections.'], [CD, 'Deterministic: one run.']]]],
+    line: 'Code only. A body section fails when one of its sentences is a near-copy of a sentence in an earlier section or the abstract.' },
   '4-5': { unit: 'figure', units: 'figures',
     stages: [['Figure', 'body figure with an image', CD], ['Transcribed', 'what the image contains', QV], ['Explained?', 'elements, numbers, caption, comparisons', Q], ['Verdict', '3 runs vote', CD]],
     how: [
@@ -752,9 +752,9 @@ For each passage, ask whether removing it loses anything needed to understand, c
 Remove what has no role; keep every preprocessing, data, and failure-condition detail that reproduction needs.
 Cutting reproduction detail to shorten the paper is not a fix.`,
   '4-4': `# Fix · Redundant Repetition (4-4)
-Match each repeated passage to its original and ask what the later one adds.
-If it adds nothing, cut it or put the missing analysis in its place. Keep the Abstract, the contribution list, and a needed recap in the Conclusion.
-Paraphrase is not a fix.`,
+Find each body sentence that copies, almost word for word, a sentence from the abstract or an earlier section.
+Cut it, point back to where it was first said, or replace it with what is new at this point (a number, a condition, an interpretation).
+The abstract and the conclusion are not checked. Rewording the same content is not a fix.`,
   '4-5': `# Fix · Unclear Figures (4-5)
 State the figure's purpose. List every element, symbol, arrow type, and color the reader must interpret.
 Explain each in the figure, the legend, or the caption, and tie it to the method or result it shows.
