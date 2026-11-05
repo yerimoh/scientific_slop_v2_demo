@@ -1,54 +1,59 @@
 {
  "meta": {
   "item": "1-4",
-  "paper": "FA0280",
+  "paper": "FA0163",
   "side": "AI paper",
-  "title": "Deep-Layer Attention Pruning for Vision-Language Models",
+  "title": "Execution-Signature Recycling: Deduplicating Unit-Test Failure Feedback for Test-Time Code Scaling",
   "n_runs": 1,
-  "F": 5,
-  "P": 9,
+  "F": 6,
+  "P": 6,
   "U": 0,
-  "NA": 0,
+  "NA": 3,
   "pre": {},
-  "default": "c9",
-  "source": "v1 citation isolation (site/demo/engine/measures.py) = SciSlopBench scislop_citation 0.357"
+  "default": "S3.095",
+  "score_den": 15,
+  "hu_score": 0.06,
+  "source": "v2/verification/m14_hybrid_1106/m14_hybrid.py (rules only)"
  },
  "units": [
   {
-   "id": "c1",
-   "sec": "§1 Introduction",
-   "kind": "2 works",
-   "text": "Vision-language models (VLMs) have achieved remarkable progress on multimodal understanding tasks by processing images as sequences of visual tokens within large language model decoders [cite].",
+   "id": "S0.000",
+   "sec": "Introduction",
+   "kind": "",
+   "text": "Large language models (LLMs) have demonstrated remarkable capabilities in code generation, and recent work shows that allocating additional inference-time compute---known as test-time scaling---can substantially improve performance [cite].",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven: two or more works cited",
-   "s2": "2 works cited",
+   "final_reason": "woven → PASS",
+   "s2": "2 works cited: a work, a work",
    "found": [],
-   "found_note": "woven: two or more works cited",
+   "found_note": "woven → PASS",
    "judge_line": "",
    "ci": {
+    "segs": [
+     [
+      "Large language models (LLMs) have demonstrated remarkable capabilities in code generation, and recent work shows that allocating additional inference-time compute---known as test-time scaling---can substantially improve performance ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      ".",
+      false
+     ]
+    ],
+    "names": [
+     "a work",
+     "a work"
+    ],
     "before": null,
     "before_cites": false,
-    "segs": [
-     [
-      "Vision-language models (VLMs) have achieved remarkable progress on multimodal understanding tasks by processing images as sequences of visual tokens within large language model decoders ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      ".",
-      false
-     ]
-    ],
-    "names": [],
-    "checks": [
+    "weave": [
      [
       "two or more works cited",
       true,
-      "2 works cited"
+      "2 works cited: a work, a work"
      ],
      [
       "another work named",
@@ -56,49 +61,93 @@
       "no other work’s name in the sentence"
      ],
      [
-      "relational cue",
+      "tied to the sentence before",
       false,
-      "no “Similarly,” / “Building on this,” / “unlike these”"
+      "no “Similarly,” / “extends this” / “unlike these”"
      ]
     ],
-    "first_person": false
+    "rel": [
+     {
+      "work": "a work",
+      "ok": false,
+      "why": "never compared, used, or contrasted with this paper anywhere"
+     },
+     {
+      "work": "a work",
+      "ok": false,
+      "why": "never compared, used, or contrasted with this paper anywhere"
+     }
+    ],
+    "na": [
+     {
+      "work": "a work",
+      "ok": true,
+      "why": "cited for a statement, not as a method"
+     },
+     {
+      "work": "a work",
+      "ok": true,
+      "why": "cited for a statement, not as a method"
+     }
+    ],
+    "stage": "woven"
    }
   },
   {
-   "id": "c2",
-   "sec": "§1 Introduction",
-   "kind": "2 works",
-   "text": "Visual token pruning—selectively retaining only the most relevant tokens—has emerged as a promising solution for efficient VLM inference [cite].",
+   "id": "S0.004",
+   "sec": "Introduction",
+   "kind": "",
+   "text": "Self-debugging methods [cite] use error messages and tracebacks to iteratively refine failing candidates, while approaches like Reflexion [cite] and Self-Refine [cite] maintain memory of past failures to guide future attempts.",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven: two or more works cited",
-   "s2": "2 works cited",
+   "final_reason": "woven → PASS",
+   "s2": "3 works cited: a work, Reflexion, Self-Refine",
    "found": [],
-   "found_note": "woven: two or more works cited",
+   "found_note": "woven → PASS",
    "judge_line": "",
    "ci": {
-    "before": "However, this approach creates significant computational bottlenecks: a single high-resolution image can produce hundreds of visual tokens, leading to quadratic scaling in attention computation and substantial memory overhead from key-value caches.",
+    "segs": [
+     [
+      "Self-debugging methods ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " use error messages and tracebacks to iteratively refine failing candidates, while approaches like Reflexion ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " and Self-Refine ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " maintain memory of past failures to guide future attempts.",
+      false
+     ]
+    ],
+    "names": [
+     "a work",
+     "Reflexion",
+     "Self-Refine"
+    ],
+    "before": "Execution feedback provides a powerful signal for improving code generation.",
     "before_cites": false,
-    "segs": [
-     [
-      "Visual token pruning—selectively retaining only the most relevant tokens—has emerged as a promising solution for efficient VLM inference ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      ".",
-      false
-     ]
-    ],
-    "names": [],
-    "checks": [
+    "weave": [
      [
       "two or more works cited",
       true,
-      "2 works cited"
+      "3 works cited: a work, Reflexion, Self-Refine"
      ],
      [
       "another work named",
@@ -106,32 +155,66 @@
       "no other work’s name in the sentence"
      ],
      [
-      "relational cue",
+      "tied to the sentence before",
       false,
-      "no “Similarly,” / “Building on this,” / “unlike these”"
+      "no “Similarly,” / “extends this” / “unlike these”"
      ]
     ],
-    "first_person": false
+    "rel": [
+     {
+      "work": "a work",
+      "ok": true,
+      "why": "the paper says how it relates",
+      "ev": "ESR aggregates information across candidates to identify common failure patterns, unlike per-sample self-debugging approaches [cite] that refine each candidate independently.",
+      "sid": "S1.043"
+     },
+     {
+      "work": "Reflexion",
+      "ok": false,
+      "why": "never compared, used, or contrasted with this paper anywhere"
+     },
+     {
+      "work": "Self-Refine",
+      "ok": false,
+      "why": "never compared, used, or contrasted with this paper anywhere"
+     }
+    ],
+    "na": [
+     {
+      "work": "a work",
+      "ok": false,
+      "why": "a named method: the reader needs its relation"
+     },
+     {
+      "work": "Reflexion",
+      "ok": false,
+      "why": "a named method: the reader needs its relation"
+     },
+     {
+      "work": "Self-Refine",
+      "ok": false,
+      "why": "a named method: the reader needs its relation"
+     }
+    ],
+    "stage": "woven"
    }
   },
   {
-   "id": "c3",
-   "sec": "§1 Introduction",
-   "kind": "2 works",
-   "text": "Existing pruning methods face a fundamental challenge: attention-based importance scoring, while computationally convenient, can fail catastrophically on spatially-sensitive tasks like visual grounding [cite].",
+   "id": "S3.092",
+   "sec": "Related Work",
+   "kind": "",
+   "text": "Allocating additional inference-time compute can substantially improve LLM performance on reasoning and code generation tasks. [cite] demonstrate that optimal test-time compute scaling can be more effective than scaling model parameters, while [cite] show that repeated sampling with large generation budgets can solve problems that smaller budgets cannot.",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven: two or more works cited",
-   "s2": "2 works cited",
+   "final_reason": "woven → PASS",
+   "s2": "2 works cited: a work, a work",
    "found": [],
-   "found_note": "woven: two or more works cited",
+   "found_note": "woven → PASS",
    "judge_line": "",
    "ci": {
-    "before": "Visual token pruning—selectively retaining only the most relevant tokens—has emerged as a promising solution for efficient VLM inference [cite].",
-    "before_cites": true,
     "segs": [
      [
-      "Existing pruning methods face a fundamental challenge: attention-based importance scoring, while computationally convenient, can fail catastrophically on spatially-sensitive tasks like visual grounding ",
+      "Allocating additional inference-time compute can substantially improve LLM performance on reasoning and code generation tasks. ",
       false
      ],
      [
@@ -139,16 +222,29 @@
       true
      ],
      [
-      ".",
+      " demonstrate that optimal test-time compute scaling can be more effective than scaling model parameters, while ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " show that repeated sampling with large generation budgets can solve problems that smaller budgets cannot.",
       false
      ]
     ],
-    "names": [],
-    "checks": [
+    "names": [
+     "a work",
+     "a work"
+    ],
+    "before": "Test-Time Scaling.",
+    "before_cites": false,
+    "weave": [
      [
       "two or more works cited",
       true,
-      "2 works cited"
+      "2 works cited: a work, a work"
      ],
      [
       "another work named",
@@ -156,32 +252,54 @@
       "no other work’s name in the sentence"
      ],
      [
-      "relational cue",
+      "tied to the sentence before",
       false,
-      "no “Similarly,” / “Building on this,” / “unlike these”"
+      "no “Similarly,” / “extends this” / “unlike these”"
      ]
     ],
-    "first_person": false
+    "rel": [
+     {
+      "work": "a work",
+      "ok": false,
+      "why": "never compared, used, or contrasted with this paper anywhere"
+     },
+     {
+      "work": "a work",
+      "ok": false,
+      "why": "never compared, used, or contrasted with this paper anywhere"
+     }
+    ],
+    "na": [
+     {
+      "work": "a work",
+      "ok": true,
+      "why": "cited for a statement, not as a method"
+     },
+     {
+      "work": "a work",
+      "ok": true,
+      "why": "cited for a statement, not as a method"
+     }
+    ],
+    "stage": "woven"
    }
   },
   {
-   "id": "c4",
-   "sec": "§1 Introduction",
-   "kind": "1 work",
-   "text": "FastV [cite], which prunes tokens based on shallow-layer attention, achieves only 33.85% grounding accuracy on RefCOCO benchmarks—less than half of the unpruned model's performance.",
+   "id": "S3.093",
+   "sec": "Related Work",
+   "kind": "",
+   "text": "Self-consistency [cite] improves reasoning by sampling multiple chains and aggregating answers.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "isolated: none of the three checks holds",
-   "s2": "1 work cited: FastV",
+   "final_reason": "alone, never related to this paper, and a method → FAIL",
+   "s2": "1 work cited: Self-consistency",
    "found": [],
-   "found_note": "isolated: none of the three checks holds",
+   "found_note": "alone, never related to this paper, and a method → FAIL",
    "judge_line": "",
    "ci": {
-    "before": "Existing pruning methods face a fundamental challenge: attention-based importance scoring, while computationally convenient, can fail catastrophically on spatially-sensitive tasks like visual grounding [cite].",
-    "before_cites": true,
     "segs": [
      [
-      "FastV ",
+      "Self-consistency ",
       false
      ],
      [
@@ -189,18 +307,20 @@
       true
      ],
      [
-      ", which prunes tokens based on shallow-layer attention, achieves only 33.85% grounding accuracy on RefCOCO benchmarks—less than half of the unpruned model's performance.",
+      " improves reasoning by sampling multiple chains and aggregating answers.",
       false
      ]
     ],
     "names": [
-     "FastV"
+     "Self-consistency"
     ],
-    "checks": [
+    "before": "Allocating additional inference-time compute can substantially improve LLM performance on reasoning and code generation tasks. [cite] demonstrate that optimal test-time compute scaling can be more effective than scaling model parameters, while [cite] show that repeated sampling with large generation budgets can solve problems that smaller budgets cannot.",
+    "before_cites": true,
+    "weave": [
      [
       "two or more works cited",
       false,
-      "1 work cited: FastV"
+      "1 work cited: Self-consistency"
      ],
      [
       "another work named",
@@ -208,32 +328,44 @@
       "no other work’s name in the sentence"
      ],
      [
-      "relational cue",
+      "tied to the sentence before",
       false,
-      "no “Similarly,” / “Building on this,” / “unlike these”"
+      "no “Similarly,” / “extends this” / “unlike these”"
      ]
     ],
-    "first_person": false
+    "rel": [
+     {
+      "work": "Self-consistency",
+      "ok": false,
+      "why": "never compared, used, or contrasted with this paper anywhere"
+     }
+    ],
+    "na": [
+     {
+      "work": "Self-consistency",
+      "ok": false,
+      "why": "a named method: the reader needs its relation"
+     }
+    ],
+    "stage": "fail"
    }
   },
   {
-   "id": "c5",
-   "sec": "§1 Introduction",
-   "kind": "1 work",
-   "text": "D²Pruner [cite] addresses this by debiasing attention scores using an offline prior computed from 1000 COCO images, improving accuracy to 55.03%.",
+   "id": "S3.094",
+   "sec": "Related Work",
+   "kind": "",
+   "text": "Tree of Thoughts [cite] enables deliberate problem solving through search over intermediate reasoning states.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "isolated: none of the three checks holds",
-   "s2": "1 work cited: D²Pruner",
+   "final_reason": "alone, never related to this paper, and a method → FAIL",
+   "s2": "1 work cited: Tree of Thoughts",
    "found": [],
-   "found_note": "isolated: none of the three checks holds",
+   "found_note": "alone, never related to this paper, and a method → FAIL",
    "judge_line": "",
    "ci": {
-    "before": "FastV [cite], which prunes tokens based on shallow-layer attention, achieves only 33.85% grounding accuracy on RefCOCO benchmarks—less than half of the unpruned model's performance.",
-    "before_cites": true,
     "segs": [
      [
-      "D²Pruner ",
+      "Tree of Thoughts ",
       false
      ],
      [
@@ -241,18 +373,20 @@
       true
      ],
      [
-      " addresses this by debiasing attention scores using an offline prior computed from 1000 COCO images, improving accuracy to 55.03%.",
+      " enables deliberate problem solving through search over intermediate reasoning states.",
       false
      ]
     ],
     "names": [
-     "D²Pruner"
+     "Tree of Thoughts"
     ],
-    "checks": [
+    "before": "Self-consistency [cite] improves reasoning by sampling multiple chains and aggregating answers.",
+    "before_cites": true,
+    "weave": [
      [
       "two or more works cited",
       false,
-      "1 work cited: D²Pruner"
+      "1 work cited: Tree of Thoughts"
      ],
      [
       "another work named",
@@ -260,51 +394,131 @@
       "no other work’s name in the sentence"
      ],
      [
-      "relational cue",
+      "tied to the sentence before",
       false,
-      "no “Similarly,” / “Building on this,” / “unlike these”"
+      "no “Similarly,” / “extends this” / “unlike these”"
      ]
     ],
-    "first_person": false
+    "rel": [
+     {
+      "work": "Tree of Thoughts",
+      "ok": false,
+      "why": "never compared, used, or contrasted with this paper anywhere"
+     }
+    ],
+    "na": [
+     {
+      "work": "Tree of Thoughts",
+      "ok": false,
+      "why": "a named method: the reader needs its relation"
+     }
+    ],
+    "stage": "fail"
    }
   },
   {
-   "id": "c6",
-   "sec": "§2 Related Work",
-   "kind": "1 work",
-   "text": "FastV [cite] pioneered training-free pruning by selecting tokens based on attention scores from shallow layers, but suffers from significant performance degradation on spatially-sensitive tasks.",
+   "id": "S3.095",
+   "sec": "Related Work",
+   "kind": "",
+   "text": "For code generation, AlphaCode [cite] achieves competition-level performance through massive sampling and clustering-based selection.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "isolated: none of the three checks holds",
-   "s2": "1 work cited: FastV",
+   "final_reason": "alone, never related to this paper, and a method → FAIL",
+   "s2": "1 work cited: AlphaCode",
    "found": [],
-   "found_note": "isolated: none of the three checks holds",
+   "found_note": "alone, never related to this paper, and a method → FAIL",
    "judge_line": "",
    "ci": {
-    "before": "The computational cost of vision-language models scales quadratically with the number of visual tokens, motivating extensive research on token reduction strategies.",
+    "segs": [
+     [
+      "For code generation, AlphaCode ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " achieves competition-level performance through massive sampling and clustering-based selection.",
+      false
+     ]
+    ],
+    "names": [
+     "AlphaCode"
+    ],
+    "before": "Tree of Thoughts [cite] enables deliberate problem solving through search over intermediate reasoning states.",
+    "before_cites": true,
+    "weave": [
+     [
+      "two or more works cited",
+      false,
+      "1 work cited: AlphaCode"
+     ],
+     [
+      "another work named",
+      false,
+      "no other work’s name in the sentence"
+     ],
+     [
+      "tied to the sentence before",
+      false,
+      "no “Similarly,” / “extends this” / “unlike these”"
+     ]
+    ],
+    "rel": [
+     {
+      "work": "AlphaCode",
+      "ok": false,
+      "why": "never compared, used, or contrasted with this paper anywhere"
+     }
+    ],
+    "na": [
+     {
+      "work": "AlphaCode",
+      "ok": false,
+      "why": "a named method: the reader needs its relation"
+     }
+    ],
+    "stage": "fail"
+   }
+  },
+  {
+   "id": "S3.097",
+   "sec": "Related Work",
+   "kind": "",
+   "text": "Execution feedback enables iterative improvement of generated code. [cite] introduce self-debugging, where models refine code based on execution traces and error messages.",
+   "runs": [],
+   "final": "NOT_APPLICABLE",
+   "final_reason": "related to this paper → set aside",
+   "s2": "1 work cited: a work",
+   "found": [],
+   "found_note": "related to this paper → set aside",
+   "judge_line": "",
+   "ci": {
+    "segs": [
+     [
+      "Execution feedback enables iterative improvement of generated code. ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " introduce self-debugging, where models refine code based on execution traces and error messages.",
+      false
+     ]
+    ],
+    "names": [
+     "a work"
+    ],
+    "before": "Self-Debugging and Iterative Refinement.",
     "before_cites": false,
-    "segs": [
-     [
-      "FastV ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " pioneered training-free pruning by selecting tokens based on attention scores from shallow layers, but suffers from significant performance degradation on spatially-sensitive tasks.",
-      false
-     ]
-    ],
-    "names": [
-     "FastV"
-    ],
-    "checks": [
+    "weave": [
      [
       "two or more works cited",
       false,
-      "1 work cited: FastV"
+      "1 work cited: a work"
      ],
      [
       "another work named",
@@ -312,32 +526,46 @@
       "no other work’s name in the sentence"
      ],
      [
-      "relational cue",
+      "tied to the sentence before",
       false,
-      "no “Similarly,” / “Building on this,” / “unlike these”"
+      "no “Similarly,” / “extends this” / “unlike these”"
      ]
     ],
-    "first_person": false
+    "rel": [
+     {
+      "work": "a work",
+      "ok": true,
+      "why": "the paper says how it relates",
+      "ev": "ESR aggregates information across candidates to identify common failure patterns, unlike per-sample self-debugging approaches [cite] that refine each candidate independently.",
+      "sid": "S1.043"
+     }
+    ],
+    "na": [
+     {
+      "work": "a work",
+      "ok": false,
+      "why": "a named method: the reader needs its relation"
+     }
+    ],
+    "stage": "related"
    }
   },
   {
-   "id": "c7",
-   "sec": "§2 Related Work",
-   "kind": "2 works",
-   "text": "LLaVA-PruMerge [cite] combines pruning with token merging to preserve information from discarded tokens, while PyramidDrop [cite] progressively reduces tokens across layers following a pyramid schedule.",
+   "id": "S3.098",
+   "sec": "Related Work",
+   "kind": "",
+   "text": "Reflexion [cite] extends this with verbal reinforcement learning, maintaining episodic memory of past failures.",
    "runs": [],
    "final": "PASS",
-   "final_reason": "woven: two or more works cited",
-   "s2": "2 works cited: LLaVA-PruMerge, PyramidDrop",
+   "final_reason": "woven → PASS",
+   "s2": "1 work cited: Reflexion",
    "found": [],
-   "found_note": "woven: two or more works cited",
+   "found_note": "woven → PASS",
    "judge_line": "",
    "ci": {
-    "before": "FastV [cite] pioneered training-free pruning by selecting tokens based on attention scores from shallow layers, but suffers from significant performance degradation on spatially-sensitive tasks.",
-    "before_cites": true,
     "segs": [
      [
-      "LLaVA-PruMerge ",
+      "Reflexion ",
       false
      ],
      [
@@ -345,27 +573,20 @@
       true
      ],
      [
-      " combines pruning with token merging to preserve information from discarded tokens, while PyramidDrop ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " progressively reduces tokens across layers following a pyramid schedule.",
+      " extends this with verbal reinforcement learning, maintaining episodic memory of past failures.",
       false
      ]
     ],
     "names": [
-     "LLaVA-PruMerge",
-     "PyramidDrop"
+     "Reflexion"
     ],
-    "checks": [
+    "before": "Execution feedback enables iterative improvement of generated code. [cite] introduce self-debugging, where models refine code based on execution traces and error messages.",
+    "before_cites": true,
+    "weave": [
      [
       "two or more works cited",
-      true,
-      "2 works cited: LLaVA-PruMerge, PyramidDrop"
+      false,
+      "1 work cited: Reflexion"
      ],
      [
       "another work named",
@@ -373,93 +594,44 @@
       "no other work’s name in the sentence"
      ],
      [
-      "relational cue",
-      false,
-      "no “Similarly,” / “Building on this,” / “unlike these”"
-     ]
-    ],
-    "first_person": false
-   }
-  },
-  {
-   "id": "c8",
-   "sec": "§2 Related Work",
-   "kind": "2 works",
-   "text": "SparseVLM [cite] introduces text-aware sparsification that conditions token selection on the input query, and FEATHER [cite] revisits pruning strategies with improved layer selection.",
-   "runs": [],
-   "final": "PASS",
-   "final_reason": "woven: two or more works cited",
-   "s2": "2 works cited: SparseVLM, FEATHER",
-   "found": [],
-   "found_note": "woven: two or more works cited",
-   "judge_line": "",
-   "ci": {
-    "before": "LLaVA-PruMerge [cite] combines pruning with token merging to preserve information from discarded tokens, while PyramidDrop [cite] progressively reduces tokens across layers following a pyramid schedule.",
-    "before_cites": true,
-    "segs": [
-     [
-      "SparseVLM ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " introduces text-aware sparsification that conditions token selection on the input query, and FEATHER ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " revisits pruning strategies with improved layer selection.",
-      false
-     ]
-    ],
-    "names": [
-     "SparseVLM",
-     "FEATHER"
-    ],
-    "checks": [
-     [
-      "two or more works cited",
+      "tied to the sentence before",
       true,
-      "2 works cited: SparseVLM, FEATHER"
-     ],
-     [
-      "another work named",
-      false,
-      "no other work’s name in the sentence"
-     ],
-     [
-      "relational cue",
-      false,
-      "no “Similarly,” / “Building on this,” / “unlike these”"
+      "takes up the previous citing sentence (“extends this”, “builds on this”)"
      ]
     ],
-    "first_person": false
+    "rel": [
+     {
+      "work": "Reflexion",
+      "ok": false,
+      "why": "never compared, used, or contrasted with this paper anywhere"
+     }
+    ],
+    "na": [
+     {
+      "work": "Reflexion",
+      "ok": false,
+      "why": "a named method: the reader needs its relation"
+     }
+    ],
+    "stage": "woven"
    }
   },
   {
-   "id": "c9",
-   "sec": "§2 Related Work",
-   "kind": "1 work",
-   "text": "Token Merging (ToMe) [cite], originally designed for Vision Transformers, has also been adapted for VLM acceleration.",
+   "id": "S3.099",
+   "sec": "Related Work",
+   "kind": "",
+   "text": "Self-Refine [cite] demonstrates iterative refinement using self-generated feedback across diverse tasks.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "isolated: none of the three checks holds",
-   "s2": "1 work cited: Token Merging",
+   "final_reason": "alone, never related to this paper, and a method → FAIL",
+   "s2": "1 work cited: Self-Refine",
    "found": [],
-   "found_note": "isolated: none of the three checks holds",
+   "found_note": "alone, never related to this paper, and a method → FAIL",
    "judge_line": "",
    "ci": {
-    "before": "SparseVLM [cite] introduces text-aware sparsification that conditions token selection on the input query, and FEATHER [cite] revisits pruning strategies with improved layer selection.",
-    "before_cites": true,
     "segs": [
      [
-      "Token Merging (ToMe) ",
+      "Self-Refine ",
       false
      ],
      [
@@ -467,18 +639,20 @@
       true
      ],
      [
-      ", originally designed for Vision Transformers, has also been adapted for VLM acceleration.",
+      " demonstrates iterative refinement using self-generated feedback across diverse tasks.",
       false
      ]
     ],
     "names": [
-     "Token Merging"
+     "Self-Refine"
     ],
-    "checks": [
+    "before": "Reflexion [cite] extends this with verbal reinforcement learning, maintaining episodic memory of past failures.",
+    "before_cites": true,
+    "weave": [
      [
       "two or more works cited",
       false,
-      "1 work cited: Token Merging"
+      "1 work cited: Self-Refine"
      ],
      [
       "another work named",
@@ -486,93 +660,44 @@
       "no other work’s name in the sentence"
      ],
      [
-      "relational cue",
+      "tied to the sentence before",
       false,
-      "no “Similarly,” / “Building on this,” / “unlike these”"
+      "no “Similarly,” / “extends this” / “unlike these”"
      ]
     ],
-    "first_person": false
+    "rel": [
+     {
+      "work": "Self-Refine",
+      "ok": false,
+      "why": "never compared, used, or contrasted with this paper anywhere"
+     }
+    ],
+    "na": [
+     {
+      "work": "Self-Refine",
+      "ok": false,
+      "why": "a named method: the reader needs its relation"
+     }
+    ],
+    "stage": "fail"
    }
   },
   {
-   "id": "c10",
-   "sec": "§2 Related Work",
-   "kind": "2 works",
-   "text": "Recent work has explored more sophisticated selection criteria: Balanced Token Pruning [cite] optimizes global token allocation across layers, while IVC-Prune [cite] leverages implicit visual coordinates for pruning decisions.",
-   "runs": [],
-   "final": "PASS",
-   "final_reason": "woven: two or more works cited",
-   "s2": "2 works cited: Balanced Token Pruning, IVC-Prune",
-   "found": [],
-   "found_note": "woven: two or more works cited",
-   "judge_line": "",
-   "ci": {
-    "before": "Token Merging (ToMe) [cite], originally designed for Vision Transformers, has also been adapted for VLM acceleration.",
-    "before_cites": true,
-    "segs": [
-     [
-      "Recent work has explored more sophisticated selection criteria: Balanced Token Pruning ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " optimizes global token allocation across layers, while IVC-Prune ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " leverages implicit visual coordinates for pruning decisions.",
-      false
-     ]
-    ],
-    "names": [
-     "Balanced Token Pruning",
-     "IVC-Prune"
-    ],
-    "checks": [
-     [
-      "two or more works cited",
-      true,
-      "2 works cited: Balanced Token Pruning, IVC-Prune"
-     ],
-     [
-      "another work named",
-      false,
-      "no other work’s name in the sentence"
-     ],
-     [
-      "relational cue",
-      false,
-      "no “Similarly,” / “Building on this,” / “unlike these”"
-     ]
-    ],
-    "first_person": false
-   }
-  },
-  {
-   "id": "c11",
-   "sec": "§2 Related Work",
-   "kind": "1 work",
-   "text": "D²Pruner [cite] advances this approach by introducing debiased importance scoring with Maximal Independent Set (MIS) for diversity-aware token selection.",
+   "id": "S3.103",
+   "sec": "Related Work",
+   "kind": "",
+   "text": "CodeT [cite] uses model-generated tests to rank candidate solutions.",
    "runs": [],
    "final": "FAIL",
-   "final_reason": "isolated: none of the three checks holds",
-   "s2": "1 work cited: D²Pruner",
+   "final_reason": "alone, never related to this paper, and a method → FAIL",
+   "s2": "1 work cited: CodeT",
    "found": [],
-   "found_note": "isolated: none of the three checks holds",
+   "found_note": "alone, never related to this paper, and a method → FAIL",
    "judge_line": "",
    "ci": {
-    "before": "Attention weights provide a natural signal for token importance, as they reflect how much the model attends to each visual token during generation.",
-    "before_cites": false,
     "segs": [
      [
-      "D²Pruner ",
+      "CodeT ",
       false
      ],
      [
@@ -580,18 +705,20 @@
       true
      ],
      [
-      " advances this approach by introducing debiased importance scoring with Maximal Independent Set (MIS) for diversity-aware token selection.",
+      " uses model-generated tests to rank candidate solutions.",
       false
      ]
     ],
     "names": [
-     "D²Pruner"
+     "CodeT"
     ],
-    "checks": [
+    "before": "Unit tests provide strong programmatic signals for code generation.",
+    "before_cites": false,
+    "weave": [
      [
       "two or more works cited",
       false,
-      "1 work cited: D²Pruner"
+      "1 work cited: CodeT"
      ],
      [
       "another work named",
@@ -599,32 +726,44 @@
       "no other work’s name in the sentence"
      ],
      [
-      "relational cue",
+      "tied to the sentence before",
       false,
-      "no “Similarly,” / “Building on this,” / “unlike these”"
+      "no “Similarly,” / “extends this” / “unlike these”"
      ]
     ],
-    "first_person": false
+    "rel": [
+     {
+      "work": "CodeT",
+      "ok": false,
+      "why": "never compared, used, or contrasted with this paper anywhere"
+     }
+    ],
+    "na": [
+     {
+      "work": "CodeT",
+      "ok": false,
+      "why": "a named method: the reader needs its relation"
+     }
+    ],
+    "stage": "fail"
    }
   },
   {
-   "id": "c12",
-   "sec": "§2 Related Work",
-   "kind": "2 works",
-   "text": "PoRe [cite] addresses position bias through reweighting schemes, while recent analysis [cite] reveals that visual information flow in MLLMs varies significantly across layers, suggesting that layer choice is critical for attention-based pruning.",
+   "id": "S3.104",
+   "sec": "Related Work",
+   "kind": "",
+   "text": "CodeRL [cite] applies reinforcement learning from execution feedback to improve code generation.",
    "runs": [],
-   "final": "PASS",
-   "final_reason": "woven: two or more works cited",
-   "s2": "2 works cited: PoRe",
+   "final": "FAIL",
+   "final_reason": "alone, never related to this paper, and a method → FAIL",
+   "s2": "1 work cited: CodeRL",
    "found": [],
-   "found_note": "woven: two or more works cited",
+   "found_note": "alone, never related to this paper, and a method → FAIL",
    "judge_line": "",
    "ci": {
-    "before": "However, D²Pruner requires offline calibration on external data to compute bias priors, limiting deployment flexibility.",
-    "before_cites": false,
     "segs": [
      [
-      "PoRe ",
+      "CodeRL ",
       false
      ],
      [
@@ -632,136 +771,20 @@
       true
      ],
      [
-      " addresses position bias through reweighting schemes, while recent analysis ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " reveals that visual information flow in MLLMs varies significantly across layers, suggesting that layer choice is critical for attention-based pruning.",
+      " applies reinforcement learning from execution feedback to improve code generation.",
       false
      ]
     ],
     "names": [
-     "PoRe"
+     "CodeRL"
     ],
-    "checks": [
-     [
-      "two or more works cited",
-      true,
-      "2 works cited: PoRe + 1 unnamed"
-     ],
-     [
-      "another work named",
-      false,
-      "no other work’s name in the sentence"
-     ],
-     [
-      "relational cue",
-      false,
-      "no “Similarly,” / “Building on this,” / “unlike these”"
-     ]
-    ],
-    "first_person": false
-   }
-  },
-  {
-   "id": "c13",
-   "sec": "§2 Related Work",
-   "kind": "2 works",
-   "text": "Beyond token pruning, VLM efficiency has been addressed through architectural innovations, quantization, and knowledge distillation [cite].",
-   "runs": [],
-   "final": "PASS",
-   "final_reason": "woven: two or more works cited",
-   "s2": "2 works cited",
-   "found": [],
-   "found_note": "woven: two or more works cited",
-   "judge_line": "",
-   "ci": {
-    "before": "Efficient Vision-Language Models.",
-    "before_cites": false,
-    "segs": [
-     [
-      "Beyond token pruning, VLM efficiency has been addressed through architectural innovations, quantization, and knowledge distillation ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      ".",
-      false
-     ]
-    ],
-    "names": [],
-    "checks": [
-     [
-      "two or more works cited",
-      true,
-      "2 works cited"
-     ],
-     [
-      "another work named",
-      false,
-      "no other work’s name in the sentence"
-     ],
-     [
-      "relational cue",
-      false,
-      "no “Similarly,” / “Building on this,” / “unlike these”"
-     ]
-    ],
-    "first_person": false
-   }
-  },
-  {
-   "id": "c14",
-   "sec": "§2 Related Work",
-   "kind": "2 works",
-   "text": "FlashAttention [cite] reduces memory overhead through IO-aware computation, while attention sink mechanisms [cite] enable efficient streaming inference.",
-   "runs": [],
-   "final": "PASS",
-   "final_reason": "woven: two or more works cited",
-   "s2": "2 works cited: FlashAttention",
-   "found": [],
-   "found_note": "woven: two or more works cited",
-   "judge_line": "",
-   "ci": {
-    "before": "Beyond token pruning, VLM efficiency has been addressed through architectural innovations, quantization, and knowledge distillation [cite].",
+    "before": "CodeT [cite] uses model-generated tests to rank candidate solutions.",
     "before_cites": true,
-    "segs": [
-     [
-      "FlashAttention ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " reduces memory overhead through IO-aware computation, while attention sink mechanisms ",
-      false
-     ],
-     [
-      "[cite]",
-      true
-     ],
-     [
-      " enable efficient streaming inference.",
-      false
-     ]
-    ],
-    "names": [
-     "FlashAttention"
-    ],
-    "checks": [
+    "weave": [
      [
       "two or more works cited",
-      true,
-      "2 works cited: FlashAttention + 1 unnamed"
+      false,
+      "1 work cited: CodeRL"
      ],
      [
       "another work named",
@@ -769,154 +792,480 @@
       "no other work’s name in the sentence"
      ],
      [
-      "relational cue",
+      "tied to the sentence before",
       false,
-      "no “Similarly,” / “Building on this,” / “unlike these”"
+      "no “Similarly,” / “extends this” / “unlike these”"
      ]
     ],
-    "first_person": false
+    "rel": [
+     {
+      "work": "CodeRL",
+      "ok": false,
+      "why": "never compared, used, or contrasted with this paper anywhere"
+     }
+    ],
+    "na": [
+     {
+      "work": "CodeRL",
+      "ok": false,
+      "why": "a named method: the reader needs its relation"
+     }
+    ],
+    "stage": "fail"
+   }
+  },
+  {
+   "id": "S3.105",
+   "sec": "Related Work",
+   "kind": "",
+   "text": "Recent work on experience recycling [cite] proposes batched experience banks with semantic deduplication for test-time scaling in mathematical reasoning, though this has not been applied to code generation with unit-test feedback.",
+   "runs": [],
+   "final": "NOT_APPLICABLE",
+   "final_reason": "needs no relation → set aside",
+   "s2": "1 work cited: a work",
+   "found": [],
+   "found_note": "needs no relation → set aside",
+   "judge_line": "",
+   "ci": {
+    "segs": [
+     [
+      "Recent work on experience recycling ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " proposes batched experience banks with semantic deduplication for test-time scaling in mathematical reasoning, though this has not been applied to code generation with unit-test feedback.",
+      false
+     ]
+    ],
+    "names": [
+     "a work"
+    ],
+    "before": "CodeRL [cite] applies reinforcement learning from execution feedback to improve code generation.",
+    "before_cites": true,
+    "weave": [
+     [
+      "two or more works cited",
+      false,
+      "1 work cited: a work"
+     ],
+     [
+      "another work named",
+      false,
+      "no other work’s name in the sentence"
+     ],
+     [
+      "tied to the sentence before",
+      false,
+      "no “Similarly,” / “extends this” / “unlike these”"
+     ]
+    ],
+    "rel": [
+     {
+      "work": "a work",
+      "ok": false,
+      "why": "never compared, used, or contrasted with this paper anywhere"
+     }
+    ],
+    "na": [
+     {
+      "work": "a work",
+      "ok": true,
+      "why": "cited for a statement, not as a method"
+     }
+    ],
+    "stage": "norel"
+   }
+  },
+  {
+   "id": "S3.107",
+   "sec": "Related Work",
+   "kind": "",
+   "text": "HumanEval [cite] and MBPP [cite] are standard benchmarks for Python code generation.",
+   "runs": [],
+   "final": "PASS",
+   "final_reason": "woven → PASS",
+   "s2": "2 works cited: HumanEval, MBPP",
+   "found": [],
+   "found_note": "woven → PASS",
+   "judge_line": "",
+   "ci": {
+    "segs": [
+     [
+      "HumanEval ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " and MBPP ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " are standard benchmarks for Python code generation.",
+      false
+     ]
+    ],
+    "names": [
+     "HumanEval",
+     "MBPP"
+    ],
+    "before": "Code Generation Benchmarks.",
+    "before_cites": false,
+    "weave": [
+     [
+      "two or more works cited",
+      true,
+      "2 works cited: HumanEval, MBPP"
+     ],
+     [
+      "another work named",
+      false,
+      "no other work’s name in the sentence"
+     ],
+     [
+      "tied to the sentence before",
+      false,
+      "no “Similarly,” / “extends this” / “unlike these”"
+     ]
+    ],
+    "rel": [
+     {
+      "work": "HumanEval",
+      "ok": true,
+      "why": "the paper says how it relates",
+      "ev": "We evaluate ESR on HumanEval+ with Qwen2.5-Coder-7B-Instruct under a fixed 16-generation budget.",
+      "sid": "A03"
+     },
+     {
+      "work": "MBPP",
+      "ok": false,
+      "why": "never compared, used, or contrasted with this paper anywhere"
+     }
+    ],
+    "na": [
+     {
+      "work": "HumanEval",
+      "ok": false,
+      "why": "a named method: the reader needs its relation"
+     },
+     {
+      "work": "MBPP",
+      "ok": true,
+      "why": "benchmark or dataset cited in a method paper"
+     }
+    ],
+    "stage": "woven"
+   }
+  },
+  {
+   "id": "S3.108",
+   "sec": "Related Work",
+   "kind": "",
+   "text": "HumanEval+ [cite] extends HumanEval with augmented tests to reduce overfitting.",
+   "runs": [],
+   "final": "PASS",
+   "final_reason": "woven → PASS",
+   "s2": "1 work cited: HumanEval+",
+   "found": [],
+   "found_note": "woven → PASS",
+   "judge_line": "",
+   "ci": {
+    "segs": [
+     [
+      "HumanEval+ ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " extends HumanEval with augmented tests to reduce overfitting.",
+      false
+     ]
+    ],
+    "names": [
+     "HumanEval+"
+    ],
+    "before": "HumanEval [cite] and MBPP [cite] are standard benchmarks for Python code generation.",
+    "before_cites": true,
+    "weave": [
+     [
+      "two or more works cited",
+      false,
+      "1 work cited: HumanEval+"
+     ],
+     [
+      "another work named",
+      true,
+      "names another work (HumanEval)"
+     ],
+     [
+      "tied to the sentence before",
+      false,
+      "no “Similarly,” / “extends this” / “unlike these”"
+     ]
+    ],
+    "rel": [
+     {
+      "work": "HumanEval+",
+      "ok": true,
+      "why": "the paper says how it relates",
+      "ev": "We evaluate ESR on HumanEval+ [cite], an extension of the HumanEval benchmark [cite] with augmented unit tests designed to reduce overfitting.",
+      "sid": "S2.047"
+     }
+    ],
+    "na": [
+     {
+      "work": "HumanEval+",
+      "ok": false,
+      "why": "a named method: the reader needs its relation"
+     }
+    ],
+    "stage": "woven"
+   }
+  },
+  {
+   "id": "S3.109",
+   "sec": "Related Work",
+   "kind": "",
+   "text": "LiveCodeBench [cite] provides contamination-resistant evaluation with continuously updated problems.",
+   "runs": [],
+   "final": "NOT_APPLICABLE",
+   "final_reason": "needs no relation → set aside",
+   "s2": "1 work cited: LiveCodeBench",
+   "found": [],
+   "found_note": "needs no relation → set aside",
+   "judge_line": "",
+   "ci": {
+    "segs": [
+     [
+      "LiveCodeBench ",
+      false
+     ],
+     [
+      "[cite]",
+      true
+     ],
+     [
+      " provides contamination-resistant evaluation with continuously updated problems.",
+      false
+     ]
+    ],
+    "names": [
+     "LiveCodeBench"
+    ],
+    "before": "HumanEval+ [cite] extends HumanEval with augmented tests to reduce overfitting.",
+    "before_cites": true,
+    "weave": [
+     [
+      "two or more works cited",
+      false,
+      "1 work cited: LiveCodeBench"
+     ],
+     [
+      "another work named",
+      false,
+      "no other work’s name in the sentence"
+     ],
+     [
+      "tied to the sentence before",
+      false,
+      "no “Similarly,” / “extends this” / “unlike these”"
+     ]
+    ],
+    "rel": [
+     {
+      "work": "LiveCodeBench",
+      "ok": false,
+      "why": "never compared, used, or contrasted with this paper anywhere"
+     }
+    ],
+    "na": [
+     {
+      "work": "LiveCodeBench",
+      "ok": true,
+      "why": "a benchmark"
+     }
+    ],
+    "stage": "norel"
    }
   }
  ],
  "cimap": {
   "rows": [
    {
-    "sec": "§1",
+    "sec": "Intro",
     "names": [
-     "2 works"
+     "a work",
+     "a work"
     ],
     "n": 2,
     "final": "PASS",
-    "short": "Vision-language models (VLMs) have achieved remarkable progress on mul"
+    "stage": "woven",
+    "short": "Large language models (LLMs) have demonstrated remarkable capabilities in code g"
    },
    {
-    "sec": "§1",
+    "sec": "Intro",
     "names": [
-     "2 works"
+     "a work",
+     "Reflexion",
+     "Self-Refine"
+    ],
+    "n": 3,
+    "final": "PASS",
+    "stage": "woven",
+    "short": "Self-debugging methods [cite] use error messages and tracebacks to iteratively r"
+   },
+   {
+    "sec": "Related",
+    "names": [
+     "a work",
+     "a work"
     ],
     "n": 2,
     "final": "PASS",
-    "short": "Visual token pruning—selectively retaining only the most relevant toke"
+    "stage": "woven",
+    "short": "Allocating additional inference-time compute can substantially improve LLM perfo"
    },
    {
-    "sec": "§1",
+    "sec": "Related",
     "names": [
-     "2 works"
-    ],
-    "n": 2,
-    "final": "PASS",
-    "short": "Existing pruning methods face a fundamental challenge: attention-based"
-   },
-   {
-    "sec": "§1",
-    "names": [
-     "FastV"
+     "Self-consistency"
     ],
     "n": 1,
     "final": "FAIL",
-    "short": "FastV [cite], which prunes tokens based on shallow-layer attention, ac"
+    "stage": "fail",
+    "short": "Self-consistency [cite] improves reasoning by sampling multiple chains and aggre"
    },
    {
-    "sec": "§1",
+    "sec": "Related",
     "names": [
-     "D²Pruner"
+     "Tree of Thoughts"
     ],
     "n": 1,
     "final": "FAIL",
-    "short": "D²Pruner [cite] addresses this by debiasing attention scores using an "
+    "stage": "fail",
+    "short": "Tree of Thoughts [cite] enables deliberate problem solving through search over i"
    },
    {
-    "sec": "§2",
+    "sec": "Related",
     "names": [
-     "FastV"
+     "AlphaCode"
     ],
     "n": 1,
     "final": "FAIL",
-    "short": "FastV [cite] pioneered training-free pruning by selecting tokens based"
+    "stage": "fail",
+    "short": "For code generation, AlphaCode [cite] achieves competition-level performance thr"
    },
    {
-    "sec": "§2",
+    "sec": "Related",
     "names": [
-     "LLaVA-PruMerge",
-     "PyramidDrop"
+     "a work"
     ],
-    "n": 2,
-    "final": "PASS",
-    "short": "LLaVA-PruMerge [cite] combines pruning with token merging to preserve "
+    "n": 1,
+    "final": "NOT_APPLICABLE",
+    "stage": "related",
+    "short": "Execution feedback enables iterative improvement of generated code. [cite] intro"
    },
    {
-    "sec": "§2",
+    "sec": "Related",
     "names": [
-     "SparseVLM",
-     "FEATHER"
+     "Reflexion"
     ],
-    "n": 2,
+    "n": 1,
     "final": "PASS",
-    "short": "SparseVLM [cite] introduces text-aware sparsification that conditions "
+    "stage": "woven",
+    "short": "Reflexion [cite] extends this with verbal reinforcement learning, maintaining ep"
    },
    {
-    "sec": "§2",
+    "sec": "Related",
     "names": [
-     "Token Merging"
+     "Self-Refine"
     ],
     "n": 1,
     "final": "FAIL",
-    "short": "Token Merging (ToMe) [cite], originally designed for Vision Transforme"
+    "stage": "fail",
+    "short": "Self-Refine [cite] demonstrates iterative refinement using self-generated feedba"
    },
    {
-    "sec": "§2",
+    "sec": "Related",
     "names": [
-     "Balanced Token Pruning",
-     "IVC-Prune"
-    ],
-    "n": 2,
-    "final": "PASS",
-    "short": "Recent work has explored more sophisticated selection criteria: Balanc"
-   },
-   {
-    "sec": "§2",
-    "names": [
-     "D²Pruner"
+     "CodeT"
     ],
     "n": 1,
     "final": "FAIL",
-    "short": "D²Pruner [cite] advances this approach by introducing debiased importa"
+    "stage": "fail",
+    "short": "CodeT [cite] uses model-generated tests to rank candidate solutions."
    },
    {
-    "sec": "§2",
+    "sec": "Related",
     "names": [
-     "PoRe",
-     "+1 work"
+     "CodeRL"
+    ],
+    "n": 1,
+    "final": "FAIL",
+    "stage": "fail",
+    "short": "CodeRL [cite] applies reinforcement learning from execution feedback to improve "
+   },
+   {
+    "sec": "Related",
+    "names": [
+     "a work"
+    ],
+    "n": 1,
+    "final": "NOT_APPLICABLE",
+    "stage": "norel",
+    "short": "Recent work on experience recycling [cite] proposes batched experience banks wit"
+   },
+   {
+    "sec": "Related",
+    "names": [
+     "HumanEval",
+     "MBPP"
     ],
     "n": 2,
     "final": "PASS",
-    "short": "PoRe [cite] addresses position bias through reweighting schemes, while"
+    "stage": "woven",
+    "short": "HumanEval [cite] and MBPP [cite] are standard benchmarks for Python code generat"
    },
    {
-    "sec": "§2",
+    "sec": "Related",
     "names": [
-     "2 works"
+     "HumanEval+"
     ],
-    "n": 2,
+    "n": 1,
     "final": "PASS",
-    "short": "Beyond token pruning, VLM efficiency has been addressed through archit"
+    "stage": "woven",
+    "short": "HumanEval+ [cite] extends HumanEval with augmented tests to reduce overfitting."
    },
    {
-    "sec": "§2",
+    "sec": "Related",
     "names": [
-     "FlashAttention",
-     "+1 work"
+     "LiveCodeBench"
     ],
-    "n": 2,
-    "final": "PASS",
-    "short": "FlashAttention [cite] reduces memory overhead through IO-aware computa"
+    "n": 1,
+    "final": "NOT_APPLICABLE",
+    "stage": "norel",
+    "short": "LiveCodeBench [cite] provides contamination-resistant evaluation with continuous"
    }
   ],
   "caps": [
-   "14 citing sentences in §1 Introduction and §2 Related Work. Other sections are not checked.",
-   "The works each sentence cites. 9 cite two works in one sentence; 5 cite one work.",
-   "Woven sentences tie a work to another one (green link). Five tie it to nothing (red ✕).",
-   "5 isolated of 14 → score 5 ÷ 14 = 0.36. Its human pair scores 0.21."
+   "15 citing sentences in the introduction and related work. Other sections are not checked.",
+   "6 are woven: two works cited, or one tied to the sentence before (green). 9 stand alone (red ✕).",
+   "1 of the lone ones cites a work this paper compares against, uses, or contrasts itself with → set aside (grey).",
+   "2 cite something that needs no relation: a benchmark, a statement → set aside.",
+   "6 left: methods introduced once and never related to this paper. Score 6 ÷ 15 = 0.40. Its human pair: 0.06."
   ]
  }
 }

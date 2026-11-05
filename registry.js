@@ -136,11 +136,11 @@ const ITEMS = [
     not: ['A benchmark paper (dataset count not scored), or a study of one named model by design (model count not scored).', 'A method that adds no compute: cost part not scored.'],
     fix: ['Run a second model or dataset; report runtime, tokens, FLOPs or memory for the method and the baseline.', 'Not a fix: more seeds on the same setting; saying “efficient” without a number.'],
     borders: [['1-1', 'no support at all'], ['5-4', 'evidence described wrongly']] },
-  { id: '1-4', area: 1, name: 'Unclear Links to Prior Work', v1: 'Citation isolation', what: 'A cited work gets a sentence of its own and is tied to no other work.',
-    ex: { spec: 'Method B [7] adds a memory module.', specnote: 'One work, one sentence. Nothing ties B to A [3] or to any other work.', src: 'AI paper · SciSlopBench FA0280 · §2 Related Work', pre: '', mark: 'Token Merging (ToMe) [cite], originally designed for Vision Transformers, has also been adapted for VLM acceleration.', post: '', note: 'ToMe stands alone: no other pruning method in the sentence, no link to the one before it. 5 of this paper’s 14 citing sentences are like this (0.36); its human pair scores 0.21.' },
-    judge: ['Units: citing sentences in the introduction and related work.', 'Woven: cites two or more works, names another work, or links to the previous work by a relational cue.', 'Otherwise isolated. A relation only to this paper does not make it woven.'],
-    not: ['Two or more works cited in one sentence.', 'Citations outside the introduction and related work.'],
-    fix: ['Say how the work relates to the others around it: extends, differs from, same family as.', 'Not a fix: piling extra citations into the sentence.'] },
+  { id: '1-4', area: 1, name: 'Unclear Links to Prior Work', v1: 'Citation isolation', what: 'A method is cited on its own, tied to no other work and never related to this paper.',
+    ex: { spec: 'Method B [7] adds a memory module.', specnote: 'B gets a sentence to itself. It is not tied to A [3], and the paper never says how its own method relates to B.', src: 'AI paper · SciSlopBench FA0163 · §4 Related Work', pre: 'For code generation, ', mark: 'AlphaCode [cite] achieves competition-level performance through massive sampling and clustering-based selection.', post: '', note: 'This paper’s method, ESR, groups sampled programs by how they behave when run. AlphaCode also samples many programs and groups them by their behaviour. The paper introduces AlphaCode in this one sentence and never says how ESR differs from it.' },
+    judge: ['Units: citing sentences in the introduction and related work.', 'Woven (fine): cites two works, names another work, or takes up the sentence before (“extends this”).', 'Set aside: works the paper compares against, uses, or contrasts itself with; surveys, model releases, benchmarks, cited facts.'],
+    not: ['A baseline introduced in one sentence and compared in a table.', 'A benchmark or a survey cited on its own.'],
+    fix: ['One sentence on how this paper relates to the work: what it takes, what it does differently.', 'Not a fix: piling another citation into the sentence.'] },
 
   { id: '2-1', area: 2, name: 'Buried Findings', what: 'The body’s key finding never reaches the Abstract or Introduction.',
     ex: { spec: 'a novel attention mechanism that improves performance', specnote: '§4.2 shows the gain comes almost entirely from sentences with negation. The front matter never says so.', src: 'AI paper · SciSlopBench FA0002 · §4 Experiments', pre: 'On Multi-Query, ', mark: 'we achieve 70% reduction but with larger accuracy loss (3.65% vs. 12.10%)', post: ', indicating that distributed-information tasks inherently require higher cache coverage.', note: 'The abstract reports only the favorable task (46% cache reduction, 93% of accuracy kept). The accuracy collapse on the other task never reaches it.' },
@@ -206,10 +206,10 @@ const DEF = {
     q: [{ pre: 'We use ', mark: 'Qwen2.5-VL-7B-Instruct as the judge model', post: ', deployed via vLLM with tensor parallelism across 2 GPUs using bfloat16 precision.', src: 'AI paper · SciSlopBench FA0043 · §4 Experiments' },
         { pre: 'We propose ', mark: 'a two-pass architecture', post: ' where the judge first generates its own answer using only trusted inputs, then uses this uncontaminated reference when evaluating candidates.', src: 'Same paper · §3 Method' }],
     note: 'One judge model on one benchmark (VL-RewardBench), and the defense doubles the model calls per example. The paper reports the accuracy it costs, never the compute.' },
-  '1-4': { what: 'The paper introduces a cited work in a sentence of its own and never ties it to another work.',
-    q: [{ pre: '', mark: 'Token Merging (ToMe) [cite], originally designed for Vision Transformers, has also been adapted for VLM acceleration.', post: '', src: 'AI paper · SciSlopBench FA0280 · §2 Related Work' },
-        { pre: '', mark: 'FastV [cite] pioneered training-free pruning by selecting tokens based on attention scores from shallow layers', post: ', but suffers from significant performance degradation on spatially-sensitive tasks.', src: 'Same paper · §2 Related Work' }],
-    note: 'Each sentence names one method and says what it does. Neither says how it relates to the other pruning methods in the paragraph.' },
+  '1-4': { what: 'The paper introduces a method in a sentence of its own and never says how its own method relates to it.',
+    q: [{ pre: 'For code generation, ', mark: 'AlphaCode [cite] achieves competition-level performance through massive sampling and clustering-based selection.', post: '', src: 'AI paper · SciSlopBench FA0163 · §4 Related Work' },
+        { pre: 'We propose Execution-Signature Recycling (ESR), a training-free method that ', mark: 'clusters candidates by their execution signatures', post: '—the set of failing tests and error types—and conditions subsequent generations on a deduplicated failure bank.', src: 'Same paper · Abstract' }],
+    note: 'Both sample many programs and group them by what happens when they run. AlphaCode appears once, in the sentence above, and the paper never says what ESR does differently.' },
   '2-1': { what: 'The results have a bad side, and the abstract tells only the good side.',
     q: [{ pre: 'On RULER long-context benchmarks, our method achieves ', mark: '46% cache reduction on Variable Tracking while preserving 93% baseline accuracy', post: ' (16.52% vs. 17.72%).', src: 'AI paper · SciSlopBench FA0002 · Abstract' },
         { pre: 'On Multi-Query, we achieve 70% reduction but with ', mark: 'larger accuracy loss (3.65% vs. 12.10%)', post: ', indicating that distributed-information tasks inherently require higher cache coverage.', src: 'Same paper · §4 Experiments' }],
@@ -313,7 +313,7 @@ const PAGE = {
     { h: 'Abstract', p: ['Cross-lingual retrieval models weight every token the same. We introduce ', M('2-1'), ' on three benchmarks. ', A('g25', 'Our method consistently outperforms baselines across domains, with gains of up to 4 points.')], lines: 1 },
     { h: '1  Introduction', p: ['We propose a framework that learns token weights for cross-lingual retrieval. ', A('g44', 'Our model beats all baselines on both datasets.')], lines: 1 },
     { p: [M('4-1'), ' ', G('g41', 'delete it: nothing is lost')], lines: 1 },
-    { h: '2  Related Work', p: ['Method A [3] uses contrastive pairs. ', M('1-4'), ' ', G('g14', 'B next to A, tied to nothing')], lines: 1 },
+    { h: '2  Related Work', p: ['Method A [3] uses contrastive pairs. ', M('1-4'), ' ', G('g14', 'B alone; ours vs B never said')], lines: 1 },
     { p: [M('5-4')], lines: 1 },
     { h: '3  Method', p: ['We apply ', M('4-2'), ' ', G('g42', 'definition'), ' before fusion and then project to the shared space. ', A('gloss', 'We add an alignment term: L = L_task + λ·L_align (Eq. 2).')], lines: 1 },
     { fig: true, cap: [M('4-5'), ' Solid and dashed arrows; blue, green, and orange blocks.'] },
@@ -333,7 +333,7 @@ const PAGE = {
 const FAIL = {
   '1-1': { to: 'g11', label: 'no label-noise experiment anywhere in §4' },
   '1-2': { to: 'gqa', label: 'one encoder, one benchmark; the extra pass is never timed' },
-  '1-4': { to: 'g14', label: 'B gets its own sentence; how it relates to A is never said' },
+  '1-4': { to: 'g14', label: 'B gets one sentence; how our method relates to B is never said' },
   '2-1': { to: 'gneg', label: 'this finding never reaches the Abstract' },
   '2-3': { to: 'gloss', label: 'Eq. 2 defines λ here · §4 never points back', miss: true },
   '3-1': { to: 'g31', label: 'excluded, no reason given' },
@@ -356,7 +356,7 @@ const GROUPS = [
   { n: 3, key: 'artifacts', cls: 'p-artifacts', title: 'Artifacts', q: 'Can the method and the evidence be inspected?' },
 ];
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
-const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'The paper claims more than its experiments can show.', '1-4': 'A cited work tied to no other work.',
+const SHORT = { '1-1': 'A claim with no evidence behind it.', '1-2': 'The paper claims more than its experiments can show.', '1-4': 'A method cited alone and never related to this paper.',
   '2-1': 'The key finding is missing from the abstract.', '2-3': 'Set up in one section, never pointed back to.', '3-1': 'A design choice with no reason given.',
   '2-5': 'The conclusion only repeats the abstract.', '4-1': 'Repackages what was shown; tells nothing new.', '4-2': 'A term that is never defined.', '4-4': 'The same sentence in two sections.', '4-5': 'Figure arrows and colors never explained.',
   '5-4': 'The cited source says something else.' };
@@ -462,7 +462,7 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
 const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code';
-const MV = '1106m';   // bump with the run data so browsers do not keep an old measure/*.json
+const MV = '1106x';   // bump with the run data so browsers do not keep an old measure/*.json
 const MEASURE = {
   '1-1': { unit: 'claim', units: 'claims',
     stages: [['Claim', 'stated as fact', 'paper'], ['Needs', 'what would prove it?', Q], ['Found', 'in the paper?', QC], ['Verdict', '3 runs vote', CD]],
@@ -491,13 +491,14 @@ const MEASURE = {
   '1-2': { parts: ['1-2b', '1-2d'],
     line: 'Two parts, scored 0–100 each. Overstated Claims = the mean of evaluation breadth and cost reporting; a part that does not apply is left out.' },
   '1-4': { unit: 'sentence', units: 'citing sentences',
-    stages: [['Sentence', 'a citing sentence in the introduction or related work', CD], ['Other works', 'cited or named in it', CD], ['Woven?', 'two works, a named work, or a relational cue', CD], ['Verdict', 'rule, one run', CD]],
+    stages: [['Sentence', 'a citing sentence in the introduction or related work', CD], ['Woven?', 'tied to another work in the sentence', CD], ['Related to this paper?', 'compared, used, or contrasted anywhere', CD], ['Needs a relation?', 'a method, not a survey, benchmark or fact', CD], ['Verdict', 'rule, one run', CD]],
     how: [
       ['Collect the sentences', [[CD, 'Introduction and related-work sentences with at least one citation.'], [CD, 'Other sections: not checked.']]],
-      ['Find the other works', [[CD, 'Citation keys in the sentence.'], [CD, 'Names of other cited works outside the citation, e.g. “FastV” from “FastV [x]” elsewhere in the paper.']]],
-      ['Check: woven?', [[CD, 'Two or more works cited → woven.'], [CD, 'Another work named → woven.'], [CD, 'Opens with a relational cue (“Similarly,”, “Building on this,”) right after a citing sentence, or ties the work to others by a cue (“unlike these methods”) → woven.'], [CD, 'A relation only to this paper (“we”, “our”) does not count.'], [CD, 'No model judgment.']]],
-      ['Decide PASS / FAIL', [[CD, 'Isolated → FAIL. Woven → PASS.'], [CD, 'score = FAIL ÷ citing sentences.'], [CD, 'Fewer than 8 citing sentences → score flagged weak.'], [CD, 'Deterministic: one run.']]]],
-    line: 'Code only (v1 citation isolation). A citing sentence fails when it cites one work and ties it to no other work.' },
+      ['Check: woven? (v1 citation isolation)', [[CD, 'Two or more works cited → woven.'], [CD, 'Another cited work named (“FastV” from “FastV [x]” elsewhere) → woven.'], [CD, 'Takes up the citing sentence before: “Similarly,”, “Building on this,”, “X extends this” → woven.'], [CD, 'Woven → PASS. Alone → step 3.']]],
+      ['Check: related to this paper?', [[CD, 'Its name is a row in a result table.'], [CD, 'It is used in the paper’s own method or experiments.'], [CD, 'A sentence in the paper’s own voice (“we”, “our”, the method’s name) cites or names it with a relation: “unlike”, “compared to”, “builds on”, “addresses”.'], [CD, 'Any of these → set aside.']]],
+      ['Check: needs a relation?', [[CD, 'Surveys, model releases, benchmarks and datasets, works cited for a statement (“[x] showed that …”) → set aside.'], [CD, 'A named method → it needs one.']]],
+      ['Decide FAIL', [[CD, 'Alone, never related, and a method → FAIL.'], [CD, 'score = FAIL ÷ citing sentences.'], [CD, 'No model judgment. Deterministic: one run.']]]],
+    line: 'Code only. A citing sentence fails when it introduces a method on its own and the paper never relates that method to itself.' },
   '2-1': { unit: 'finding', units: 'findings',
     stages: [['Finding', 'a key result in the body', Q], ['Shown in', 'the table or sentence', CD], ['Up front?', 'abstract and intro', Q], ['Verdict', '3 runs vote', CD]],
     how: [
@@ -673,8 +674,8 @@ Two checks.
 2. Missing Cost Accounting: list what the method adds that costs compute (extra calls, passes, modules, training stages, sampling). Report the cost for the method and the baseline with numbers (runtime, tokens, FLOPs, memory, calls), or compare at a matched budget.
 More seeds on the same setting, or calling the method "efficient" without a number, is not a fix.`,
   '1-4': `# Fix · Unclear Links to Prior Work (1-4)
-For every sentence in the introduction and related work that cites one work on its own, say how that work relates to the others around it: what it extends, how it differs, or which family it belongs to.
-Piling more citations into the sentence without the relation is not a fix.`,
+For every method that the introduction or related work introduces in a sentence of its own and the paper never compares against, uses, or contrasts itself with, add one sentence that says how this paper relates to it: what it takes from it, or what it does differently.
+Piling another citation into the sentence is not a fix.`,
   '2-1': `# Fix · Buried Findings (2-1)
 Identify the key findings of the body from the research question and the main results, including the condition under which each holds.
 Check the Abstract and Introduction: if a key finding or its condition is missing, add it in one sentence.
@@ -945,7 +946,7 @@ function srcParts(src) { const m = String(src || '').split(' · '); return [h('s
 const TREE = [['Argument graph', ['1-1', '1-2', '5-4']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4', '2-5']], ['Figure exposition', ['4-5']], [null, ['2-1', '3-1', '4-1', '4-2']]];
 // results so far, on the 123 AI / human pairs; an item stays blank until its measure is final
 // 11-06: columns as in v1 Table 2 (PairAcc, AUROC, TPR at 5% FPR), from each item's saved per-paper scores (v2/verification/table_site_rows_1106.py)
-const RESULTS = { '1-4': { pa: '0.79', auc: '0.78', tpr: '0.44' }, '1-2': { pa: '0.88', auc: '0.88', tpr: '0.50' }, '2-3': { pa: '0.88', auc: '0.88', tpr: '0.00' }, '4-1': { pa: '0.82', auc: '0.82', tpr: '0.34' }, '4-4': { pa: '0.91', auc: '0.90', tpr: '0.29' }, '2-5': { pa: '0.91', auc: '0.90', tpr: '0.76' } };
+const RESULTS = { '1-4': { pa: '0.85', auc: '0.87', tpr: '0.59' }, '1-2': { pa: '0.88', auc: '0.88', tpr: '0.50' }, '2-3': { pa: '0.88', auc: '0.88', tpr: '0.00' }, '4-1': { pa: '0.82', auc: '0.82', tpr: '0.34' }, '4-4': { pa: '0.91', auc: '0.90', tpr: '0.29' }, '2-5': { pa: '0.91', auc: '0.90', tpr: '0.76' } };
 $('#sm-res').replaceChildren(h('table', { class: 'res-tbl' },
   h('thead', {}, h('tr', {}, ...['Slop', 'PairAcc', 'AUROC', 'TPR@5%FPR'].map(t => h('th', { text: t })))),
   h('tbody', {}, ...GROUPS.flatMap(g => [h('tr', { class: 'res-g ' + g.cls }, h('td', { colspan: 4, text: g.title })),
@@ -1377,14 +1378,16 @@ function cxView(u, step) {
     h('p', { class: 'cx-t' }, h('span', { class: 'cx-lab', text: fail ? 'deleted' : 'kept' }), fail ? h('span', { class: 'cx-x', text: c.target.segs.map(x => x[0]).join('') }) : h('span', {}, ...tgtSegs)),
     h('small', { class: 'cx-verdict', text: lost }));
 }
-// 1-4: the citing sentences of intro and related work as a list, and one sentence with the three weaving checks
+// 1-4: the citing sentences of intro and related work as a list; each step marks what it decides
 function ciMap(cm) {
-  const rows = cm.rows.map((r, i) => h('li', { class: 'ci-r ' + (r.final === 'PASS' ? 'p' : 'f'), 'data-u': i },
+  const tag = { related: 'compared / related → set aside', norel: 'needs no relation → set aside' };
+  const rows = cm.rows.map((r, i) => h('li', { class: 'ci-r st-' + r.stage, 'data-u': i },
     h('span', { class: 'ci-sec', text: r.sec }),
     h('span', { class: 'ci-s', text: r.short.replace(/\s+\S*$/, '') + '…' }),
     h('span', { class: 'ci-w' }, ...r.names.flatMap((n, j) => j ? [h('i', { class: 'ci-tie', text: '—' }), h('b', { class: 'ci-ch', text: n })] : [h('b', { class: 'ci-ch', text: n })]),
-      r.n < 2 ? h('i', { class: 'ci-no', text: '✕ tied to nothing' }) : null),
-    h('span', { class: 'ci-st', text: r.final })));
+      r.stage !== 'woven' ? h('i', { class: 'ci-no', text: '✕ alone' }) : null,
+      tag[r.stage] ? h('i', { class: 'ci-aside', text: tag[r.stage] }) : null),
+    h('span', { class: 'ci-st', text: r.final === 'NOT_APPLICABLE' ? '–' : r.final })));
   const cap = h('p', { class: 'xm-cap' });
   const el = h('figure', { class: 'ci' }, h('ol', { class: 'ci-list' }, ...rows), cap);
   const step = k => { el.dataset.s = k; const c = cm.caps[Math.max(0, Math.min(k, cm.caps.length - 1))] || '';
@@ -1394,13 +1397,21 @@ function ciMap(cm) {
 }
 function ciView(u, step) {
   const c = u.ci, segs = c.segs.map(([t, on]) => on ? h('mark', { class: 'cx-f', text: t }) : t);
-  const chips = c.names.length ? c.names.map(n => h('b', { class: 'ci-ch', text: n })) : [h('b', { class: 'ci-ch', text: u.kind })];
+  const chk = (ok, q, note, ev) => h('li', { class: ok ? 'y' : 'n' }, h('span', { class: 'ci-mk', text: ok ? '✓' : '✕' }), h('b', { text: q }), ' ', h('small', { text: note }),
+    ev ? h('q', { class: 'ci-ev', text: ev.length > 170 ? ev.slice(0, 168).replace(/\s+\S*$/, '') + ' …' : ev }) : null);
+  const stopped = why => h('div', { class: 'cx-p' }, h('small', { class: 'ci-stop', text: why }));
   if (step === 0) return h('div', {}, h('q', { class: 'mw-q' }, ...segs), h('small', { text: `${u.sec} · red: the citations` }));
-  if (step === 1) return h('div', { class: 'cx-p' }, h('p', { class: 'ci-w' }, ...chips), h('small', { text: c.checks[0][2] + ' · ' + c.checks[1][2] }));
-  if (step === 2) return h('div', { class: 'cx-p' },
-    c.before ? h('p', { class: 'cx-c' }, h('span', { class: 'cx-lab', text: c.before_cites ? 'before · cites' : 'before' }), c.before.length > 160 ? c.before.slice(0, 158).replace(/\s+\S*$/, '') + ' …' : c.before) : null,
+  if (step === 1) return h('div', { class: 'cx-p' },
+    c.before ? h('p', { class: 'cx-c' }, h('span', { class: 'cx-lab', text: c.before_cites ? 'before · cites' : 'before' }), c.before.length > 150 ? c.before.slice(0, 148).replace(/\s+\S*$/, '') + ' …' : c.before) : null,
     h('p', { class: 'cx-t' }, h('span', { class: 'cx-lab', text: 'this one' }), ...segs),
-    h('ul', { class: 'ci-chk' }, ...c.checks.map(([q, ok, note]) => h('li', { class: ok ? 'y' : 'n' }, h('span', { class: 'ci-mk', text: ok ? '✓' : '✕' }), h('b', { text: q }), ' ', h('small', { text: note })))));
+    h('ul', { class: 'ci-chk' }, ...c.weave.map(([q, ok, note]) => chk(ok, q, note))),
+    h('small', { class: 'cx-verdict', text: c.stage === 'woven' ? 'Woven → PASS. Steps 3–4 are skipped.' : 'Alone → go on.' }));
+  if (step === 2) return c.stage === 'woven' ? stopped('Woven at step 2.') : h('div', { class: 'cx-p' },
+    h('ul', { class: 'ci-chk' }, ...c.rel.map(x => chk(x.ok, x.work, x.why, x.ev))),
+    h('small', { class: 'cx-verdict', text: c.stage === 'related' ? 'The paper relates it to itself → set aside.' : 'No sentence relates it to this paper → go on.' }));
+  if (step === 3) return (c.stage === 'woven' || c.stage === 'related') ? stopped(c.stage === 'woven' ? 'Woven at step 2.' : 'Set aside at step 3.') : h('div', { class: 'cx-p' },
+    h('ul', { class: 'ci-chk' }, ...c.na.map(x => chk(x.ok, x.work, x.why))),
+    h('small', { class: 'cx-verdict', text: c.stage === 'norel' ? 'Needs no relation → set aside.' : 'A method the reader needs placed → FAIL.' }));
   return null;
 }
 // 1-2: one tab per part, each a full step panel on its own run data, and the combined score under both
@@ -1457,12 +1468,12 @@ function measureSteps(it) {
     const VW = { FAIL: 'slop', PASS: 'fine', UNRESOLVED: 'open', NOT_APPLICABLE: 'n/a' };
     pick.replaceChildren(...U.map((u, k) => h('option', { value: k, text: `${VW[u.final]} · ${u.text.slice(0, 48)}…` })));
     const sh = t => t.length > 140 ? t.slice(0, 138).replace(/\s+\S*$/, '') + '…' : t;
-    const fill = k => { const u = U[k]; const vals = u.steps ? u.steps.map(bs => h('div', { class: 'eb' }, ...bs.map(blkView))) : u.ctx ? [cxView(u, 0), cxView(u, 1), cxView(u, 2), null] : u.ci ? [ciView(u, 0), ciView(u, 1), ciView(u, 2), null] : [
+    const fill = k => { const u = U[k]; const vals = u.steps ? u.steps.map(bs => h('div', { class: 'eb' }, ...bs.map(blkView))) : u.ctx ? [cxView(u, 0), cxView(u, 1), cxView(u, 2), null] : u.ci ? [ciView(u, 0), ciView(u, 1), ciView(u, 2), ciView(u, 3), null] : [
       u.pair ? pairQ(u.pair.later, 'later') : u.segs ? h('div', { class: 'pv' }, h('span', { class: 'pv-sec' }, h('b', { text: u.sec }), ' · ' + u.id), h('q', { class: 'mw-q' }, ...u.segs.map(([t, on]) => on ? h('mark', { class: 'pv-m', text: t }) : t))) : h('div', {}, h('q', { class: 'mw-q', text: sh(u.text) }), h('small', { text: [u.id, u.sec].filter(Boolean).join(' · ') })),
       u.pair ? pairQ(u.pair.earlier, 'earlier') : h('div', {}, h('span', { text: u.s2 || '—' })),
       h('div', {}, u.found.length ? h('span', { class: 'mw-ids' }, ...u.found.map(x => h('code', { text: x }))) : h('span', { class: 'mw-none', text: 'nothing' }), u.found_note ? h('small', { text: tidyNote(u.found_note) }) : null, u.judge_line ? h('small', { text: tidyNote(u.judge_line) }) : null),
       h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: tidyNote(u.final_reason) }) : null)];
-      if (u.ctx || u.ci) vals[3] = h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: tidyNote(u.final_reason) }) : null);
+      if (u.ctx || u.ci) vals[u.ci ? 4 : 3] = h('div', {}, h('span', { class: 'mw-runs' }, ...u.runs.map(r => h('span', { class: 'mw-r v-' + VK(r), text: VLAB[r] })), h('span', { class: 'mw-to', text: '→' }), h('b', { class: 'mw-final v-' + VK(u.final), text: VLAB[u.final] })), u.final_reason ? h('small', { text: tidyNote(u.final_reason) }) : null);
       ex.forEach((e, j) => e.replaceChildren(vals[j] || h('span', { text: '—' }))); if (XM && (data.cimap || (data.map && data.map.units[k]))) XM.sel(k); };
     pick.addEventListener('change', () => { fill(+pick.value); run(); });
     const kd = data.meta.default ? U.findIndex(u => u.id === data.meta.default) : -1;
@@ -1471,6 +1482,7 @@ function measureSteps(it) {
     const F = c.FAIL + (pre.FAIL || 0), P = c.PASS + (pre.PASS || 0), UU = c.UNRESOLVED + (pre.UNRESOLVED || 0), D = F + P;
     if (m.breadth) { breadthLine(data, score); return; }
     if (m.cost) { score.replaceChildren(`${data.meta.side} ${data.meta.paper} · cost score = `, h('b', { class: 'big', text: String(data.meta.cost) }), ' / 100 → ', h('b', { class: 'v-F', text: data.meta.cost ? 'PASS' : 'FAIL' })); return; }
+    if (data.meta.score_den) { const N = data.meta.score_den; score.replaceChildren(`${data.meta.side} ${data.meta.paper} · ${N} ${m.units} · score = FAIL ÷ ${m.units} = `, h('b', { text: `${F} ÷ ${N}` }), ' = ', h('b', { class: 'big', text: (F / N).toFixed(2) }), data.meta.hu_score != null ? `  ·  its human pair: ${data.meta.hu_score.toFixed(2)}` : ''); return; }
     if (m.plain) { score.replaceChildren(`Score = FAIL / (FAIL + PASS). ${data.meta.side} ${data.meta.paper}: ${F} / ${D} = ${D ? (F / D).toFixed(2) : '—'}` + (UU ? `, ${UU} U not counted.` : '.')); return; }
     score.replaceChildren(`${data.meta.side} ${data.meta.paper} · ${U.length} ${m.units} · score = FAIL ÷ (FAIL + PASS) = `, h('b', { text: `${F} ÷ ${D}` }), ' = ', h('b', { class: 'big', text: D ? (F / D).toFixed(2) : '—' }), UU ? ` · ${UU} U, not counted` : '');
   }).catch(() => ex.forEach(e => e.replaceChildren(h('span', { class: 'rs-wait', text: 'run data not loaded' }))));
