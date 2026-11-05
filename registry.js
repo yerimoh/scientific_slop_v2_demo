@@ -897,7 +897,7 @@ $('#sm-res').replaceChildren(h('table', { class: 'res-tbl' },
   h('thead', {}, h('tr', {}, ...['Slop', 'PairAcc', 'AUROC', 'TPR@5%FPR'].map(t => h('th', { text: t })))),
   h('tbody', {}, ...GROUPS.flatMap(g => [h('tr', { class: 'res-g ' + g.cls }, h('td', { colspan: 4, text: g.title })),
     ...ITEMS.filter(i => i.plane === g.key).map(it => { const r = RESULTS[it.id] || {};
-      return h('tr', { class: RESULTS[it.id] ? 'has' : '' }, h('td', {}, h('span', { class: 'res-id', text: it.id }), it.name), h('td', { text: r.pa || '' }), h('td', { text: r.auc || '' }), h('td', { text: r.tpr || '' })); })]))));
+      return h('tr', { class: RESULTS[it.id] ? 'has' : '' }, h('td', { text: it.name }), h('td', { text: r.pa || '' }), h('td', { text: r.auc || '' }), h('td', { text: r.tpr || '' })); })]))));
 // the three areas, each in its own colour: Structure, Argument, Artifacts
 const TREE2 = GROUPS.map(g => [g, ITEMS.filter(i => i.plane === g.key).map(i => i.id)]);
 $('#tree-rows').replaceChildren(...TREE2.map(([g, ids]) => h('div', { class: 'tr ' + g.cls },
