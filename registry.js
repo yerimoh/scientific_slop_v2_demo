@@ -462,7 +462,7 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
 const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code';
-const MV = '1106x';   // bump with the run data so browsers do not keep an old measure/*.json
+const MV = '1106y';   // bump with the run data so browsers do not keep an old measure/*.json
 const MEASURE = {
   '1-1': { unit: 'claim', units: 'claims',
     stages: [['Claim', 'stated as fact', 'paper'], ['Needs', 'what would prove it?', Q], ['Found', 'in the paper?', QC], ['Verdict', '3 runs vote', CD]],
@@ -472,24 +472,24 @@ const MEASURE = {
       ['Search the paper', [[Q, 'Point to ids that bear on the claim: tables, figures, result sentences, method text, citations.'], [CD, 'Discard the claim itself, its restatements in abstract / intro / conclusion, and ids that do not exist.'], [CD, 'Add any table containing the claim’s numbers.'], [Q, 'Judge (second call) reads the remaining material verbatim: supported · partial · unsupported · ambiguous · common knowledge, plus what is missing.']]],
       ['Decide PASS / FAIL / U', [[CD, 'Rules, in order: cited prior-work fact → PASS · procedure or definition → NA · supported or partial → PASS · unsupported, no valid evidence → FAIL.'], [CD, 'Unsupported, but its numbers appear in a table or only a figure supports it → human review (U).'], [CD, 'Three runs (1 greedy, 2 sampled). FAIL needs ≥2 FAIL votes and no PASS. Found in <2 runs or split → U.'], [CD, 'score = FAIL / (FAIL + PASS). U reported as coverage; NA excluded.']]]],
     line: 'Qwen2.5-32B reads; code checks every id, applies the rules and counts. Three runs vote; split votes stay U.' },
-  '1-2b': { unit: 'axis', units: 'axes', breadth: true,
-    stages: [['Results', 'tables with numbers, setup sentences', CD], ['Names', 'models and evaluation datasets', H], ['In the results?', 'each name in a table, caption or experiment text', CD], ['Breadth', 'counts → 0–100', CD]],
-    how: [
-      ['Collect the results', [[CD, 'Tables with ≥4 numeric cells, body and appendix.'], [CD, 'Figure captions; experiment, method and appendix sentences that name models, datasets or seeds.'], [CD, 'No result table → NA (theory or system paper).']]],
-      ['List the names', [[H, 'One call per paper. Models: the backbone the method runs on, or the model being analysed.'], [H, 'Not models: the paper’s own method, baseline methods, ablation variants, sizes without a name.'], [H, 'Datasets: what the results are reported on. Not training-only data. Splits and sub-tasks of one benchmark → one dataset.'], [H, 'Also returned: each model’s family (Qwen, Llama, InternVL), baselines, seeds, benchmark paper or not.']]],
-      ['Check each name', [[CD, 'Counts only if it appears in a result table, a caption, or experiment / method / appendix text. Related work does not count.'], [CD, 'Dropped: the paper’s own method, “(ours)”, “w/o …” variants, LaTeX debris.'], [CD, 'RefCOCO, RefCOCO+ and RefCOCOg → 3 datasets. “GSM8K test” → GSM8K.'], [CD, 'No model judgment.']]],
-      ['Score the breadth', [[CD, 'Each count n → log₂ n ÷ log₂ cap, at most 1. One item → 0. Caps: models 8, families 4, datasets 16.'], [CD, 'Model axis = (models + families) ÷ 2. Dataset axis = datasets.'], [CD, 'Breadth = 100 × mean of the two axes. Below 35 → FAIL.'], [CD, 'Benchmark paper → dataset axis NA. Seeds, ± and baselines are shown, not scored.']]]],
-    line: 'Claude Haiku lists the models and datasets once per paper; code checks every name against the results and turns the counts into a 0–100 breadth.' },
-  '1-2d': { unit: 'added part', units: 'added parts', cost: true,
-    stages: [['Adds', 'what the method adds that costs compute', H], ['Cost reported?', 'a measured cost, or a matched-budget comparison', H], ['In the paper?', 'the quote at that id, with a number', CD], ['Cost score', 'reported → 100 · not → 0', CD]],
-    how: [
-      ['List what the method adds', [[CD, 'Input: abstract, method sentences, result tables, and every sentence with a cost word and a number.'], [H, 'One call per paper. Adds: extra model calls or forward passes, an extra model or module, a training stage, sampling, search or voting, retrieval.'], [H, 'Nothing added (the method removes or reweights something, or no method is proposed) → NA.']]],
-      ['Find the cost reports', [[H, 'Where the paper measures what the method or a baseline costs, with a number: latency, runtime, throughput, FLOPs, memory, tokens, API cost, GPU hours, model calls.'], [H, 'Not a cost report: hardware (“on 4 A100 GPUs”), model or input size (“256 tokens per tile”), accuracy, “efficient” without a number.'], [H, 'Also: comparisons at the same compute, budget or number of samples.']]],
-      ['Check each quote', [[CD, 'The quote must occur at the given sentence or table, contain a number, and name what is measured (“tokens”, “latency”, “FLOPs” …).'], [CD, 'A table counts when its header or caption names the measure and it has numbers.'], [CD, 'No model judgment.']]],
-      ['Score the cost part', [[CD, 'A checked cost report or matched-budget comparison → 100 (PASS).'], [CD, 'Something added and neither found → 0 (FAIL).'], [CD, 'Deterministic once the model has answered: one run.']]]],
-    line: 'Claude Haiku lists what the method adds and where its cost is reported; code checks every quote against the paper.' },
+  '1-2b': { unit: 'paper', units: 'papers', breadth: true,
+    stages: [['Collect the results', '', CD], ['Count what was actually evaluated', '', H], ['Check each name', '', CD], ['Score', '', CD]],
+    doc: [
+      [{ p: 'Start from the tables: every table with at least four numbers, appendix included.' }, { p: 'Then read the captions and the experiment text to see which models and datasets each result comes from.' }, { s: 'No experimental results → NA' }],
+      [{ l: 'Models', t: 'The models that produce the reported results. One model name is one model.' }, { l: 'Datasets', t: 'The benchmarks the results are reported on. Splits or subtasks of one benchmark count once.' }, { l: 'Do not count', t: 'The paper’s own method, baseline methods, ablations, training-only data.' }],
+      [{ p: 'A name counts only if it appears in a result table or in the experiment text.' }, { s: 'Names that appear only in related work are dropped.' }],
+      [{ p: 'More models, model families and datasets → a higher score, from 0 to 100.' }, { p: 'One model and one dataset → 0. Below 35 → FAIL.' }, { s: 'Each count is scored on a log scale, up to 8 models, 4 families, 16 datasets. Benchmark papers: datasets not scored.' }]],
+    how: [], line: 'Find where the results are, then count the models and datasets behind them.' },
+  '1-2d': { unit: 'paper', units: 'papers', cost: true,
+    stages: [['Extra compute?', '', H], ['Cost reported?', '', H], ['Evidence valid?', '', CD], ['Score', '', CD]],
+    doc: [
+      [{ p: 'Find anything the method adds that increases compute.' }, { l: 'Look for', list: ['extra model calls or forward passes', 'additional models or modules', 'training, sampling, search, voting or retrieval'] }, { s: 'Nothing added → NA' }],
+      [{ p: 'Look for a measured cost, or a comparison at the same compute budget.' }, { l: 'Count as cost', t: 'latency · runtime · FLOPs · memory · tokens · GPU hours · model or API calls' }, { l: 'Do not count', t: 'hardware specs, input size, accuracy, “efficient” without a number' }],
+      [{ p: 'The sentence or table must say what is measured and give a number.' }, { l: 'For example', list: ['“Latency: 1.8 s” ✓', '“requires additional compute” ✕', '“comes at a cost: accuracy drops 10.8%” ✕'] }],
+      [{ l: 'Cost reported or budget matched', t: '100' }, { l: 'Extra compute, neither reported', t: '0 → FAIL' }, { l: 'Nothing added', t: 'NA' }]],
+    how: [], line: 'Find methods that add compute, then check whether the paper reports that cost with a number.' },
   '1-2': { parts: ['1-2b', '1-2d'],
-    line: 'Two parts, scored 0–100 each. Overstated Claims = the mean of evaluation breadth and cost reporting; a part that does not apply is left out.' },
+    line: 'Two checks, each scored 0–100. The slop score combines them.' },
   '1-4': { unit: 'sentence', units: 'citing sentences',
     stages: [['Sentence', 'a citing sentence in the introduction or related work', CD], ['Woven?', 'tied to another work in the sentence', CD], ['Related to this paper?', 'compared, used, or contrasted anywhere', CD], ['Needs a relation?', 'a method, not a survey, benchmark or fact', CD], ['Verdict', 'rule, one run', CD]],
     how: [
@@ -595,8 +595,7 @@ const pairQ = (p, role) => h('div', { class: 'pv' }, h('span', { class: 'pv-sec'
   h('q', { class: 'mw-q' }, ...p.segs.map(([t, on]) => on ? h('mark', { class: 'pv-m', text: t }) : t)));
 // 1-2b: the paper's score is a breadth (0-100, higher = wider), not a FAIL share
 function breadthLine(data, el) {
-  const mt = data.meta, a = mt.axes, kids = [`${mt.side} ${mt.paper} · breadth = 100 × (model `, h('b', { text: (a.model / 100).toFixed(2) }), ' + dataset ', h('b', { text: (a.dataset / 100).toFixed(2) }), ') ÷ 2 = ', h('b', { class: 'big', text: mt.breadth.toFixed(1) }),
-    ` · below ${mt.fail_below} → `, h('b', { class: 'v-F', text: mt.breadth < mt.fail_below ? 'FAIL' : 'PASS' }), mt.aux ? ` · shown, not scored: ${mt.aux}` : ''];
+  const mt = data.meta, kids = [`${mt.side} ${mt.paper} · Narrow Evaluation `, h('b', { class: 'big', text: mt.breadth.toFixed(0) }), ' / 100 → ', h('b', { class: 'v-F', text: mt.breadth < mt.fail_below ? 'FAIL' : 'PASS' })];
   if (el) { el.replaceChildren(...kids); return el; }
   return h('p', { class: 'mw-score' }, ...kids);
 }
@@ -1358,6 +1357,9 @@ function blkView(b) {
     return h('div', { class: 'eb-cnt' }, h('table', {}, ...c.rows.map(([l, n, v]) => h('tr', {}, h('td', { text: l }), h('td', { class: 'n', text: n }), h('td', { class: 'v' + (+v ? '' : ' z'), text: v })))),
       h('p', { class: 'eb-tot' }, c.total, ' → ', h('b', { class: 'v-' + (c.verdict === 'PASS' ? 'P' : 'F'), text: c.verdict })), c.hint ? h('small', { class: 'eb-n', text: c.hint }) : null); }
   if (b.line) return h('p', { class: 'eb-line', text: b.line });
+  if (b.stat) return h('div', { class: 'eb-stat' }, ...b.stat.map(([n, main, sub]) => h('div', {}, h('span', { class: 'eb-sn', text: n }), h('b', { text: main }), sub ? h('small', { text: sub }) : null)));
+  if (b.verdict) return h('p', { class: 'eb-vd' }, h('b', { text: b.verdict.score }), ' · ', h('b', { class: 'v-' + (b.verdict.v === 'PASS' ? 'P' : 'F'), text: b.verdict.v }), b.verdict.note ? h('small', { text: b.verdict.note }) : null);
+  if (b.kv) return h('dl', { class: 'eb-kv' }, ...b.kv.flatMap(([k, v, bad]) => [h('dt', { text: k }), h('dd', { class: bad ? 'bad' : '', text: v })]));
   return null;
 }
 // 4-1: the passage around a framed sentence, so the reader can see what deleting it loses
@@ -1424,7 +1426,7 @@ function partsView(it) {
   Promise.all(parts.map(p => fetch('measure/' + p.id + '.json?v=' + MV).then(r => r.json()))).then(([b, d]) => {
     const B = b.meta.breadth, Cs = d.meta.cost, S = (B + Cs) / 2;
     comb.replaceChildren(h('span', { class: 'pt-cl', text: `${b.meta.side} ${b.meta.paper} · ${it.name || 'combined'}` }),
-      'evaluation breadth ', h('b', { text: B.toFixed(1) }), ' + cost reporting ', h('b', { text: String(Cs) }), ' → (', B.toFixed(1), ' + ', String(Cs), ') ÷ 2 = ', h('b', { class: 'big', text: S.toFixed(1) }), ' / 100 · slop score 1 − ', S.toFixed(1), '/100 = ', h('b', { class: 'v-F', text: (1 - S / 100).toFixed(2) }));
+      'Narrow Evaluation ', h('b', { text: B.toFixed(0) }), ' and Missing Cost Accounting ', h('b', { text: String(Cs) }), ' → average ', h('b', { class: 'big', text: S.toFixed(0) }), ' / 100. Lower means more slop.');
   }).catch(() => comb.replaceChildren('run data not loaded'));
   show(0);
   return h('div', { class: 'pt' }, h('p', { class: 'rs-line', text: m.line }), tabs, panel, comb);
@@ -1434,12 +1436,14 @@ function measureSteps(it) {
   const m = MEASURE[it.id];
   if (m && m.parts) return partsView(BY_ID[it.id] || it);
   if (!m) return h('ol', { class: 'rs' }, ...(it.judge || []).map((t, k) => h('li', { class: 'rs-row' }, h('div', { class: 'rs-n' }, h('b', { text: String(k + 1) })), h('div', { class: 'rs-do' }, h('p', { text: t })))));
-  const plain = !!m.plain;
-  const whoTag = w => (plain || w === 'paper') ? null : h('span', { class: 'rs-who ' + (w === 'code' ? 'rule' : 'model'), text: w === 'code' ? 'rule' : w.includes('code') ? 'model + rule' : 'model' });
+  const plain = !!m.plain, doc = m.doc;
+  const docBody = bs => bs.map(b => b.p ? h('p', { class: 'dc-p', text: b.p }) : b.list ? h('div', { class: 'dc-g' }, h('span', { class: 'dc-l', text: b.l }), h('ul', {}, ...b.list.map(t => h('li', { text: t }))))
+    : b.l ? h('div', { class: 'dc-g' }, h('span', { class: 'dc-l', text: b.l }), h('p', { text: b.t })) : b.s ? h('p', { class: 'dc-s', text: b.s }) : null);
+  const whoTag = w => (plain || doc || w === 'paper') ? null : h('span', { class: 'rs-who ' + (w === 'code' ? 'rule' : 'model'), text: w === 'code' ? 'rule' : w.includes('code') ? 'model + rule' : 'model' });
   const ex = m.stages.map(() => h('div', { class: 'rs-ex' }, h('span', { class: 'rs-wait', text: '…' })));
   const rows = m.stages.map(([title, sub, w], k) => h('li', { class: 'rs-row' + (k === m.stages.length - 1 ? ' last' : '') },
     h('div', { class: 'rs-n' }, h('b', { text: String(k + 1) }), h('div', {}, h('p', { class: 'rs-t', text: title }), sub ? h('p', { class: 'rs-q', text: sub }) : null, whoTag(w))),
-    h('div', { class: 'rs-do' + (plain ? ' plain' : '') }, ...(m.how[k] ? [m.how[k][0] ? h('p', { class: 'rs-ht', text: m.how[k][0] }) : null, plain ? h('div', {}, ...m.how[k][1].map(([, tt]) => h('p', { text: tt }))) : h('ul', {}, ...m.how[k][1].map(([ww, tt]) => h('li', {}, h('span', { class: 'rs-who sm ' + (ww === 'code' ? 'rule' : 'model'), text: ww === 'code' ? 'rule' : 'model' }), tt)))] : [])),
+    doc ? h('div', { class: 'rs-do dc' }, ...docBody(doc[k])) : h('div', { class: 'rs-do' + (plain ? ' plain' : '') }, ...(m.how[k] ? [m.how[k][0] ? h('p', { class: 'rs-ht', text: m.how[k][0] }) : null, plain ? h('div', {}, ...m.how[k][1].map(([, tt]) => h('p', { text: tt }))) : h('ul', {}, ...m.how[k][1].map(([ww, tt]) => h('li', {}, h('span', { class: 'rs-who sm ' + (ww === 'code' ? 'rule' : 'model'), text: ww === 'code' ? 'rule' : 'model' }), tt)))] : [])),
     ex[k]));
   const pick = h('select', { class: 'rs-pick', 'aria-label': 'Which unit the example column follows' });
   const head = h('div', { class: 'rs-head' }, h('span', { class: 'rs-hl', text: 'Step' }), h('span', { class: 'rs-hl', text: 'Procedure' }), h('span', { class: 'rs-hl' }, 'Example: ', pick));
@@ -1481,7 +1485,7 @@ function measureSteps(it) {
     const c = { FAIL: 0, PASS: 0, UNRESOLVED: 0 }; U.forEach(u => { if (u.final in c) c[u.final]++; });
     const F = c.FAIL + (pre.FAIL || 0), P = c.PASS + (pre.PASS || 0), UU = c.UNRESOLVED + (pre.UNRESOLVED || 0), D = F + P;
     if (m.breadth) { breadthLine(data, score); return; }
-    if (m.cost) { score.replaceChildren(`${data.meta.side} ${data.meta.paper} · cost score = `, h('b', { class: 'big', text: String(data.meta.cost) }), ' / 100 → ', h('b', { class: 'v-F', text: data.meta.cost ? 'PASS' : 'FAIL' })); return; }
+    if (m.cost) { score.replaceChildren(`${data.meta.side} ${data.meta.paper} · Missing Cost Accounting `, h('b', { class: 'big', text: String(data.meta.cost) }), ' / 100 → ', h('b', { class: 'v-F', text: data.meta.cost ? 'PASS' : 'FAIL' })); return; }
     if (data.meta.score_den) { const N = data.meta.score_den; score.replaceChildren(`${data.meta.side} ${data.meta.paper} · ${N} ${m.units} · score = FAIL ÷ ${m.units} = `, h('b', { text: `${F} ÷ ${N}` }), ' = ', h('b', { class: 'big', text: (F / N).toFixed(2) }), data.meta.hu_score != null ? `  ·  its human pair: ${data.meta.hu_score.toFixed(2)}` : ''); return; }
     if (m.plain) { score.replaceChildren(`Score = FAIL / (FAIL + PASS). ${data.meta.side} ${data.meta.paper}: ${F} / ${D} = ${D ? (F / D).toFixed(2) : '—'}` + (UU ? `, ${UU} U not counted.` : '.')); return; }
     score.replaceChildren(`${data.meta.side} ${data.meta.paper} · ${U.length} ${m.units} · score = FAIL ÷ (FAIL + PASS) = `, h('b', { text: `${F} ÷ ${D}` }), ' = ', h('b', { class: 'big', text: D ? (F / D).toFixed(2) : '—' }), UU ? ` · ${UU} U, not counted` : '');

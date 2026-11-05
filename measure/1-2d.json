@@ -19,7 +19,7 @@
    "id": "FA0043",
    "sec": "whole paper",
    "kind": "added part · inference",
-   "text": "FA0043: the defense adds a second model call",
+   "text": "FA0043: the defense adds a model call",
    "s2": "",
    "found": [],
    "runs": [],
@@ -29,7 +29,7 @@
     [
      {
       "pipe": {
-       "label": "Baseline (Condition A)",
+       "label": "Baseline",
        "boxes": [
         {
          "t": "judge"
@@ -40,7 +40,7 @@
      },
      {
       "pipe": {
-       "label": "The defense (Condition B)",
+       "label": "The defense",
        "boxes": [
         {
          "t": "Pass 1: self-answer",
@@ -53,182 +53,64 @@
        "note": "+1 call per example",
        "bad": true
       }
-     },
+     }
+    ],
+    [
      {
-      "quote": {
-       "sec": "§3 Method",
-       "id": "S2.045",
-       "segs": [
-        [
-         "We propose ",
-         false
-        ],
-        [
-         "a two-pass architecture",
-         true
-        ],
-        [
-         " where the judge first generates its own answer using only trusted inputs, then uses this uncontaminated reference when evaluating candidates.",
-         false
-        ]
+      "kv": [
+       [
+        "Cost reported",
+        "none",
+        true
+       ],
+       [
+        "Same-budget comparison",
+        "none",
+        true
        ]
-      }
+      ]
      }
     ],
     [
      {
-      "chips": {
-       "label": "Looked for",
-       "items": [
-        {
-         "t": "tokens",
-         "no": true
-        },
-        {
-         "t": "latency",
-         "no": true
-        },
-        {
-         "t": "runtime",
-         "no": true
-        },
-        {
-         "t": "number of calls",
-         "no": true
-        },
-        {
-         "t": "FLOPs",
-         "no": true
-        },
-        {
-         "t": "API cost",
-         "no": true
-        }
+      "checks": [
+       [
+        "“additional compute”",
+        false,
+        "S2.053 · no number"
+       ],
+       [
+        "“comes at a cost”",
+        false,
+        "S3.089 · accuracy, not compute"
        ]
-      }
-     },
-     {
-      "line": "Haiku finds no sentence or table that measures any of these, and no comparison at the same number of calls."
+      ]
      }
     ],
     [
      {
-      "table": {
-       "id": "T1",
-       "caption": [
-        [
-         "Main experimental results on ",
-         false
-        ],
-        [
-         "VL-RewardBench",
-         true
-        ],
-        [
-         " (N=1,247) with ",
-         false
-        ],
-        [
-         "Qwen2.5-VL-7B-Instruct",
-         true
-        ],
-        [
-         ".",
-         false
-        ]
+      "kv": [
+       [
+        "Extra compute",
+        "+1 model call",
+        false
        ],
-       "cols": [
-        "",
-        "CleanAcc",
-        "ASR_cond"
+       [
+        "Cost reported",
+        "no",
+        true
        ],
-       "rows": [
-        [
-         "A · baseline",
-         "78.35",
-         "91.33"
-        ],
-        [
-         "B · defense",
-         "67.52",
-         "29.33"
-        ],
-        [
-         "C · control",
-         "67.76",
-         "33.37"
-        ]
-       ],
-       "ghost": "cost?",
-       "note": "The main table reports accuracy and attack success only. There is no cost column for either condition."
-      }
+       [
+        "Matched budget",
+        "no",
+        true
+       ]
+      ]
      },
      {
-      "quote": {
-       "sec": "§3 Method",
-       "id": "S2.053",
-       "segs": [
-        [
-         "To isolate the effect of information isolation from other factors (e.g., two-pass prompting, ",
-         false
-        ],
-        [
-         "additional compute",
-         true
-        ],
-        [
-         "), we evaluate three conditions.",
-         false
-        ]
-       ],
-       "note": "Names the extra compute, but gives no number."
-      }
-     },
-     {
-      "quote": {
-       "sec": "§4 Experiments",
-       "id": "S3.089",
-       "segs": [
-        [
-         "However, this defense ",
-         false
-        ],
-        [
-         "comes at a cost",
-         true
-        ],
-        [
-         ": clean accuracy drops from 78.35% to 67.52%, a 10.8 percentage-point trade-off.",
-         false
-        ]
-       ],
-       "note": "A cost in accuracy, not in compute."
-      }
-     }
-    ],
-    [
-     {
-      "count": {
-       "rows": [
-        [
-         "added calls",
-         "",
-         "+1"
-        ],
-        [
-         "cost measured",
-         "",
-         "0"
-        ],
-        [
-         "matched budget",
-         "",
-         "0"
-        ]
-       ],
-       "total": "cost score = 0 / 100",
-       "verdict": "FAIL",
-       "hint": "A token or time column for A and B in T1 (e.g. “B uses 2× the tokens of A”) would give 100 → PASS."
+      "verdict": {
+       "score": "0 / 100",
+       "v": "FAIL"
       }
      }
     ]

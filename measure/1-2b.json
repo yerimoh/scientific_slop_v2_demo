@@ -25,7 +25,7 @@
    "id": "FA0043",
    "sec": "whole paper",
    "kind": "model axis + dataset axis",
-   "text": "FA0043: one judge model on one benchmark",
+   "text": "FA0043: one model, one benchmark",
    "s2": "",
    "found": [],
    "runs": [],
@@ -34,9 +34,10 @@
    "steps": [
     [
      {
-      "table": {
-       "id": "T1",
-       "caption": [
+      "quote": {
+       "sec": "T1 caption",
+       "id": "FA0043",
+       "segs": [
         [
          "Main experimental results on ",
          false
@@ -57,96 +58,27 @@
          ".",
          false
         ]
-       ],
-       "cols": [
-        "",
-        "CleanAcc",
-        "ASR",
-        "ASR_cond"
-       ],
-       "rows": [
-        [
-         "A · baseline",
-         "78.35",
-         "91.90",
-         "91.33"
-        ],
-        [
-         "B · defense",
-         "67.52",
-         "45.07",
-         "29.33"
-        ],
-        [
-         "C · control",
-         "67.76",
-         "47.88",
-         "33.37"
-        ]
-       ],
-       "note": "The main result table. Its caption already names the one model and the one benchmark."
+       ]
       }
      },
      {
-      "quote": {
-       "sec": "§4 Experiments",
-       "id": "S3.072",
-       "segs": [
-        [
-         "We use ",
-         false
-        ],
-        [
-         "Qwen2.5-VL-7B-Instruct",
-         true
-        ],
-        [
-         " as the judge model, deployed via vLLM with tensor parallelism across 2 GPUs using bfloat16 precision.",
-         false
-        ]
-       ]
-      }
+      "line": "This paper evaluates one model on one benchmark."
      }
     ],
     [
      {
-      "chips": {
-       "label": "Models",
-       "items": [
-        {
-         "t": "Qwen2.5-VL-7B-Instruct",
-         "why": "family Qwen2.5-VL"
-        }
+      "stat": [
+       [
+        "1 model",
+        "Qwen2.5-VL-7B-Instruct",
+        "Qwen2.5-VL family"
+       ],
+       [
+        "1 dataset",
+        "VL-RewardBench",
+        ""
        ]
-      }
-     },
-     {
-      "chips": {
-       "label": "Datasets",
-       "items": [
-        {
-         "t": "VL-RewardBench",
-         "why": "3 categories, one benchmark"
-        }
-       ]
-      }
-     },
-     {
-      "chips": {
-       "label": "Not counted",
-       "items": [
-        {
-         "t": "Isolated Solve-Then-Judge",
-         "no": true,
-         "why": "the paper’s own method"
-        },
-        {
-         "t": "single-pass judging",
-         "no": true,
-         "why": "a baseline method"
-        }
-       ]
-      }
+      ]
      }
     ],
     [
@@ -155,52 +87,22 @@
        [
         "Qwen2.5-VL-7B-Instruct",
         true,
-        "T1 caption · S3.072 · S3.080"
+        "T1 · §4 setup"
        ],
        [
         "VL-RewardBench",
         true,
-        "T1 and T2 captions · S3.069 · S3.093"
+        "T1 · T2 · §4 setup"
        ]
       ]
-     },
-     {
-      "line": "Both names are in the result tables, so both count. No other model or dataset appears in any result."
      }
     ],
     [
      {
-      "count": {
-       "rows": [
-        [
-         "models",
-         "1",
-         "0"
-        ],
-        [
-         "families",
-         "1",
-         "0"
-        ],
-        [
-         "model axis",
-         "",
-         "0"
-        ],
-        [
-         "datasets",
-         "1",
-         "0"
-        ],
-        [
-         "dataset axis",
-         "",
-         "0"
-        ]
-       ],
-       "total": "breadth = (0 + 0) ÷ 2 = 0 / 100, below 35",
-       "verdict": "FAIL",
-       "hint": "Two models from two families and four datasets would give 46 → PASS."
+      "verdict": {
+       "score": "0 / 100",
+       "v": "FAIL",
+       "note": "Two models from two families on four datasets would score 46."
       }
      }
     ]
