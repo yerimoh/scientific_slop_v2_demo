@@ -1070,11 +1070,16 @@ const QSVG = {
 const QCATCH = { f1: 'AI slop <em>≠</em> bad writing?', f2: 'Does slop <em>cost</em> points?', f3: 'Human <em>or</em> AI reviewer?', f4: 'What reviewers <em>flag</em>' };
 // four questions as a selector: the questions in large type on the left, the chosen one's study drawn large on the right
 const QSHORT = { f1: 'Is AI slop really different from bad human writing?', f2: 'How does scientific slop relate to different review scores?', f3: 'Are AI reviewers more forgiving of scientific slop?', f4: 'Do reviewers catch the scientific flaws we measure?' };
+// key words of each question, drawn in the faint three-colour gradient (like "Scientific Slop" in the hero)
+const QKEY = { f1: ['AI slop', 'bad human writing'], f2: ['scientific slop', 'review scores'], f3: ['AI reviewers', 'more forgiving'], f4: ['reviewers catch', 'scientific flaws'] };
+const qText = (id, t) => { const ks = QKEY[id] || []; if (!ks.length) return [t];
+  const re = new RegExp('(' + ks.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')');
+  return t.split(re).filter(Boolean).map(p => ks.includes(p) ? h('span', { class: 'qk', text: p }) : p); };
 let qCur = 0;
 const qStage = h('div', { class: 'qx-stage' });
 const qList = h('ol', { class: 'qx-list' }, ...FINDINGS.map((f, i) => h('li', {},
   h('button', { type: 'button', class: 'qx-q', 'data-i': i, onmouseenter: () => qShow(i), onfocus: () => qShow(i), onclick: () => { location.href = 'q.html#' + (i + 1); } },
-    h('span', { class: 'qx-n', text: String(i + 1).padStart(2, '0') + '.' }), h('span', { class: 'qx-t', text: QSHORT[f.id] || f.q })))));
+    h('span', { class: 'qx-n', text: String(i + 1).padStart(2, '0') + '.' }), h('span', { class: 'qx-t' }, ...qText(f.id, QSHORT[f.id] || f.q))))));
 function qShow(i) {
   if (i === qCur && qStage.firstChild) return; qCur = i; const f = FINDINGS[i];
   qList.querySelectorAll('.qx-q').forEach((b, k) => b.classList.toggle('on', k === i));
@@ -1107,7 +1112,7 @@ function xmap(map) {
   const P = {};   // component boxes
   for (const sec of map.sections) {
     const cs = map.comps.filter(c => c.in === sec.id), b = S[sec.id];
-    const perRow = cs.length > 2 ? 3 : 2, cw = perRow === 3 ? 26 : 40, gx = (SW - perRow * cw) / (perRow + 1);
+    const perRow = cs.length > 2 ? 3 : 2, cw = perRow === 3 ? 28 : 34, gx = (SW - perRow * cw) / (perRow + 1);
     cs.forEach((c, k) => { const r = Math.floor(k / perRow), last = cs.length - r * perRow; let col = k % perRow; if (perRow === 3 && last === 2 && r > 0) col = col ? 2 : 0;   // a short last row sits at the edges so its pointers can come in from the margins
       P[c.id] = { ...c, x: b.x + gx + col * (cw + gx), y: b.y + 84 + r * 24, w: cw, h: 17, row: r }; });
   }
@@ -1148,17 +1153,29 @@ function xmap(map) {
   // step 3: uses with no pointer (red dashed arcs above the sheets) + used / not used marks
   let miss = '';
   map.missing.forEach((m, k) => {
-    const f = at(m.from), t = at(m.to), x0 = f.x + f.w / 2, x1 = t.x + t.w / 2, y = SY - 4, top = SY - 30 - k * 32, left = k === 0;
-    const xm = (x0 + x1) / 2;
+    // nested arcs that never cross: the shorter one sits low inside the longer one; notes sit beside the arcs, not on them
+    const f = at(m.from), t = at(m.to), span = Math.abs((f.x + f.w / 2) - (t.x + t.w / 2));
+    const other = map.missing[1 - k], oSpan = other ? Math.abs((at(other.from).x + at(other.from).w / 2) - (at(other.to).x + at(other.to).w / 2)) : 0;
+    const inner = other && span < oSpan, y = SY - 4, top = inner ? SY - 30 : SY - 74;
+    const shift = id => {   // a sheet shared by both arcs: the inner arc uses its near half, the outer arc its far half
+      if (!S[id] || !map.missing.some(o => o !== m && (o.from === id || o.to === id))) return 0;
+      const me = S[id], far = me === f ? t : f, dir = Math.sign((far.x + far.w / 2) - (me.x + me.w / 2));
+      return (inner ? 1 : -1) * dir * 24; };
+    const x0 = f.x + f.w / 2 + shift(m.from), x1 = t.x + t.w / 2 + shift(m.to), peak = .75 * top + .25 * y;
+    const xd = `<path d="M-3 -3L3 3M-3 3L3 -3" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>`;
     miss += `<path d="M${x0} ${y} C${x0} ${top} ${x1} ${top} ${x1} ${y - 4}" fill="none" stroke="${red}" stroke-width="1.8" stroke-dasharray="5 4"/>` +
-      `<path d="M${x1 - 4} ${y - 10} L${x1} ${y - 3} L${x1 + 4} ${y - 10}" fill="none" stroke="${red}" stroke-width="1.8" stroke-linecap="round"/>` +
-      `<g transform="translate(${xm} ${top + 6})"><circle r="7" fill="${red}"/><path d="M-3 -3L3 3M-3 3L3 -3" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></g>` +
-      `<text class="xm-hand" x="${left ? xm - 12 : xm + 12}" y="${top + 6}" text-anchor="${left ? 'end' : 'start'}" dominant-baseline="central">${esc(m.note)}</text>`;
+      `<path d="M${x1 - 4} ${y - 10} L${x1} ${y - 3} L${x1 + 4} ${y - 10}" fill="none" stroke="${red}" stroke-width="1.8" stroke-linecap="round"/>`;
+    if (inner) {   // note to the left of the low arc, under the high one
+      const lx = Math.min(x0, x1) - 10;
+      miss += `<g transform="translate(${lx} ${SY - 16})"><circle cx="-8" r="7" fill="${red}"/><g transform="translate(-8 0)">${xd}</g><text class="xm-hand" x="-20" y="0" text-anchor="end" dominant-baseline="central">${esc(m.note)}</text></g>`;
+    } else {       // note above the high arc's crest
+      miss += `<g transform="translate(${(x0 + x1) / 2} ${peak - 14})"><circle cx="-8" r="7" fill="${red}"/><g transform="translate(-8 0)">${xd}</g><text class="xm-hand" x="4" y="0" dominant-baseline="central">${esc(m.note)}</text></g>`;
+    }
   });
   let marks = '';
   for (const u of map.units) {
-    const b = at(u.id), used = u.final === 'PASS', x = b.x + b.w + 1, y = b.y - 1;
-    marks += `<g transform="translate(${x} ${y})"><circle r="8" fill="${used ? ok : red}" stroke="#fff" stroke-width="1.5"/>` +
+    const b = at(u.id), used = u.final === 'PASS', small = !S[u.id], x = b.x + b.w + (small ? -1 : 1), y = b.y - (small ? 2 : 1);
+    marks += `<g transform="translate(${x} ${y})${small ? ' scale(.8)' : ''}"><circle r="8" fill="${used ? ok : red}" stroke="#fff" stroke-width="1.5"/>` +
       (used ? `<path d="M-3.6 0L-1 2.8L3.8 -3" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>` : `<path d="M-3 -3L3 3M-3 3L3 -3" stroke="#fff" stroke-width="2" stroke-linecap="round"/>`) + `</g>`;
   }
   out += g(2, miss + marks);
@@ -1169,7 +1186,7 @@ function xmap(map) {
     stamps += `<text class="xm-stamp ${pass ? 'p' : 'f'}" x="${b.x + b.w / 2}" y="${y}" text-anchor="middle">${pass ? 'PASS' : 'FAIL'}</text>`;
   }
   out += g(3, stamps);
-  const svg = h('div', { class: 'xm-fig', html: `<svg viewBox="0 0 ${W} 262" role="img" aria-label="${esc(map.aria || 'The paper as sheets, with the pointers between its parts')}">${out}</svg>` });
+  const svg = h('div', { class: 'xm-fig', html: `<svg viewBox="0 18 ${W} 236" role="img" aria-label="${esc(map.aria || 'The paper as sheets, with the pointers between its parts')}">${out}</svg>` });
   const cap = h('p', { class: 'xm-cap' });
   const el = h('figure', { class: 'xm' }, svg, cap);
   const step = k => {
