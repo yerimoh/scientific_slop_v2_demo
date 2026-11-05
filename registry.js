@@ -882,7 +882,7 @@ $('#sm-res').replaceChildren(h('table', { class: 'res-tbl' },
 // the three areas, each in its own colour: Structure, Argument, Artifacts
 const TREE2 = GROUPS.map(g => [g, ITEMS.filter(i => i.plane === g.key).map(i => i.id)]);
 $('#tree-rows').replaceChildren(...TREE2.map(([g, ids]) => h('div', { class: 'tr ' + g.cls },
-  h('span', { class: 'tr-m' }, h('b', { text: g.title }), h('span', { text: ' · ' + ids.length })),
+  h('span', { class: 'tr-m' }, h('b', { text: g.title })),
   h('div', { class: 'tr-s' }, ...ids.map(id => h('button', { type: 'button', class: 'ts ' + BY_ID[id].ar.cls, 'data-id': id, onclick: () => select(id) }, h('i'), h('span', { class: 'ts-n', text: BY_ID[id].name }), h('span', { class: 'ts-v' })))))));
 const V1OF = Object.fromEntries(TREE.flatMap(([m, ids]) => ids.map(id => [id, m])));
 function drawTree() {
