@@ -1505,3 +1505,8 @@ mark.cx-e { color: inherit; background: rgba(255, 214, 10, .38); border-radius: 
 .tree .res-tbl tr.res-g td { padding-top: 10px; }
 .tree .res-tbl th { font-size: 11.5px; } .tree .res-tbl th:not(:first-child), .tree .res-tbl td:not(:first-child) { width: 44px; padding-left: 6px; }
 .tree .res-tbl { table-layout: fixed; width: 100%; } .tree .res-tbl th:not(:first-child), .tree .res-tbl td:not(:first-child) { width: 52px; padding-left: 4px; padding-right: 2px; } .tree .res-tbl tr.res-g td { width: auto; }
+/* vote: plain text like "How it is measured", no pill */
+.cap-a .cap-v, .re-v { border: 0; border-radius: 0; background: none; padding: 0; gap: 6px; font: inherit; font-size: 13.5px; font-weight: 600; color: var(--ink-2); cursor: pointer; }
+.cap-a .cap-v:hover, .re-v:hover { color: var(--ink); }
+.cap-a .cap-v b, .re-v b { min-width: 0; padding: 0; border-radius: 0; background: none; font-family: inherit; font-size: 13.5px; font-weight: 400; opacity: 1; color: var(--ink-3); }
+.cap-a .cap-v.on, .re-v.on { background: none; color: var(--ink); } .cap-a .cap-v.on b { color: var(--ink-2); }
