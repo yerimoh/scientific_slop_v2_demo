@@ -1658,3 +1658,9 @@ a.tm:hover .tm-name { text-decoration: underline; text-underline-offset: 3px; }
 .qa-b details.qa-more > summary::-webkit-details-marker { display: none; }
 .qa-b details.qa-more > summary::before { content: '▸ '; color: var(--ink-3); } .qa-b details.qa-more[open] > summary::before { content: '▾ '; }
 .qa-b details.qa-more > .qa-tbl, .qa-b details.qa-more > .qa-cap { margin: 0 14px 12px; width: calc(100% - 28px); }
+
+/* experiment parts: Why / Result / What it means */
+.qa-b .xp { margin: 0 0 14px; } .qa-b .xp > p { margin: 0; }
+.qa-b .xp-l { display: block; margin: 0 0 3px; font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3); }
+.qa-b .xp.mean { padding: 12px 16px; border-left: 3px solid var(--q1ac); background: var(--q1ac-bg); border-radius: 0 8px 8px 0; margin: 18px 0 8px; }
+.qa-b .xp.mean .xp-l { color: var(--q1ac); }
