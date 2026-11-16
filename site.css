@@ -1650,3 +1650,5 @@ a.tm:hover .tm-name { text-decoration: underline; text-underline-offset: 3px; }
 .tz-l, .xrole, .xi, .xchip, .xidx, .exp-n, .tldr .tldr-l, .qf-leg, .setup > summary, .xl tr.xg td { font-size: 13px; }
 .xidx b { font-size: 14px; } .tz-out b { font-size: 22px; }
 .qa-b h4 { font-size: 24px; } .exp h5 { font-size: 19px; }
+
+.qa-b h5.qa-how { margin: 22px 0 8px; font-size: 16px; font-weight: 650; color: var(--ink); }
