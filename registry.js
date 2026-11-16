@@ -281,7 +281,7 @@ const FINDINGS = [
   { id: 'f4', q: 'What problems do reviewers point out for each type of slop?', a: 'Reviewer weaknesses collected per item: does a 1-2 paper get “overclaims”, a 4-4 paper “repetitive”?',
     compare: 'High-slop papers and the weakness sections of their reviews.',
     measure: 'Which remark each item draws, and which items reviewers never name even when the paper has them.',
-    v1: null, chart: () => '', cap: '', status: 'planned' },
+    v1: null, chart: () => '', cap: '', status: 'first result' },
 ];
 
 // ------------------------------------------------------------------ specimen paper (two columns; every registry item planted once)

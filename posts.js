@@ -328,14 +328,106 @@ const QPOST = {
     h('h4', { text: 'Data' }),
     h('p', { text: 'No single dataset has everything, so we use three. Agents4Science 2025 has AI-written papers with 456 AI reviews and 55 human reviews. Our 390 SciSlopBench pairs already have two AI reviewers run on both sides. ICLR 2026 has reviews labelled by Pangram as human-written (32,938) or AI-generated (15,899), often on the same paper.' }),
     h('h4', { text: 'Result' }), h('p', { class: 'qa-none', text: 'Not in yet.' })] },
-  f4: { title: 'Do reviewers catch the scientific flaws we measure?', tag: 'not run yet', body: () => [
-    h('p', { text: 'A slop FAIL says where a paper breaks. The weakness section of a review says what the reviewer noticed. Lining the two up shows which slops reviewers name, which they miss, and the words they use.' }),
-    h('p', { text: 'Does a paper that fails 1-2 (Overstated Claims) get “overclaims” more often than other papers? Does a 4-4 paper get “the paper is repetitive”?' }),
-    h('h4', { text: 'Setup' }),
-    h('p', { text: 'We work from both ends. From the review side, each weakness is labelled with the item and the place in the paper it points to; this needs no measurement and is already possible. From the paper side, once the 11 items are measured, we check which FAILs the reviewers caught.' }),
-    h('h4', { text: 'Data' }),
-    h('p', { text: 'ICLR 2017–2024 reviews (about 850 papers), 75,800 ICLR 2026 reviews, and the Agents4Science reviews.' }),
-    h('h4', { text: 'Result' }), h('p', { class: 'qa-none', text: 'Not in yet.' })] },
+  f4: { title: 'Do reviewers catch the scientific flaws we measure?', tag: 'Scientific Slop Index · Question 4', body: () => {
+    const D = window.Q4 || {}, B = t => h('b', { text: t });
+    const pct = x => x == null ? '–' : Math.round(x * 100) + '%', pct1 = x => x == null ? '–' : (x * 100).toFixed(1) + '%';
+    const NAME = { '1-2b': 'Narrow Evaluation', '1-2d': 'Missing Cost Accounting', '1-2o': 'Overstated Claims, other', '1-3': 'Evidence Gap', '1-4': 'Unclear Links to Prior Work', '2-3': 'Missing Cross-Section Links', '2-5': 'Empty Conclusion', '3-2': 'Single-Source Method', '4-1': 'Generic Filler', '4-2': 'Unexplained Terms', '4-4': 'Redundant Repetition', '4-5': 'Unclear Figures', '5-5': 'Formulaic Reasoning' };
+    const KIND = { CLARITY: 'Writing hard to follow', SOUNDNESS: 'Technical or method flaw', DETAILS: 'Missing details', MORE_EXP: 'More ablations or analysis', BASELINES: 'Missing baselines', MOTIVATION: 'Weak motivation', NOVELTY: 'Limited novelty', SCOPE: 'Limited scope', RELATED: 'Missing references', RESULTS: 'Weak results', OTHER: 'Other' };
+    const part = (lab, cls) => (...k) => h('div', { class: 'xp ' + cls }, h('span', { class: 'xp-l', text: lab }), h('p', {}, ...k));
+    const why = part('Why', 'why'), res = part('Result', 'res'), mean_ = part('What it means', 'mean');
+    const exp = (n, q) => h('div', { class: 'exp' }, h('span', { class: 'exp-n', text: `Experiment ${n}` }), h('h5', { text: q }));
+    const N = D.n || {}, nt = D.n_total || {}, NM = D.named || {}, LK = D.link || {}, F = D.fail || {}, SM = D.same || {}, C = D.comp || {};
+    const hgN = N['human→HG'] || {}, hpN = N['human→HP'] || {}, haN = N['human→AI'] || {}, aaN = N['ai→AI'] || {};
+    const byline = h('div', { class: 'qa-by' },
+      h('div', {}, h('h3', { text: 'Authors' }), h('p', { text: 'Yerim Oh, Young-Jun Lee, Jaewoo Ahn, Seungone Kim, Jinu Lee, Jinheon Baek, Gunhee Kim, Dongyeop Kang' })),
+      h('div', {}, h('h3', { text: 'Published' }), h('p', { text: 'November 17, 2026' })),
+      h('div', {}, h('h3', { text: 'Data' }), h('p', {}, `${nt.papers} papers · ${nt.reviews.toLocaleString()} reviews · `, h('a', { href: 'https://huggingface.co/datasets/yerim0210/Scientific_Slop', target: '_blank', rel: 'noopener', text: 'SciSlopBench' }))));
+    const hp = NM['human→HP'] || {}, hg = NM['human→HG'] || {}, ha = NM['human→AI'] || {}, aa = NM['ai→AI'] || {};
+    const style = ['2-5', '4-1', '4-4', '5-5'].reduce((a, k) => a + (C.human.share[k] || 0), 0);
+    const slopShare = Object.entries(C.human.share).filter(([k]) => !KIND[k]).reduce((a, [, v]) => a + v, 0);
+    const tldr = h('div', { class: 'tldr' }, h('span', { class: 'tldr-l', text: 'TL;DR' }),
+      h('p', {}, `We split ${nt.human_reviews.toLocaleString()} human and ${nt.ai_reviews} AI-written reviews of ${nt.papers} papers into single criticisms (${nt.points.toLocaleString()} in all). Then we checked which criticisms are one of our slops, and whether they land on the papers where our measures find that slop.`),
+      h('p', {}, B('Reviewers name some slops often and others almost never.'), ` About one review in three says the evaluation is too narrow. Empty conclusions, filler, repetition and stock phrasing together make up ${pct1(style)} of all criticisms.`),
+      h('p', {}, B('When reviewers name a slop, it is not where we measure it.'), ` Reviews of papers that fail Narrow Evaluation raise it ${pct(LK['1-2b'].named_hi)} of the time; reviews of papers that pass, ${pct(LK['1-2b'].named_lo)}. No item does better.`),
+      h('p', {}, B('This includes AI papers.'), ` ${pct(F['1-2b'].AI)} of AI papers fail Narrow Evaluation, against ${pct(F['1-2b'].HG)} of accepted human papers. Human reviewers of AI papers raise it about as often as for human papers.`));
+    // Figure 1: what human reviewers criticise (human papers), slop items highlighted
+    const rows1 = Object.entries(C.human.share).sort((a, b) => b[1] - a[1]).map(([k, v]) => [KIND[k] || `${k} ${NAME[k]}`, v, !KIND[k]]);
+    // Figure 2: share of human reviews naming each item
+    const ITEMS2 = ['1-2b', '1-2o', '4-2', '4-5', '1-2d', '1-4', '1-3', '3-2', '2-3', '4-1', '4-4', '2-5', '5-5'];
+    const fig2 = dumbbell(ITEMS2.map(k => ({ label: NAME[k], sub: k.replace('o', ''), vals: { HG: hg[k], HP: hp[k], AI: ha[k] } })), { x0: 0, x1: .4, ticks: [0, .1, .2, .3, .4], fmt: pct, labelW: 214 });
+    // Figure 3: same item, reviews of high-slop papers vs the rest
+    const ITEMS3 = ['1-2b', '1-2d', '1-4', '3-2', '2-3', '4-1', '4-4', '2-5', '5-5'];
+    const fig3 = dumbbell(ITEMS3.map(k => ({ label: NAME[k], sub: k, vals: { AI: LK[k].named_hi, HG: LK[k].named_lo } })), { groups: ['AI', 'HG'], x0: 0, x1: .4, ticks: [0, .1, .2, .3, .4], fmt: pct, labelW: 214 });
+    const quotes = qTable(['Item', 'A reviewer, in their words', 'Human reviews naming it'], ['1-2b', '1-2d', '1-3', '1-4', '2-3', '3-2', '4-1', '4-2', '4-4', '4-5', '5-5'].map(k => {
+      const e = D.examples[k], all = (hgN.reviews * hg[k] + hpN.reviews * hp[k]) / (hgN.reviews + hpN.reviews);
+      return [`${k} ${NAME[k]}`, `“${e.q}”`, pct1(all)]; }));
+    return [
+    byline, tldr,
+    h('h5', { class: 'qa-how', text: 'How the data was built' }),
+    h('ul', { class: 'qa-ul' },
+      h('li', {}, 'We use the 226 sets of three papers from ', h('a', { href: '#1', text: 'Question 1' }), ': an AI paper from SciSlopBench, an accepted human paper on a similar topic, and a rejected human paper whose reviewers complained about the writing. Every paper already has our measures.'),
+      h('li', {}, `Reviews are public for ${hpN.papers} rejected papers (ICLR and NeurIPS, ${hpN.reviews} reviews) and ${hgN.papers} accepted ones (ICLR 2017–25 and NeurIPS 2021–22, ${hgN.reviews} reviews). The AI papers have ${haN.reviews} human reviews (Agents4Science, ${haN.papers} papers) and ${aaN.reviews} AI-written reviews (${aaN.papers} papers: Agents4Science’s three AI reviewers and, for FARS, paperreview.ai).`),
+      h('li', {}, 'A language model (Claude Sonnet) splits the weakness part of each review into single criticisms. For each it copies the reviewer’s exact words and picks one of our eleven slops or one of eleven other kinds, such as limited novelty or missing baselines. Code checks the copied words are really in the review; ', B(`${D.label_log.not_verbatim} of ${D.label_log.points.toLocaleString()}`), ' were not and were dropped. The model is never asked whether the reviewer is right.')),
+    h('h5', { class: 'qa-how', text: 'How to read the numbers' }),
+    h('ul', { class: 'qa-ul' },
+      h('li', {}, 'Most numbers are the ', B('share of reviews'), ' that raise a given problem at least once.'),
+      h('li', {}, B('AUROC'), ' here asks: pick one review that raised the problem and one that did not. How often does the paper behind the first score higher on our measure? ', B('0.5 means the measure and the reviewers do not agree at all.'))),
+
+    h('p', {}, 'Our measures say where a paper breaks. A review says what a reader noticed. If the two line up, reviews could check our measures, and our measures could tell reviewers where to look. If they do not, each sees something the other misses. What we found:'),
+    h('ol', { class: 'qa-ol' },
+      h('li', {}, B('A quarter of what reviewers criticise is one of our slops, almost all of it about evidence and terms. '), '(Experiments 1 and 2)'),
+      h('li', {}, B('A paper that has a slop is no more likely to be criticised for it. '), '(Experiment 3)'),
+      h('li', {}, B('The same holds for AI papers, which have far more of some slops. '), '(Experiment 4)')),
+
+    h('h4', { text: 'What reviewers point out' }),
+    exp(1, 'How much of a review is about slop?'),
+    why('Reviewers have a lot to say: novelty, missing baselines, flawed setups. We first check how much of it overlaps with our eleven slops at all.'),
+    res(B(`${pct(slopShare)} of criticisms in human reviews of human papers are one of our slops`), ` (Figure 1). The rest is mostly writing that is hard to follow, technical flaws, missing details and requests for more experiments. AI reviewers spend less on our slops (${pct(D.n && D.comp.ai ? Object.entries(D.comp.ai.share).filter(([k]) => !KIND[k]).reduce((a, [, v]) => a + v, 0) : null)}) and more on technical flaws and missing details.`),
+    qfig(1, h('div', { class: 'qa-bars' }, ...rows1.map(([l, v, o]) => h('div', { class: 'qa-br' + (o ? ' ours' : '') }, h('span', { class: 'qa-bl', text: l }), h('span', { class: 'qa-bt' }, h('i', { style: `width:${(v / rows1[0][1] * 100).toFixed(1)}%` })), h('span', { class: 'qa-bv', text: (v * 100).toFixed(1) + '%' })))), `Share of all ${C.human.n_points.toLocaleString()} criticisms in ${C.human.n_reviews.toLocaleString()} human reviews of human papers, by kind. Highlighted rows are our slops.`),
+    mean_('Most of a review is about things our index does not try to measure. ', B('A slop score is not a review score'), ' and should not be read as one.'),
+
+    exp(2, 'Which slops do reviewers name?'),
+    why('A slop that no reviewer ever names may still matter, but it is invisible in peer review. We count how often each one comes up.'),
+    res(B('Three kinds come up often: narrow evaluation, unexplained terms and unclear figures.'), ` About a third of reviews say the method was tried on too few models or datasets. Rejected papers draw more complaints about terms (${pct(hp['4-2'])} of reviews) and figures (${pct(hp['4-5'])}) than accepted ones (${pct(hg['4-2'])}, ${pct(hg['4-5'])}). `, B('Four slops are almost never named:'), ` Empty Conclusion, Generic Filler, Redundant Repetition and Formulaic Reasoning, each in ${pct1(Math.max(hp['2-5'], hp['4-1'], hp['4-4'], hp['5-5']))} of reviews of rejected papers or fewer.`),
+    qfig(2, fig2, `Share of human reviews that name each slop at least once. Hollow: accepted human papers (${hgN.reviews} reviews). Filled grey: rejected human papers (${hpN.reviews}). Red: AI papers (${haN.reviews}, Agents4Science; few, so read loosely). “Overstated Claims, other” is any claim the reviewer finds too strong for the evidence that is not about breadth or cost.`,
+      h('div', { class: 'qf-leg' }, h('span', {}, h('i', { class: 'qf-key hg' }), 'accepted human paper'), h('span', {}, h('i', { class: 'qf-key hp' }), 'rejected human paper'), h('span', {}, h('i', { class: 'qf-key ai' }), 'AI paper'))),
+    h('p', { text: 'What it sounds like when a reviewer does name one:' }),
+    quotes,
+    h('p', { class: 'qa-cap', text: 'One real quote per slop, all from human reviews. Last column: accepted and rejected human papers together. Unclear Figures here means any figure; our measure looks only at the method figure.' }),
+    mean_(B('The slops reviewers miss are the ones about how the text is put together'), ': a conclusion that copies the abstract, sentences that add nothing, set phrases in place of reasons. Reviewers read for the science and skip past these. A tool could point them out.'),
+
+    h('h4', { text: 'Do they land where we measure them?' }),
+    exp(3, 'Does a paper with a slop get criticised for it?'),
+    why('If reviewers and our measures saw the same thing, a paper that fails an item should draw that complaint more often than a paper that passes.'),
+    res(B('It does not, for any item.'), ` Reviews of papers that fail Narrow Evaluation raise it ${pct(LK['1-2b'].named_hi)} of the time; reviews of papers that pass, ${pct(LK['1-2b'].named_lo)}. Missing Cost Accounting: ${pct(LK['1-2d'].named_hi)} vs ${pct(LK['1-2d'].named_lo)}. For every item but one, the 95% interval of the AUROC includes 0.5 (table below). The exception, Single-Source Method, goes the wrong way: papers whose method draws on one earlier paper are a little less often called “X with a small change” (${pct1(LK['3-2'].named_hi)} vs ${pct1(LK['3-2'].named_lo)}).`),
+    qfig(3, fig3, `Share of human reviews that name the item. Red: reviews of papers that fail it (for items without a pass/fail rule, papers in the top quarter of its score). Hollow: reviews of the other papers. ${LK['1-2b'].n.toLocaleString()} reviews of human and AI papers. Evidence Gap and Unexplained Terms are left out: too few papers were measured or above the cut.`,
+      h('div', { class: 'qf-leg' }, h('span', {}, h('i', { class: 'qf-key ai' }), 'paper has the slop'), h('span', {}, h('i', { class: 'qf-key hg' }), 'paper does not'))),
+    qTable(['Item', 'Reviews', 'AUROC [95% CI]'], ITEMS3.map(k => [`${k} ${NAME[k]}`, LK[k].n.toLocaleString(), `${LK[k].auroc.toFixed(2)} [${LK[k].ci[0].toFixed(2)}, ${LK[k].ci[1].toFixed(2)}]`])),
+    h('p', { class: 'qa-cap', text: 'AUROC of the item score: reviews that name the item vs reviews that do not. 0.5 = no agreement. Bootstrap over reviews.' }),
+    mean_('A reviewer complaining about narrow evaluation tells you little about whether the paper actually used one model and one dataset, and the reverse. ', B('Reviews cannot serve as ground truth for these measures'), ', and the measures cannot stand in for a reviewer. They see different things.'),
+
+    exp(4, 'Do reviewers of AI papers notice what AI papers lack?'),
+    why('AI papers fail some items far more often than human papers. If reviewers noticed, those complaints should rise on AI papers.'),
+    res(B(`${pct(F['1-2b'].AI)} of AI papers fail Narrow Evaluation, against ${pct(F['1-2b'].HG)} of accepted and ${pct(F['1-2b'].HP)} of rejected human papers.`), ` Human reviewers name it in ${pct(ha['1-2b'])} of reviews of AI papers, close to ${pct(hg['1-2b'])} and ${pct(hp['1-2b'])} for the human papers. AI reviewers name it more (${pct(aa['1-2b'])}). Single-Source Method shows the same gap: ${pct(F['3-2'].AI)} of AI papers fail it and no human review of an AI paper names it.`),
+    qTable(['Item', 'Fails: AI / accepted / rejected', 'Named, human reviews: AI / accepted / rejected', 'Named, AI reviews of AI papers'], ['1-2b', '1-2d', '3-2'].map(k => [`${k} ${NAME[k]}`, `${pct(F[k].AI)} / ${pct(F[k].HG)} / ${pct(F[k].HP)}`, `${pct(ha[k])} / ${pct(hg[k])} / ${pct(hp[k])}`, pct(aa[k])])),
+    h('p', { class: 'qa-cap', text: `The three items with a pass/fail rule. Human reviews of AI papers: ${haN.reviews} reviews of ${haN.papers} Agents4Science papers. AI reviews: ${aaN.reviews} reviews of ${aaN.papers} papers.` }),
+    h('p', {}, `On the ${SM.human.papers} Agents4Science papers that have both kinds of review, the AI reviewers name narrow evaluation more often (${pct(SM.ai['1-2b'])} vs ${pct(SM.human['1-2b'])}), and the human reviewers name unclear figures (${pct(SM.human['4-5'])} vs ${pct(SM.ai['4-5'])}) and missing cross-section links (${pct(SM.human['2-3'])} vs ${pct(SM.ai['2-3'])}) more often. This is a first look at `, h('a', { href: '#3', text: 'Question 3' }), '.'),
+    mean_(B('Human reviewers do not raise narrow evaluation more often on AI papers'), `, although ${pct(F['1-2b'].AI)} of AI papers fail it against ${pct(F['1-2b'].HG)} of accepted human papers. This rests on ${haN.reviews} human reviews of AI papers, so it is a first sign rather than a finding. Question 3 tests it on more papers.`),
+
+    h('h4', { text: 'What comes next' }),
+    h('ul', { class: 'qa-ul' },
+      h('li', { text: 'Check the labels by hand: 300 criticisms, two people, agreement per kind.' }),
+      h('li', { text: 'Get reviews for more accepted papers. OpenReview blocked our requests, so only 43 accepted papers have reviews.' }),
+      h('li', { text: 'Run the same labelling on ICLR 2026 reviews, where Pangram marks each review as human- or AI-written (Question 3).' }),
+      h('li', { text: 'Turn the quotes for each slop into a list of reviewer phrasings, for a tool that points reviewers to the slop they tend to miss.' })),
+    h('h4', { text: 'Fine print' }),
+    h('ul', { class: 'qa-ul small' },
+      h('li', { text: 'A reviewer kind is broader than our measure. Unexplained Terms counts any undefined symbol or term, our measure only made-up terms that come with a result before they are explained. Unclear Figures counts any figure; our measure only the method figure (and is not run on these papers yet).' }),
+      h('li', { text: 'Rejected papers have about four reviews each, AI papers one human review. We compare shares of reviews, not of papers, so the count of reviews per paper does not inflate a group.' }),
+      h('li', { text: 'Older ICLR reviews and Agents4Science reviews have no separate weakness field. For these the model reads the whole review and keeps only the criticisms.' }),
+      h('li', { text: 'One model, one pass. The labels have not been checked against people yet.' })),
+    h('p', { class: 'qa-cap', text: 'Data and scripts: v2/question/Q4_reviewer_weakness_by_slop_type. The numbers behind every figure are in q4data.js on this page.' })];
+  } },
 };
 // left table of contents: one entry per section heading; buttons, not #anchors, because the hash picks the question
 let tocIO = null;
