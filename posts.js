@@ -226,10 +226,13 @@ const QPOST = {
       h('li', {}, 'We start from the 390 AI papers of SciSlopBench (FARS and Agents4Science 2025). Each already comes with an accepted human paper on a similar topic.'),
       h('li', {}, `We add a rejected human paper on a similar topic: a final reject at ICLR or NeurIPS whose reviewers gave the presentation 2.0 or less, or at least half of whom complained about the writing. ${Q1.hp_pool.n_pool.toLocaleString()} of ${Q1.hp_pool.n_rejects.toLocaleString()} public rejects qualify.`),
       h('li', {}, `All human papers are from 2024 or earlier. ${Q1.n.triplets} sets have all three papers (FARS ${Q1.n.fars}, Agents4Science ${Q1.n.a4s}). Every paper is scored with the author hidden, on ten measures.`)),
-    h('p', {}, 'The v1 benchmark paired each AI paper with one accepted human paper, so the AI-vs-human gap and the bad-vs-good writing gap were the same number. The third paper pulls them apart. What we found:'),
+    h('p', {}, 'If a reviewer writes "the paper is hard to follow", is that slop? It is tempting to say yes. Most of the things our index flags, the filler sentences, the repeated paragraphs, the conclusion that restates the abstract, look like things a careful writer would have fixed. So a fair question about ', h('a', { href: 'https://arxiv.org/abs/2610.00531', target: '_blank', rel: 'noopener', text: 'Science or Slop?' }), ' is whether we built a writing-quality detector and called it something else.'),
+    h('p', {}, 'The v1 benchmark could not answer this. Each AI paper was paired with one accepted human paper, so the AI-vs-human gap and the bad-vs-good writing gap were one and the same number. Here we add a third paper to pull them apart. What we found:'),
     h('ol', { class: 'qa-ol' },
       h('li', {}, B('Rejected-for-writing papers and accepted papers get similar slop scores; AI papers get higher ones. '), 'Experiment 1 shows this item by item; Experiment 2 checks it against the definition of "badly written", topic closeness, length, and the two sources of AI papers.'),
-      h('li', {}, B('Among the rejected papers, slop varies with the overall rating, not with the presentation score '), '(Experiment 4). The items rarely show up together in one paper (Experiment 5).')),
+      h('li', {}, B('Among the rejected papers, slop varies with the overall rating, not with the presentation score '), '(Experiment 4). The nine items rarely show up together in one paper (Experiment 5).')),
+
+
     h('h4', { text: 'Is slop just bad writing?' }),
     exp(1, 'Does a badly written paper score like an AI paper?'),
     h('p', {}, '"Similar topic" is loose: in 15 of the 226 sets the rejected paper works on the same research problem as the AI paper, in the other 211 on the same field. We score all three papers and look at where the rejected paper lands. ', B('It lands next to the accepted paper, not next to the AI paper.')),
