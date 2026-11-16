@@ -221,7 +221,7 @@ const QPOST = {
       h('tbody', {}, h('tr', { class: 'xg' }, h('td', { colspan: 5, text: 'Later accepted at another venue' })), ...Q1.later_examples.later.map(lrow), h('tr', { class: 'xg' }, h('td', { colspan: 5, text: 'Never accepted' })), ...Q1.later_examples.never.map(lrow))));
 
     return [
-    byline, tldr, teaser,
+    tldr, teaser,
     h('p', {}, 'If a reviewer writes "the paper is hard to follow", is that slop? It is tempting to say yes. Most of the things our index flags, the filler sentences, the repeated paragraphs, the conclusion that restates the abstract, look like things a careful writer would have fixed. So a fair question about ', h('a', { href: 'https://arxiv.org/abs/2610.00531', target: '_blank', rel: 'noopener', text: 'Science or Slop?' }), ' is whether we built a writing-quality detector and called it something else.'),
     h('p', {}, 'The v1 benchmark could not answer this. Each AI paper was paired with one accepted human paper, so the AI-vs-human gap and the bad-vs-good writing gap were one and the same number. Here we pull them apart. We report three things:'),
     h('ol', { class: 'qa-ol' },
