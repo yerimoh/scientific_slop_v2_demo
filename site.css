@@ -1617,7 +1617,7 @@ a.tm:hover .tm-name { text-decoration: underline; text-underline-offset: 3px; }
 .tz-vis { margin: 2px 0 0; padding: 6px 4px 2px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); min-height: 90px; } .tz-vis.q1s { margin: 2px 0 0; padding: 6px 4px 2px; }
 .tz-vis svg { display: block; width: 100%; height: auto; }
 .tz-do { font-size: 13px; font-weight: 600; color: var(--q1ac); line-height: 1.35; }
-.tz-out { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; } .tz-out b { font-size: 28px; font-weight: 700; letter-spacing: -.02em; color: var(--ink); } .tz-out span { font-size: 12.5px; color: var(--ink-2); line-height: 1.3; }
+.tz-out { display: grid; gap: 4px; } .tz-out b { font-size: 26px; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; color: var(--ink); } .tz-out span { font-size: 13.5px; color: var(--ink-2); line-height: 1.45; }
 .qa-ol { margin: 0 0 16px; padding-left: 22px; font-size: 16px; line-height: 1.65; color: var(--ink-2); } .qa-ol li { margin-bottom: 8px; } .qa-ol b { color: var(--ink); font-weight: 650; }
 .qa-b h4 { margin: 44px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line); font-size: 24px; font-weight: 400; letter-spacing: -.01em; line-height: 1.2; color: var(--ink); }
 .exp { margin: 30px 0 10px; } .exp-n { display: block; font-size: 12.5px; font-weight: 700; letter-spacing: .04em; color: var(--q1ac); }
