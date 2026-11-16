@@ -1652,3 +1652,9 @@ a.tm:hover .tm-name { text-decoration: underline; text-underline-offset: 3px; }
 .qa-b h4 { font-size: 24px; } .exp h5 { font-size: 19px; }
 
 .qa-b h5.qa-how { margin: 22px 0 8px; font-size: 16px; font-weight: 650; color: var(--ink); }
+
+.qa-b details.qa-more { margin: 10px 0 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.qa-b details.qa-more > summary { cursor: pointer; list-style: none; padding: 9px 14px; font-size: 14px; font-weight: 600; color: var(--ink-2); }
+.qa-b details.qa-more > summary::-webkit-details-marker { display: none; }
+.qa-b details.qa-more > summary::before { content: '▸ '; color: var(--ink-3); } .qa-b details.qa-more[open] > summary::before { content: '▾ '; }
+.qa-b details.qa-more > .qa-tbl, .qa-b details.qa-more > .qa-cap { margin: 0 14px 12px; width: calc(100% - 28px); }

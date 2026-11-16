@@ -229,8 +229,7 @@ const QPOST = {
     h('h4', { text: 'Is slop just bad writing?' }),
     exp(1, 'Does a badly written paper score like an AI paper?'),
     h('p', {}, '"Similar topic" is loose: in 15 of the 226 sets the rejected paper works on the same research problem as the AI paper, in the other 211 on the same field. We score all three papers and look at where the rejected paper lands. ', B('It lands next to the accepted paper, not next to the AI paper.')),
-    h('p', { text: 'The ten measures, and what each one counts (each a rate between 0 and 1):' }),
-    qTable(['Item', 'What it counts'], [
+    h('details', { class: 'qa-more' }, h('summary', { text: 'The ten measures and what each one counts' }), qTable(['Item', 'What it counts'], [
       ['1-2 Overstated Claims', 'results from a single model or a single dataset, or added compute that is never costed'],
       ['1-3 Evidence Gap', 'result claims with no table or figure behind them'],
       ['1-4 Unclear Links to Prior Work', 'cited methods that the paper never relates to its own'],
@@ -240,7 +239,7 @@ const QPOST = {
       ['4-2 Unexplained Terms', 'terms that appear abruptly, without a gloss'],
       ['4-4 Redundant Repetition', 'body sections that repeat an earlier section'],
       ['5-5 Formulaic Reasoning', 'stock phrases standing in for an argument'],
-      ['3-2 Single-Source Method', 'whether the method\u2019s parts come from one earlier paper at most (shown as the share of papers where they do)']]),
+      ['3-2 Single-Source Method', 'whether the method\u2019s parts come from one earlier paper at most (shown as the share of papers where they do)']]), h('p', { class: 'qa-cap' }, 'Each is a rate between 0 and 1. Full definitions and examples are on the ', h('a', { href: './#studio' , text: 'main page' }), '.')),
     qfig(2, dumbbell(I.map(r => ({ label: r.name, sub: r.id, vals: r.all.mean })), { labelW: 214 }), 'Mean score of each item, three groups, 226 sets (Single-Source Method: 222 rejected, 136 accepted papers). Generic Filler, Unexplained Terms and Empty Conclusion are per-sentence rates and small on every side. Hover a dot for the value.', legend(['AI', 'HG', 'HP'])),
     h('p', {}, 'Single-Source Method, the newest item, behaves like the rest: ', B(`${Math.round(byId['3-2'].all.mean.AI * 100)}%`), ' of AI papers build their method from one earlier paper or none, against ', B(`${Math.round(byId['3-2'].all.mean.HG * 100)}%`), ' of accepted and ', B(`${Math.round(byId['3-2'].all.mean.HP * 100)}%`), ` of rejected papers (AUROC rejected vs accepted ${f2(byId['3-2'].all.auc['HP>HG'])}). It is not correlated with the other nine items in any group (ρ between −0.04 and 0.01), so it picks up something they miss.`),
     h('p', {}, 'Measured as AUROC, every single item separates the two human groups at 0.46–0.57, and the AI papers from either human group at 0.61–0.88. Putting the first nine together does not separate the human groups either (Figure 3): the two human histograms overlap, ', B(`${ix.above_ai_median.HP} of 226`), ' rejected papers score above the AI median, and ', B(`${ix.above_ai_median.HG} of 226`), ' accepted ones. A logistic classifier on the nine scores, cross-validated, reaches ', B(f2(Q1.cv['AI>HG'])), ' for AI vs accepted and ', B(f2(Q1.cv['AI>HP'])), ' for AI vs rejected, but ', B(f2(Q1.cv['HP>HG'])), ' for rejected vs accepted. The nine scores together carry little information about what the reviewers thought of the writing.'),
