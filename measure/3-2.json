@@ -8,14 +8,14 @@
   "pre": {},
   "default": "FA0142",
   "rate": {
-   "ai": "40%",
-   "hu": "19%",
-   "n_ai": 118,
-   "n_hu": 129,
-   "lead": "On 247 sampled papers from both AI sources, ",
+   "ai": "34%",
+   "hu": "20%",
+   "n_ai": 143,
+   "n_hu": 143,
+   "lead": "On the 143 benchmark pairs, ",
    "what": "build the method from one earlier work or none"
   },
-  "source": "v2/verification/idea_graph_1116 (runs/ideagraph_full_*, eval_graph_full.py)"
+  "source": "v2/verification/idea_graph_1116 (runs/ideagraph_all_*, eval_all.py)"
  },
  "units": [
   {

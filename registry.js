@@ -445,7 +445,7 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
 const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code', H45 = 'Haiku 4.5', SN = 'Sonnet';
-const MV = '1117eleven32';   // bump with the run data so browsers do not keep an old measure/*.json
+const MV = '1117full32';   // bump with the run data so browsers do not keep an old measure/*.json
 const MEASURE = {
 
   '1-2b': { unit: 'paper', units: 'papers', breadth: true,
@@ -926,8 +926,8 @@ const TREE = [['Argument graph', ['1-2']], ['Citation isolation', ['1-4']], ['Cr
 // results so far, on the 123 AI / human pairs; an item stays blank until its measure is final
 // 11-06: columns as in v1 Table 2 (PairAcc, AUROC, TPR at 5% FPR), from each item's saved per-paper scores (v2/verification/table_site_rows_1106.py)
 // 5-5: FARS pairs of the held-out half (72), phrase/word list picked on the other half (v2/slop_v2/build_site_formulaic.py)
-// 3-2: 117 pairs from both sources (FARS 60, Agents4Science 57), v2/verification/idea_graph_1116/eval_graph_full.py
-const RESULTS = { '3-2': { pa: '0.69', auc: '0.68', tpr: '' }, '5-5': { pa: '0.89', auc: '0.89', tpr: '' }, '4-2': { pa: '0.65', auc: '0.64', tpr: '0.31' }, '1-4': { pa: '0.85', auc: '0.87', tpr: '0.59' }, '1-2': { pa: '0.88', auc: '0.88', tpr: '0.50' }, '2-3': { pa: '0.88', auc: '0.88', tpr: '0.00' }, '4-1': { pa: '0.82', auc: '0.82', tpr: '0.34' }, '4-4': { pa: '0.91', auc: '0.90', tpr: '0.29' }, '2-5': { pa: '0.91', auc: '0.90', tpr: '0.76' }, '1-3': { pa: '0.76', auc: '0.75', tpr: '0.00' }, '4-5': { pa: '0.91', auc: '0.90', tpr: '0.54' } };
+// 3-2: all 143 FARS pairs, v2/verification/idea_graph_1116/eval_all.py
+const RESULTS = { '3-2': { pa: '0.72', auc: '0.71', tpr: '' }, '5-5': { pa: '0.89', auc: '0.89', tpr: '' }, '4-2': { pa: '0.65', auc: '0.64', tpr: '0.31' }, '1-4': { pa: '0.85', auc: '0.87', tpr: '0.59' }, '1-2': { pa: '0.88', auc: '0.88', tpr: '0.50' }, '2-3': { pa: '0.88', auc: '0.88', tpr: '0.00' }, '4-1': { pa: '0.82', auc: '0.82', tpr: '0.34' }, '4-4': { pa: '0.91', auc: '0.90', tpr: '0.29' }, '2-5': { pa: '0.91', auc: '0.90', tpr: '0.76' }, '1-3': { pa: '0.76', auc: '0.75', tpr: '0.00' }, '4-5': { pa: '0.91', auc: '0.90', tpr: '0.54' } };
 $('#sm-res').replaceChildren(h('table', { class: 'res-tbl' },
   h('thead', {}, h('tr', {}, ...['Slop', 'PairAcc', 'AUROC'].map(t => h('th', { text: t })))),
   h('tbody', {}, ...GROUPS.flatMap(g => [h('tr', { class: 'res-g ' + g.cls }, h('td', { colspan: 3, text: g.title })),
