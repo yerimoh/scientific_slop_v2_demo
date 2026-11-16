@@ -85,7 +85,7 @@ const PIC = {
   '1-3': () => row([E.card('§4 Results', inner.text(['median 1.0', 'signature per task']), { lines: false }), E.miss(C.art), E.ask(['one signature?'])]),
 };
 // what the pattern looks like, one line under each scene
-const CAP = { '3-2': 'every borrowed part, from one paper', '5-5': 'set phrases where the reasons go', '2-5': 'the abstract again, at the end', '1-2': 'one setting tried, cost left out', '1-4': 'cited, related to nothing', '2-3': 'used later, never pointed back to', '4-1': 'nicer words, nothing new', '4-2': 'a result in a term not yet explained', '4-4': 'the same sentence, another section', '4-5': 'results and a key inside the diagram', '1-3': 'numbers only, not one case' };
+const CAP = { '3-2': 'one source for the method, or none', '5-5': 'set phrases where the reasons go', '2-5': 'the abstract again, at the end', '1-2': 'one setting tried, cost left out', '1-4': 'cited, related to nothing', '2-3': 'used later, never pointed back to', '4-1': 'nicer words, nothing new', '4-2': 'a result in a term not yet explained', '4-4': 'the same sentence, another section', '4-5': 'results and a key inside the diagram', '1-3': 'numbers only, not one case' };
 // hero: a paper spine with the five kinds of broken connection
 function heroSvg() {
   const secs = [['Abstract', 4], ['Introduction', 42], ['Method', 80], ['Experiments', 118], ['Conclusion', 156]];
@@ -158,11 +158,11 @@ const ITEMS = [
     judge: ['Applies to papers with a result table in the main text.', 'Search the whole paper, appendix included, for one shown case: a prompt, input or output in a box or code block; a caption announcing an example, a case or a failure; a long quotation outside the related work.', 'One case anywhere closes the gap.'],
     not: ['A paper with no result table (theory, position).', 'A case shown only in the appendix still counts as shown.'],
     fix: ['Show a real case from the experiment records (an input, the output, a failure) and point to it where the result is interpreted. If none was kept, say so there.', 'Not a fix: an invented example presented as an observation.'] },
-  { id: '3-2', area: 3, name: 'Single-Source Method', what: 'Every part the method takes from earlier work comes from one paper. The rest is what the paper adds on top of it.',
+  { id: '3-2', area: 3, name: 'Single-Source Method', what: 'The parts of the method come from one earlier paper at most. Either everything it borrows is from that one paper, or it borrows nothing and ties no part to earlier work.',
     ex: { spec: 'We keep the encoder, the loss and the schedule of Method A [3] and add a weighting step.', specnote: 'Everything the method borrows is from [3]. The other references are cited, and the method takes nothing from them.', src: '', pre: '', mark: '', post: '', note: '' },
-    judge: ['List the parts the method is made of.', 'For each part, find where it comes from: built in this paper, or taken from a named earlier work.', 'Count the earlier works that at least one part comes from. One or none is slop.'],
+    judge: ['List the parts the method is made of.', 'For each part, find where it comes from: built in this paper, or taken from a named earlier work.', 'Count the earlier works that at least one part comes from. One is slop. So is none: no part of the method is tied to earlier work.'],
     not: ['A work that is cited or compared against, when no part of the method comes from it.', 'A method built from parts of two or more earlier works.'],
-    fix: ['This is about how the method was built, so rewording does not change it. Name the paper the method extends and say exactly what is changed.', 'Not a fix: citing more papers that the method takes nothing from.'],
+    fix: ['This is about how the method was built, so rewording does not change it. Name the paper the method extends and say exactly what is changed. If a part follows earlier work and the paper does not say so, name that work.', 'Not a fix: citing more papers that the method takes nothing from.'],
     borders: [['1-4', 'a similar method cited, the difference never stated'], ['1-2', 'a claim larger than the evidence']] },
   { id: '5-5', area: 5, name: 'Formulaic Reasoning', what: 'The paper fills the steps of its argument with set phrases. Why the problem matters, how the method differs, what a finding means: each step gets a phrase such as “plays a crucial role”, “a fundamental challenge”, “rather than” or “broader implications”, and the reason is not there.',
     ex: { spec: 'Token weighting is a critical component of retrieval, and we present the first systematic study of it.', specnote: 'The conclusion says it again: a fundamental limitation, a systematic study. The words carry the claim; the reasons are not there.', src: '', pre: '', mark: '', post: '', note: '' },
@@ -212,7 +212,7 @@ const DEF = {
     q: [{ pre: 'Among tasks with failures, ', mark: 'the median number of unique execution signatures is 1.0', post: ', validating ESR’s premise that failure modes cluster strongly.', src: 'AI paper · SciSlopBench FA0163 · §3 Experiments, Analysis' },
         { pre: '', mark: 'An example of Self-Debugging prompting for text-to-SQL generation.', post: ' The SQL query, explanation and feedback are all predicted by the model.', src: 'Human pair · Self-Debug (Chen et al., 2023) · figure caption, §4' }],
     note: 'The method is built on execution signatures and a failure bank. The paper reports counts of both and never prints one signature, one failing test or one program. Its human pair, which is also its baseline, prints the full prompt, the model’s query and its feedback.' },
-  '3-2': { what: 'Every part the method takes from earlier work comes from one paper. The rest is what the paper adds on top of it.',
+  '3-2': { what: 'The parts of the method come from one earlier paper at most. Either everything it borrows is from that one paper, or it borrows nothing and ties no part to earlier work.',
     q: [{ pre: 'We propose Progress-Guarded LAVE (PG-LAVE), which ', mark: 'adds a lightweight stall guard', post: ' that monitors lexer progress---the production of non-ignored terminals---and triggers early rejection when progress stalls.', src: 'AI paper · SciSlopBench FA0142 · §1 Introduction' },
         { pre: 'Next, we consider a variant of the Wasserstein dependency measure that only depends on the last state, ', mark: 'similarly to VIC', post: ' […].', src: 'Human paper · METRA (Park et al., ICLR 2024) · §4 Method' }],
     note: 'The AI paper has six parts. Three come from LAVE (its lookahead check, kept as is; the stall guard and a larger attempt budget, both changes to it) and three are new. No part comes from any other work. METRA also has six parts, and they come from five lines of work: skill discovery, the Wasserstein dependency measure, Kantorovich–Rubinstein duality, VIC, and temporal distance.' },
@@ -340,7 +340,7 @@ const GROUPS = [
   { n: 3, key: 'artifacts', cls: 'p-artifacts', title: 'Artifacts', q: 'Can the method and the evidence be inspected?' },
 ];
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
-const SHORT = { '3-2': 'Everything the method borrows comes from one paper.', '5-5': 'Set phrases fill the argument where the reasons should be.', '1-2': 'The paper claims more than its experiments can show.', '1-4': 'Cites a method much like its own, never says how it differs.',
+const SHORT = { '3-2': 'The method draws on one earlier paper, or on none.', '5-5': 'Set phrases fill the argument where the reasons should be.', '1-2': 'The paper claims more than its experiments can show.', '1-4': 'Cites a method much like its own, never says how it differs.',
   '2-3': 'Set up in one section, never pointed back to.',
   '2-5': 'The conclusion only repeats the abstract.', '4-1': 'Says what was already shown in nicer words, and tells nothing new.', '4-2': 'A result given in a term the paper has not explained yet.', '4-4': 'The same sentence in two sections.', '4-5': 'The method figure carries what belongs in the text.', '1-3': 'Results, but not one concrete case shown.' };
 for (const it of ITEMS) it.short = SHORT[it.id];
@@ -445,7 +445,7 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
 const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code', H45 = 'Haiku 4.5', SN = 'Sonnet';
-const MV = '1117full32';   // bump with the run data so browsers do not keep an old measure/*.json
+const MV = '1117none32';   // bump with the run data so browsers do not keep an old measure/*.json
 const MEASURE = {
 
   '1-2b': { unit: 'paper', units: 'papers', breadth: true,
@@ -540,11 +540,11 @@ const MEASURE = {
     how: [], line: 'Does the paper only say 87.6%, or does it also show what the model actually produced?' },
   '3-2': { unit: 'paper', units: 'papers', paper: true,
     stages: [['List the parts of the method', '', SN], ['Find where each part comes from', '', SN], ['Score', '', CD]],
-    ask: ['What do we evaluate?', 'Is the method put together from several earlier works, or from a single paper?'],
+    ask: ['What do we evaluate?', 'How many earlier works is the method built from: several, one, or none?'],
     doc: [
       [{ p: 'Read the abstract, introduction, method and experiments.' }, { p: 'List the parts the method is made of.' }, { s: 'A paper usually has six or seven.' }],
       [{ p: 'For each part, find where it comes from.' }, { ul: [['New', 'built in this paper'], ['Changed', 'taken from a named earlier work and modified'], ['Kept', 'taken from a named earlier work as it is']] }, { s: 'A work the paper only cites or compares against is not a source.' }],
-      [{ p: 'Count the earlier works that at least one part comes from.' }, { p: '0 or 1 → FAIL' }, { p: '2 or more → PASS' }]],
+      [{ p: 'Count the earlier works that at least one part comes from.' }, { p: '0 or 1 → FAIL' }, { p: '2 or more → PASS' }, { s: '0 means no part of the method is traced to any earlier work.' }]],
     how: [], line: 'List the parts of the method, trace each to its source, and count the sources.' },
   '5-5': { unit: 'paper', units: 'papers', paper: true,
     stages: [['Take the reasoning sections', '', CD], ['Mark set phrases', '', CD], ['Score', '', CD]],
@@ -681,6 +681,7 @@ If the records hold no case, do not invent one. Say there that no individual cas
   '3-2': `# Fix · Single-Source Method (3-2)
 List the parts of the method. For each, write where it comes from: built here, or taken from a named earlier work.
 If every borrowed part comes from one paper, this is about how the method was built, and rewording will not change it. Name that paper where the method is introduced and state exactly what is changed.
+If no part is tied to earlier work, check each part: where one follows an existing technique, name the work it follows.
 Do not add citations to works the method takes nothing from.`,
   '5-5': `# Fix · Formulaic Reasoning (5-5)
 Find the sentences in the abstract, introduction, method and conclusion that fill a step of the argument with a set phrase (plays a crucial role, a fundamental challenge, rather than, broader implications) or a stock word (systematic, rigorous, reveals).
