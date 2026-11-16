@@ -1612,7 +1612,7 @@ a.tm:hover .tm-name { text-decoration: underline; text-underline-offset: 3px; }
 .tz { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0 0 30px; }
 .tz-p { display: grid; grid-template-rows: auto auto 1fr auto auto; gap: 8px; padding: 14px 16px 16px; border: 1px solid var(--line-2); border-radius: 10px; background: var(--surface); }
 .tz-l { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); }
-.tz-q { padding: 9px 36px 10px 13px; border: 1px solid var(--line-2); border-radius: 12px; font-size: 14.5px; font-weight: 500; line-height: 1.35; color: var(--ink); background: var(--bg); position: relative; }
+.tz-q { min-height: 62px; box-sizing: border-box; padding: 9px 36px 10px 13px; border: 1px solid var(--line-2); border-radius: 12px; font-size: 14.5px; font-weight: 500; line-height: 1.35; color: var(--ink); background: var(--bg); position: relative; }
 .tz-q::after { content: '↑'; position: absolute; right: 8px; bottom: 8px; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: var(--bg); font-size: 13px; line-height: 22px; text-align: center; }
 .tz-vis { margin: 2px 0 0; padding: 6px 4px 2px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); min-height: 90px; } .tz-vis.q1s { margin: 2px 0 0; padding: 6px 4px 2px; }
 .tz-vis svg { display: block; width: 100%; height: auto; }
