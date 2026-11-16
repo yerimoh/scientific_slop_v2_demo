@@ -1565,6 +1565,13 @@ a.tm:hover .tm-name { text-decoration: underline; text-underline-offset: 3px; }
 :root { --qai: #d93a3a; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --qai: #e8655f; } }
 :root[data-theme="dark"] { --qai: #e8655f; }
+.qa-b .qa-lead { margin: 0 0 18px; font-size: clamp(19px, 2.2vw, 23px); line-height: 1.45; color: var(--ink-2); letter-spacing: -.01em; }
+.qa-b .qa-lead b { color: var(--ink); font-weight: 650; }
+.qs-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0 0 6px; }
+.qs { padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); display: grid; gap: 2px; }
+.qs b { font-size: 34px; font-weight: 650; letter-spacing: -.02em; color: var(--ink); line-height: 1.1; }
+.qs span { font-size: 12.5px; color: var(--ink-3); line-height: 1.3; }
+@media (max-width: 600px) { .qs-row { grid-template-columns: 1fr; gap: 8px; } .qs { padding: 10px 14px; grid-template-columns: 90px 1fr; align-items: center; } .qs b { font-size: 26px; } }
 .qa-b .qa-tldr { margin: 0 0 26px; padding: 16px 18px; border-radius: 12px; background: var(--surface-2); font-size: 16px; line-height: 1.6; color: var(--ink-2); }
 .qa-b p b, .qa-ul b, .qa-tldr b { font-weight: 650; color: var(--ink); }
 .qf { margin: 18px 0 26px; padding: 14px 14px 10px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
