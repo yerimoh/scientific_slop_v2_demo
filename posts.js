@@ -300,15 +300,7 @@ const QPOST = {
     h('ul', { class: 'qa-ul' },
       h('li', { text: 'Finish Unexplained Terms on the rejected papers and run the figure item, 4-5 Unclear Figures (the figures are downloaded; the vision pass is not).' }),
       h('li', { text: 'Retire or re-source the three items that only work on FARS (Unclear Links to Prior Work, Empty Conclusion, Redundant Repetition).' }),
-      h('li', { text: 'Compare the 27 recovered papers\u2019 rejected and accepted versions, item by item, to see what changed.' })),
-    h('h4', { text: 'Fine print' }),
-    h('ul', { class: 'qa-ul small' },
-      h('li', { text: 'Topic match on the rejected side is mostly field-level (211 of 226). The 15 same-problem sets give the same answer, but 15 is small.' }),
-      h('li', { text: 'Unexplained Terms covers 88 of 226 rejected papers (the run hit a spend limit). The classifier drops it in the two comparisons that involve that group.' }),
-      h('li', { text: 'Missing Cross-Section Links reads cross-references from LaTeX. Agents4Science AI papers are PDFs rebuilt into TeX, so their score on it is pessimistic; FARS alone gives the same AUROC.' }),
-      h('li', { text: 'The Formulaic Reasoning word list was learned on half of the v1 pairs, which favours it on AI and v1 human papers. The rejected papers were never seen.' }),
-      h('li', { text: '"Badly written" is the reviewers’ call, not ours. It mixes typos, structure and clarity. It is the only large label of writing quality there is.' })),
-    h('p', { class: 'qa-cap', text: 'Data and scripts: v2/question/Q1_ai_slop_vs_human_poor_writing. The numbers behind every figure and card are in q1data.js on this page.' })];
+      h('li', { text: 'Compare the 27 recovered papers\u2019 rejected and accepted versions, item by item, to see what changed.' }))];
   } },
   f2: { title: 'How does scientific slop relate to different review scores?', tag: 'v1 result · v2 running', body: () => [
     h('p', { text: 'Reviewers never see a slop score. If slop is something they notice anyway, it should show up in the scores they give.' }),
