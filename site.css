@@ -1644,3 +1644,9 @@ a.tm:hover .tm-name { text-decoration: underline; text-underline-offset: 3px; }
 .xl { margin: 0; } .xl td, .xl th { padding-left: 12px; padding-right: 12px; } .xl td:first-child { white-space: normal; padding-left: 12px; } .xl th:first-child { padding-left: 12px; } .xl td:not(:first-child) { white-space: nowrap; font-variant-numeric: tabular-nums; } .xl .xt { display: block; } .xl .xv { display: block; margin: 0; }
 .xl tr.xg td { padding: 10px 12px 4px; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--q1ac); border-bottom: 0; }
 @media (max-width: 760px) { .tz { grid-template-columns: 1fr; } .qa-by { grid-template-columns: 1fr; } .xbody, .xbody.two { grid-template-columns: 1fr; } .xc { border-right: 0; border-bottom: 1px solid var(--line); } .xc:last-child { border-bottom: 0; } .qa-b h4 { font-size: 21px; } }
+/* q.html#1: fewer font sizes — 16 for all running text, 14 for everything inside cards/tables/captions, 13 for small labels */
+.qa-b p, .qa-ul, .qa-ol, .tldr p { font-size: 16px; line-height: 1.6; }
+.qa-b .qa-cap, .qf figcaption, .qa-tbl, .tz-q, .tz-do, .tz-out span, .xt, .xq, .xv, .xnone, .xtabs button, .setup > ul, .qa-ul.small, .xl td, .xl th, .qa-by p { font-size: 14px; line-height: 1.5; }
+.tz-l, .xrole, .xi, .xchip, .xidx, .exp-n, .tldr .tldr-l, .qf-leg, .setup > summary, .xl tr.xg td { font-size: 13px; }
+.xidx b { font-size: 14px; } .tz-out b { font-size: 22px; }
+.qa-b h4 { font-size: 24px; } .exp h5 { font-size: 19px; }
