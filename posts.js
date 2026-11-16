@@ -166,7 +166,7 @@ const QPOST = {
     const tldr = h('div', { class: 'tldr' }, h('span', { class: 'tldr-l', text: 'TL;DR' }),
       h('p', {}, 'Does our slop index just measure bad writing? To find out, we compared three kinds of paper: ', B('an AI-written paper'), ', ', B('an accepted human paper'), ' on a similar topic, and ', B('a rejected human paper'), ' on a similar topic whose reviewers complained about the writing. ', `${Q1.n.triplets} such sets.`),
       h('p', {}, 'On nine slop measures, ', B('the rejected papers are hard to tell from the accepted ones'), ` (AUROC ${f2(ix.all.auc['HP>HG'])}; 0.50 would mean no difference at all). `, B('The AI papers are easy to tell from either'), ` (${f2(ix.all.auc['AI>HG'])} against the accepted papers, ${f2(ix.all.auc['AI>HP'])} against the rejected ones). Whatever the AI papers have more of, the badly written human papers do not have it.`),
-      h('p', {}, 'Two further observations, each explained in its own section below: between 2021 and 2024 stock phrasing in human papers rose, and among the rejected papers the slop scores vary with the overall rating rather than with the presentation score.'));
+      h('p', {}, 'One further observation, explained below: among the rejected papers the slop scores vary with the overall rating rather than with the presentation score.'));
     // ---- teaser: three panels, task → what we did → number
     const tz = (lab, q, vis, did, big, small) => h('div', { class: 'tz-p' }, h('div', { class: 'tz-l', text: lab }), h('div', { class: 'tz-q', text: q }), vis, h('div', { class: 'tz-do', text: did }), h('div', { class: 'tz-out' }, h('b', { text: big }), h('span', { text: small })));
     const oneSheet = (who, marks) => { const f = sFig('0 0 300 118', `${sPaper(108, 10, 84, 100)}${sBadge(108, 10, who)}${marks}`, who === 'ai' ? 'an AI paper' : 'a human paper'); f.className = 'qa-fig q1s tz-vis'; return f; };
@@ -230,7 +230,7 @@ const QPOST = {
     h('p', {}, 'The v1 benchmark could not answer this. Each AI paper was paired with one accepted human paper, so the AI-vs-human gap and the bad-vs-good writing gap were one and the same number. Here we add a third paper to pull them apart. What we found:'),
     h('ol', { class: 'qa-ol' },
       h('li', {}, B('Rejected-for-writing papers and accepted papers get similar slop scores; AI papers get higher ones. '), 'Experiment 1 shows this item by item; Experiment 2 checks it against the definition of "badly written", topic closeness, length, and the two sources of AI papers.'),
-      h('li', {}, B('Among the rejected papers, slop varies with the overall rating, not with the presentation score '), '(Experiment 4). The nine items rarely show up together in one paper (Experiment 5).')),
+      h('li', {}, B('Among the rejected papers, slop varies with the overall rating, not with the presentation score '), '(Experiment 3). The nine items rarely show up together in one paper (Experiment 4).')),
 
 
     h('h4', { text: 'Is slop just bad writing?' }),
@@ -262,36 +262,26 @@ const QPOST = {
       h('div', { class: 'qf-leg' }, h('span', {}, h('i', { class: 'qf-key ai' }), 'FARS'), h('span', {}, h('i', { class: 'qf-key hp' }), 'Agents4Science'))),
 
     h('h4', { text: 'What else fell out' }),
-    exp(3, 'Are 2024 human papers free of LLM phrasing?'),
-    h('p', {}, 'We cut the human side at 2024 so that no LLM-written text would count as human. Within that window the human papers still change. Read two human papers from 2020 and two from late 2024 side by side:'),
-    dcard(),
-    h('p', {}, 'The marked words are the ones Formulaic Reasoning counts. Figure 5 plots the two style items, Generic Filler and Formulaic Reasoning, against the arXiv date of every human paper. ', B('Both rise from late 2022 on'), ': Generic Filler from 0.004 per sentence before 2022 to 0.013 in late 2024, Formulaic Reasoning from 0.12 to 0.20. The dashed lines drop every paper whose title mentions language models, prompts, agents or reasoning, and rise just the same. The rise is there in accepted and in rejected papers alike (p < 0.01 in each).'),
-    qfig(5, yearLines(), 'Generic Filler and Formulaic Reasoning in human papers by arXiv v1 date (bins: up to 2021, 2022, Dec 2022 – Jun 2023, Jul – Dec 2023, first and second half of 2024; n = 69 / 36 / 35 / 79 / 94 / 135). Solid: all human papers. Dashed: titles without LLM words. Red: the AI papers.',
-      h('div', { class: 'qf-leg' }, h('span', {}, h('i', { class: 'qf-key line' }), 'all human papers'), h('span', {}, h('i', { class: 'qf-key line dashed' }), 'titles without LLM words'), h('span', {}, h('i', { class: 'qf-key ailine' }), 'AI papers'))),
-    h('p', {}, 'This costs the index. Against pre-ChatGPT human papers, Formulaic Reasoning separates AI papers with AUROC ', B(f2(Q1.years.auc_vs_era['5-5|pre'])), '; against human papers from late 2024, ', B(f2(Q1.years.auc_vs_era['5-5|late'])), '. Generic Filler goes from ', B(f2(Q1.years.auc_vs_era['4-1|pre'])), ' to ', B(f2(Q1.years.auc_vs_era['4-1|late'])), '. The items that look at the evidence rather than the wording (Evidence Gap, Missing Cross-Section Links, Overstated Claims) do not move with the date. We cannot tell from the text whether the rise comes from LLM-assisted writing or from the field changing its voice; the phrases that rose are the ones LLM-vocabulary studies list.'),
-    h('p', { class: 'qa-cap', text: `This could have tilted Experiment 1, since the rejected papers are newer (${Math.round(Q1.years.share_post.HP * 100)}% post-ChatGPT vs ${Math.round(Q1.years.share_post.HG * 100)}% of the accepted ones). It did not: in the ${Q1.years.both_post.n} triplets where both human papers are post-ChatGPT, the rejected one ranks sloppier ${Math.round(Q1.years.both_post.pa_hp_gt_hg * 100)}% of the time.` }),
-
-    exp(4, 'Which reviewer score does slop follow?'),
+    exp(3, 'Which reviewer score does slop follow?'),
     h('p', {}, 'For the 226 rejected papers we have the reviews. If the index measured writing, it should move with the presentation score. It does not: ρ = ', B(f2(Q1.hp.corr.index.presentation.rho)), ' with the presentation score and ', B(f2(Q1.hp.corr.index.writing.rho)), ' with the share of reviews complaining about the writing. ', B(`It does move with the overall rating: ρ = ${f2(Q1.hp.corr.index.rating.rho)}, p = 0.002.`), ' Among papers that were all rejected, the ones reviewers rated lowest have the highest slop scores.'),
     h('p', {}, `${Q1.hp.later.n_later} of these rejected papers were later accepted at another venue. Their rejected versions differ from the ${Q1.hp.later.n_never} papers that never were accepted on two items: lower Overstated Claims (`, B(f2(Q1.hp.later.items['1-2'].later)), ' vs ', B(f2(Q1.hp.later.items['1-2'].never)), ', p = 0.004) and lower Evidence Gap (', B(f2(Q1.hp.later.items['1-3'].later)), ' vs ', B(f2(Q1.hp.later.items['1-3'].never)), ', p = 0.04); the later-accepted papers evaluated on more models and datasets. The style items do not differ. We only have the rejected versions, so this says which rejected papers later made it, not what their authors changed or why they were accepted.'),
-    qfig(6, dumbbell(['1-2', '1-3', '2-3', '4-4', '5-5', '4-1'].map(it => ({ label: byId[it].name, sub: it, vals: { HG: Q1.hp.later.items[it].later, HP: Q1.hp.later.items[it].never } })), { groups: ['HG', 'HP'], labelW: 214 }),
+    qfig(5, dumbbell(['1-2', '1-3', '2-3', '4-4', '5-5', '4-1'].map(it => ({ label: byId[it].name, sub: it, vals: { HG: Q1.hp.later.items[it].later, HP: Q1.hp.later.items[it].never } })), { groups: ['HG', 'HP'], labelW: 214 }),
       'Rejected papers later accepted elsewhere (hollow, n = 27) and never accepted (filled, n = 199): mean score per item, measured on the rejected versions.',
       h('div', { class: 'qf-leg' }, h('span', {}, h('i', { class: 'qf-key hg' }), 'later accepted elsewhere'), h('span', {}, h('i', { class: 'qf-key hp' }), 'never accepted'))),
 
-    exp(5, 'Do the slops come together?'),
-    h('p', {}, 'We expected AI papers to score high on most items at once. They do not. The nine item scores do not correlate with each other: mean pairwise ρ between ', B('−0.02 and 0.03'), ' in every group and both sources. One AI paper overclaims, the next repeats itself, a third pads its results. Counting how many items a paper exceeds the accepted-paper 95th percentile on (Figure 7): ', B('61%'), ' of AI papers exceed it on two or more, against ', B('5%'), ' of accepted and ', B('4%'), ' of rejected papers.'),
-    qfig(7, p95bars('all'), 'How many of the nine items a paper exceeds the well-written 95th percentile on. By construction 5% of well-written papers exceed each single item.'),
-    exp(6, 'Do the reviewers of AI papers notice the slop?'),
-    h('p', {}, 'Agents4Science reviewed every submission with three AI reviewers and, for some, a human reviewer. We have their scores for the 124 AI papers in our sets. In Experiment 4, the human reviewers of the rejected human papers gave lower ratings to the sloppier papers (ρ = ', B(f2(Q1.hp.corr.index.rating.rho)), '). The reviewers of the AI papers did not:'),
+    exp(4, 'Do the slops come together?'),
+    h('p', {}, 'We expected AI papers to score high on most items at once. They do not. The nine item scores do not correlate with each other: mean pairwise ρ between ', B('−0.02 and 0.03'), ' in every group and both sources. One AI paper overclaims, the next repeats itself, a third pads its results. Counting how many items a paper exceeds the accepted-paper 95th percentile on (Figure 6): ', B('61%'), ' of AI papers exceed it on two or more, against ', B('5%'), ' of accepted and ', B('4%'), ' of rejected papers.'),
+    qfig(6, p95bars('all'), 'How many of the nine items a paper exceeds the well-written 95th percentile on. By construction 5% of well-written papers exceed each single item.'),
+    exp(5, 'Do the reviewers of AI papers notice the slop?'),
+    h('p', {}, 'Agents4Science reviewed every submission with three AI reviewers and, for some, a human reviewer. We have their scores for the 124 AI papers in our sets. In Experiment 3, the human reviewers of the rejected human papers gave lower ratings to the sloppier papers (ρ = ', B(f2(Q1.hp.corr.index.rating.rho)), '). The reviewers of the AI papers did not:'),
     qTable(['Reviewer', 'n', 'ρ with the slop index'], ['AIRev1', 'AIRev2', 'AIRev3', 'mean_ai', 'Human'].map(k => [Q1.a4s_reviews[k].label, String(Q1.a4s_reviews[k].n), f2(Q1.a4s_reviews[k].rho) + (Q1.a4s_reviews[k].p < .05 ? ' *' : '')])),
     h('p', { class: 'qa-cap', text: 'Spearman ρ between a reviewer\u2019s score and the AI paper\u2019s slop index; negative = sloppier papers get lower scores. A first look at Question 3.' }),
 
-    exp(7, 'Are shorter AI papers sloppier?'),
+    exp(6, 'Are shorter AI papers sloppier?'),
     h('p', {}, 'Yes. ', B('The shorter the AI paper, the sloppier'), `: Spearman ρ between body length and index is ${f2(Q1.length.AI.rho_index)} for AI papers, ${f2(Q1.length.HG.rho_index)} for accepted and ${f2(Q1.length.HP.rho_index)} for rejected human papers. The shortest quarter of AI papers (${Q1.length.ai_quartiles[0].range[0]}–${Q1.length.ai_quartiles[0].range[1]} body sentences) averages ${f2(Q1.length.ai_quartiles[0].mean_index)}, the longest quarter (${Q1.length.ai_quartiles[3].range[0]}–${Q1.length.ai_quartiles[3].range[1]}) ${f2(Q1.length.ai_quartiles[3].mean_index)}. The items are rates, so this is not a length artifact; a short AI paper has less to say and pads more of it.`),
     h('h4', { text: 'What comes next' }),
     h('ul', { class: 'qa-ul' },
       h('li', { text: 'Finish Unexplained Terms on the rejected papers and run the figure item, 4-5 Unclear Figures (the figures are downloaded; the vision pass is not).' }),
-      h('li', { text: 'Report every AI-vs-human number against pre-ChatGPT human papers as well; the two style items lose a third of their separation on 2024 papers.' }),
       h('li', { text: 'Retire or re-source the three items that only work on FARS (Unclear Links to Prior Work, Empty Conclusion, Redundant Repetition).' }),
       h('li', { text: 'Compare the 27 recovered papers\u2019 rejected and accepted versions, item by item, to see what changed.' })),
     h('h4', { text: 'Fine print' }),
