@@ -75,19 +75,19 @@ const legend = keys => h('div', { class: 'qf-leg' }, ...keys.map(g => h('span', 
 const qfig = (n, el, cap, extra) => h('figure', { class: 'qf' }, extra || null, h('div', { class: 'qf-sc' }, el), h('figcaption', {}, h('b', { text: `Figure ${n}. ` }), cap));
 
 // Figure: one row per item, three dots on a 0–1 axis (dumbbell). rows = [{label, sub, vals:{AI,HG,HP}}]
-function dumbbell(rows, { groups = ['AI', 'HG', 'HP'], x0 = 0, x1 = 1, ticks = [0, .25, .5, .75, 1], fmt = f2, chance = null, labelW = 196, unit = '' } = {}) {
+function dumbbell(rows, { groups = ['AI', 'HG', 'HP'], x0 = 0, x1 = 1, ticks = [0, .25, .5, .75, 1], fmt = f2, chance = null, chanceLabel = 'chance', names = null, labelW = 196, unit = '' } = {}) {
   const W = 640, RH = 30, top = 22, H = top + rows.length * RH + 24, L = labelW, R = 20;
   const X = v => L + (v - x0) / (x1 - x0) * (W - L - R);
   const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img' });
   for (const t of ticks) { svg.append(s('line', { class: 'qf-grid', x1: X(t), x2: X(t), y1: top - 6, y2: H - 22 })); svg.append(s('text', { class: 'qf-ax', x: X(t), y: H - 6, 'text-anchor': 'middle', text: fmt(t) })); }
-  if (chance != null) { svg.append(s('line', { class: 'qf-chance', x1: X(chance), x2: X(chance), y1: top - 6, y2: H - 22 })); svg.append(s('text', { class: 'qf-ax', x: X(chance), y: top - 10, 'text-anchor': 'middle', text: 'chance' })); }
+  if (chance != null) { svg.append(s('line', { class: 'qf-chance', x1: X(chance), x2: X(chance), y1: top - 6, y2: H - 22 })); svg.append(s('text', { class: 'qf-ax', x: X(chance), y: top - 10, 'text-anchor': 'middle', text: chanceLabel })); }
   rows.forEach((r, i) => {
     const y = top + i * RH + RH / 2;
     svg.append(s('text', { class: 'qf-lab', x: L - 12, y: y + 4, 'text-anchor': 'end', text: r.label }));
     if (r.sub) svg.append(s('text', { class: 'qf-sub', x: 0, y: y + 4, text: r.sub }));
     const vs = groups.map(g => r.vals[g]).filter(v => v != null);
     if (vs.length > 1) svg.append(s('line', { class: 'qf-bar', x1: X(Math.min(...vs)), x2: X(Math.max(...vs)), y1: y, y2: y }));
-    for (const g of groups) { if (r.vals[g] == null) continue; const d = dot(X(r.vals[g]), y, g); tip(d, `${r.label} · ${GROUP[g].label}: ${fmt(r.vals[g])}${unit}`); svg.append(d); }
+    for (const g of groups) { if (r.vals[g] == null) continue; const d = dot(X(r.vals[g]), y, g); tip(d, `${r.label} · ${(names && names[g]) || GROUP[g].label}: ${fmt(r.vals[g])}${unit}`); svg.append(d); }
   });
   return svg;
 }
@@ -313,13 +313,110 @@ const QPOST = {
     h('h4', { text: 'What v2 adds' }),
     h('p', { text: 'Six counts can only say “more slop, lower score”. With 10 items we can ask which kind of slop goes with which dimension, for example whether overstated claims track soundness and undefined terms track presentation. The plan starts from ICLR 2027 submissions, then compares years and venues (NeurIPS, ICML, ACL).' }),
     h('h4', { text: 'Result' }), h('p', { class: 'qa-none', text: 'Not in yet.' })] },
-  f3: { title: 'Are AI reviewers more forgiving of scientific slop?', tag: 'not run yet', body: () => [
-    h('p', { text: 'A growing share of reviews is written with an LLM, and some venues now use AI reviewers officially. If an AI reviewer goes easy on the failures an AI author makes, the two problems compound.' }),
-    h('h4', { text: 'Setup' }),
-    h('p', { text: 'Take one paper with its measured slop, one human review and one AI review. Compare two things: how much of the measured slop each review points out, and how much the score drops per unit of slop. Then check whether the gap widens when the author is an AI.' }),
-    h('h4', { text: 'Data' }),
-    h('p', { text: 'No single dataset has everything, so we use three. Agents4Science 2025 has AI-written papers with 456 AI reviews and 55 human reviews. Our 390 SciSlopBench pairs already have two AI reviewers run on both sides. ICLR 2026 has reviews labelled by Pangram as human-written (32,938) or AI-generated (15,899), often on the same paper.' }),
-    h('h4', { text: 'Result' }), h('p', { class: 'qa-none', text: 'Not in yet.' })] },
+  f3: { title: 'Are AI reviewers more forgiving of scientific slop?', tag: 'Scientific Slop Index · Question 3', body: () => {
+    const Q = window.Q3 || { reviewers: [] }, R = Q.reviewers, B = t => h('b', { text: t });
+    const by = Object.fromEntries(R.map(r => [r.id, r])), names = R.map(r => r.name);
+    const listNames = names.length > 1 ? names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] : names[0] || '';
+    const rr = d => d ? f2(d.rho) : '–', ci = d => d && d.ci ? `${f2(d.ci[0])} to ${f2(d.ci[1])}` : '';
+    const pct = x => x == null ? '–' : Math.round(x * 100) + '%';
+    const part = (lab, cls) => (...k) => h('div', { class: 'xp ' + cls }, h('span', { class: 'xp-l', text: lab }), h('p', {}, ...k));
+    const why = part('Why', 'why'), res = part('Result', 'res'), mean_ = part('What it means', 'mean');
+    const exp = (n, q) => h('div', { class: 'exp' }, h('span', { class: 'exp-n', text: `Experiment ${n}` }), h('h5', { text: q }));
+    const byline = h('div', { class: 'qa-by' },
+      h('div', {}, h('h3', { text: 'Authors' }), h('p', { text: 'Yerim Oh, Young-Jun Lee, Jaewoo Ahn, Seungone Kim, Jinu Lee, Jinheon Baek, Gunhee Kim, Dongyeop Kang' })),
+      h('div', {}, h('h3', { text: 'Published' }), h('p', { text: 'November 17, 2026' })),
+      h('div', {}, h('h3', { text: 'Data' }), h('p', {}, `${Q.n.ai} AI + ${Q.n.hu_unique} human papers · ${R.length} AI reviewers · `, h('a', { href: 'https://huggingface.co/datasets/yerim0210/Scientific_Slop', target: '_blank', rel: 'noopener', text: 'SciSlopBench' }))));
+    const zr = R.map(r => r.z), fars_close = R.filter(r => r.z.human - r.z.fars < .5).length;
+    const tldr = h('div', { class: 'tldr' }, h('span', { class: 'tldr-l', text: 'TL;DR' }),
+      h('p', {}, `We gave the same ${Q.n.ai + Q.n.hu_unique} papers, ${Q.n.ai} written by AI systems and ${Q.n.hu_unique} written by people, to ${['no', 'one', 'two', 'three', 'four', 'five'][R.length] || R.length} well-known AI reviewers: ${listNames}. Then we compared their scores with our slop index.`),
+      h('p', {}, B('AI reviewers do not lower their score when a paper has more slop.'), ' Human reviewers do. On the same human papers, ICLR reviewers gave lower ratings to sloppier papers; the AI reviewers did not.'),
+      h('p', {}, B('The AI papers with the most slop get scores close to human papers.'), ' AI reviewers mark down AI papers from Agents4Science, but they rate FARS papers, which have the most slop, almost like accepted human papers.'));
+    // Figure 1: the setup sketch — two papers in, AI reviewers and human reviewers out
+    const qSetup = () => sFig('0 0 640 250', `
+      ${sPaper(30, 40, 100, 120)}${sBadge(30, 40, 'ai')}${sLoop(80, 80, 40, 8, .2)}${sSquig(44, 116, 132, .5)}
+      ${sPaper(160, 40, 100, 120)}${sBadge(160, 40, 'human')}
+      ${sArrow([[272, 100], [320, 96], [356, 98]], .9)}
+      ${R.map((_, i) => sRobot(472 + (i - (R.length - 1) / 2) * 48, 92, 14)).join('')}
+      ${sNote(472, 140, 'same prompt, same paper text', 1.3, 'ink', 17, 'middle')}
+      ${sNote(472, 60, `${R.length} AI reviewers`, 1.1, 'red', 21, 'middle')}
+      ${sMono(80, 182, 'AI paper')}${sMono(210, 182, 'human paper')}
+      ${sNote(320, 228, 'score vs. slop index: does more slop cost points?', 1.6, 'red', 20, 'middle')}`,
+      'An AI paper and a human paper go to the same AI reviewers; we compare each score with the paper’s slop index');
+    // Figure 2: standardized score per reviewer for human papers, FARS and Agents4Science papers
+    const fig2 = dumbbell(R.map(r => ({ label: r.name, vals: { HG: r.z.human, AI: r.z.fars, HP: r.z.a4s } })),
+      { groups: ['HG', 'AI', 'HP'], names: { HG: 'human papers', AI: 'FARS AI papers', HP: 'Agents4Science AI papers' }, x0: -1.2, x1: .9, ticks: [-1, -.5, 0, .5], chance: 0, chanceLabel: 'average', labelW: 214, unit: ' SD' });
+    // Figure 3: correlation of score with slop, per reviewer, on AI papers (red) and human papers (hollow); human reviewers below
+    const rows3 = R.map(r => ({ label: r.name, vals: { AI: r.rho_ai && r.rho_ai.rho, HG: r.rho_hu && r.rho_hu.rho } }))
+      .concat([{ label: 'Agents4Science AI reviewers (mean)', vals: { AI: Q.a4s_ai.a4s_AImean && Q.a4s_ai.a4s_AImean.rho } },
+        { label: 'ICLR reviewers', sub: 'human', vals: { HG: Q.human.iclr.rho } },
+        { label: 'Reviewers of rejected papers', sub: 'human', vals: { HG: Q.human.rejected.rho } },
+        { label: 'Agents4Science human reviewer', sub: 'human', vals: { AI: Q.human.a4s.rho } }]);
+    const fig3 = dumbbell(rows3, { groups: ['AI', 'HG'], names: { AI: 'on AI papers', HG: 'on human papers' }, x0: -.45, x1: .3, ticks: [-.4, -.2, 0, .2], chance: 0, chanceLabel: 'no relation', labelW: 250 });
+    const ITEMN = { '1-2': 'Overstated Claims', '1-3': 'Evidence Gap', '1-4': 'Unclear Links to Prior Work', '2-3': 'Missing Cross-Section Links', '2-5': 'Empty Conclusion', '4-1': 'Generic Filler', '4-2': 'Unexplained Terms', '4-4': 'Redundant Repetition', '5-5': 'Formulaic Reasoning' };
+    const star = d => !d ? '–' : f2(d.rho) + (d.ci && (d.ci[0] > 0 || d.ci[1] < 0) ? ' *' : '');
+    const eg = R.map(r => r.items_ai && r.items_ai['1-3']).filter(Boolean);
+    return [
+      byline, tldr,
+      qSetup(),
+      h('p', { class: 'qa-cap', text: 'Figure 1. Every paper, AI-written or human-written, goes to the same AI reviewers with the same prompt. We then ask whether papers with more slop get lower scores.' }),
+      h('h5', { class: 'qa-how', text: 'How the data was built' }),
+      h('ul', { class: 'qa-ul' },
+        h('li', {}, `The papers are the ${Q.n.pairs} pairs of SciSlopBench: an AI paper and an accepted human paper on a similar topic. The AI papers come from FARS, one fully automated system, and from the Agents4Science 2025 conference, where many teams submitted AI-written papers.`),
+        h('li', {}, by.stanford ? 'The AI reviewers: OpenReviewer (an 8B model trained on 79,000 ICLR and NeurIPS reviews), the Stanford Agentic Reviewer (behind paperreview.ai; it searches arXiv for related work first), CycleReviewer, and the reviewer of Sakana’s AI Scientist. Each one reads the paper’s full text and gives an overall score.' : 'The AI reviewers: OpenReviewer (an 8B model trained on 79,000 ICLR and NeurIPS reviews), CycleReviewer, and the reviewer of Sakana’s AI Scientist. Each one reads the paper’s full text and gives an overall score. The Stanford Agentic Reviewer (behind paperreview.ai) is still running and will be added here.'),
+        h('li', {}, `The human reviewers: ICLR reviewers of the human papers, reviewers of 226 rejected human papers from Question 1, and the human reviewer Agents4Science assigned to some AI papers.`),
+        h('li', {}, `Slop is the slop index of Question 1 (nine measures combined), available for ${Q.n.v2_pairs} pairs.`)),
+      h('h5', { class: 'qa-how', text: 'How to read the numbers' }),
+      h('ul', { class: 'qa-ul' },
+        h('li', {}, 'Each reviewer uses its own scale, so we convert scores to ', B('standard deviations (SD)'), ' from that reviewer’s average. 0 is an average paper for that reviewer.'),
+        h('li', {}, B('ρ'), ' is a correlation between −1 and 1. A negative ρ between score and slop means sloppier papers get lower scores. ', B('0 means the score ignores slop.')),
+        h('li', {}, 'FARS papers have more slop than Agents4Science papers, so we compute ρ inside each source and combine the two. Otherwise a difference between the sources would look like a reaction to slop.')),
+
+      h('p', {}, 'More and more reviews are written with an LLM, and some venues now use AI reviewers on purpose. If an AI reviewer goes easy on the flaws an AI author makes, the two problems feed each other: AI-written papers pass AI review. We test that directly.'),
+      h('ol', { class: 'qa-ol' },
+        h('li', {}, B('AI reviewers rate AI papers lower on average, but not the sloppiest ones. '), '(Experiment 1)'),
+        h('li', {}, B('More slop does not lower an AI reviewer’s score. It lowers a human reviewer’s. '), '(Experiment 2)'),
+        h('li', {}, B('The only slop AI reviewers penalize is a claim with no table or figure behind it. '), '(Experiment 3)')),
+
+      h('h4', { text: 'Do AI reviewers see the slop?' }),
+      exp(1, 'Do AI reviewers score AI papers lower than human papers?'),
+      why('A reviewer that notices slop should give AI papers lower scores, and the lowest to the AI papers with the most slop. FARS papers have the highest slop index (', f2(Q.slop_means.fars), '), then Agents4Science papers (', f2(Q.slop_means.a4s), '), then the human papers (', f2(Q.slop_means.human), ').'),
+      res(B(`All ${R.length === 4 ? 'four' : R.length === 3 ? 'three' : R.length} rate the human papers highest on average`), ', and the human paper of a pair wins ', R.map(r => `${pct(r.pair_hu_higher.all)} (${r.name})`).join(', '), ' of the time. ', B('The order of the two AI sources is reversed'), ' (Figure 2). Agents4Science papers get the lowest scores. FARS papers, which have the most slop, score close to the human papers.'),
+      qfig(2, fig2, 'Average score of each group, in standard deviations from the reviewer’s average. Hollow: human papers. Red: FARS AI papers. Grey: Agents4Science AI papers. Hover a dot for the value.',
+        h('div', { class: 'qf-leg' }, h('span', {}, h('i', { class: 'qf-key hg' }), 'human papers'), h('span', {}, h('i', { class: 'qf-key ai' }), 'FARS AI papers'), h('span', {}, h('i', { class: 'qf-key hp' }), 'Agents4Science AI papers'))),
+      qTable(['Reviewer', 'human paper wins: all pairs', 'FARS pairs', 'Agents4Science pairs'], R.map(r => [r.name, pct(r.pair_hu_higher.all), pct(r.pair_hu_higher.fars), pct(r.pair_hu_higher.a4s)])),
+      h('p', { class: 'qa-cap', text: 'How often the human paper of a pair gets the higher score. Ties count as no win, so the rows do not add up to 100% against the AI paper.' }),
+      mean_(B('AI reviewers tell the two AI sources apart, but not by their slop.'), ' The group with the most slop is the one they rate closest to accepted human papers. Length does not explain it either: FARS papers are the shortest of the three groups.'),
+
+      exp(2, 'Does a paper with more slop get a lower score?'),
+      why('Experiment 1 compares groups. The direct test is within a group: among papers of the same kind, does a sloppier one get a lower score? We ask this of every AI reviewer and of the human reviewers we have.'),
+      res(B('For every AI reviewer, ρ is close to 0'), ' on AI papers and on human papers alike (Figure 3). ', B('The human reviewers go negative'), `: ICLR reviewers gave lower ratings to sloppier papers (ρ = ${rr(Q.human.iclr)}, 95% interval ${ci(Q.human.iclr)}), and so did the reviewers of rejected papers (ρ = ${rr(Q.human.rejected)}).`),
+      qfig(3, fig3, 'Correlation between review score and slop index (ρ). Red: on AI papers. Hollow: on human papers. Left of the dashed line, sloppier papers get lower scores. The bottom three rows are human reviewers.',
+        h('div', { class: 'qf-leg' }, h('span', {}, h('i', { class: 'qf-key ai' }), 'on AI papers'), h('span', {}, h('i', { class: 'qf-key hg' }), 'on human papers'))),
+      h('p', {}, `The cleanest comparison uses the same papers. For the ${Q.human.iclr.n} human papers that have ICLR reviews, the human reviewers and the AI reviewers scored the same text:`),
+      qTable(['Reviewer', 'papers', 'ρ with slop', '95% interval'], [['ICLR reviewers (human)', String(Q.human.iclr.n), rr(Q.human.iclr), ci(Q.human.iclr)]].concat(R.map(r => [r.name, String(r.rho_iclr_subset.n), rr(r.rho_iclr_subset), ci(r.rho_iclr_subset)]))),
+      mean_(B('An AI reviewer gives a paper the same score whether it has a little slop or a lot.'), ' A human reviewer marks the sloppier one down. This is what "more forgiving" looks like in the data: not a higher score for every paper, but no penalty for slop.'),
+
+      exp(3, 'Which kinds of slop do AI reviewers react to?'),
+      why('The index mixes nine measures. An AI reviewer might punish some and ignore others, which would cancel out in the index.'),
+      res(B('They react to one: Evidence Gap'), ', result claims with no table or figure behind them. ', R.filter(r => r.items_ai && r.items_ai['1-3'] && r.items_ai['1-3'].ci && r.items_ai['1-3'].ci[1] < 0).map(r => r.name).join(' and ') || 'Some reviewers', ' give such papers lower scores. ', B('The rest is ignored or rewarded.'), ' CycleReviewer gives higher scores to AI papers with more Overstated Claims (ρ = ', by.cyclereviewer ? rr(by.cyclereviewer.items_ai['1-2']) : '–', ').'),
+      qTable(['Measure'].concat(R.map(r => r.name)), Object.keys(ITEMN).map(it => [`${it} ${ITEMN[it]}`].concat(R.map(r => star(r.items_ai && r.items_ai[it]))))),
+      h('p', { class: 'qa-cap', text: 'ρ between each reviewer’s score and each measure, on AI papers, computed within each source. * the 95% interval excludes 0. Negative = more of that slop, lower score.' }),
+      mean_(B('AI reviewers check whether results are backed by a table. They do not check whether the claims are bigger than the evidence.'), ' Overclaiming, filler and copied text pass AI review without cost, and one reviewer rewards overclaiming.'),
+
+      h('h4', { text: 'What comes next' }),
+      h('ul', { class: 'qa-ul' },
+        h('li', { text: 'Read the reviews, not only the scores: does an AI reviewer mention the slop it does not penalize? (Question 4 matches review comments to the measures.)' }),
+        h('li', { text: 'Add DeepReviewer-14B (access requires a signed request) and a frontier model run through the AI Scientist prompt.' }),
+        h('li', { text: 'Repeat Experiment 2 on ICLR 2026, where many reviews are labelled as human-written or AI-written on the same paper.' })),
+      h('h4', { text: 'Fine print' }),
+      h('ul', { class: 'qa-ul small' },
+        by.stanford && h('li', { text: 'The Stanford Agentic Reviewer has no public code or API. We use a reconstruction of its documented pipeline (search queries, arXiv retrieval, related-work summary, ICLR-form review) on Qwen2.5-32B. Search results with the paper’s own title are removed, since the human papers are on arXiv.' }),
+        h('li', { text: 'CycleReviewer and the AI Scientist reviewer (on Qwen2.5-32B) are the scores released with SciSlopBench. OpenReviewer' + (by.stanford ? ' and the Stanford reconstruction were' : ' was') + ' run for this page on the same LaTeX text. OpenReviewer used its released prompt, temperature 0; 12 reviews that looped were rerun at temperature 0.7.' }),
+        h('li', { text: 'The ICLR human papers are all accepted papers, so their ratings span a narrow range. That makes a negative ρ harder to find, not easier.' }),
+        h('li', { text: 'Agents4Science sent papers to a human reviewer only when its AI reviewers averaged 4 or more. On those 79 papers the AI reviewers score one point higher than the human reviewer, but the selection inflates that gap, so we do not use it.' }),
+        h('li', { text: 'The older SciSlopBench aggregate (six measures, all 390 pairs) gives the same answer: AI reviewer ρ within each source is between −0.12 and 0.04.' })),
+      h('p', { class: 'qa-cap', text: 'Data and scripts: v2/question/Q3_ai_reviewer_leniency. The numbers behind every figure and table are in q3data.js on this page.' })];
+  } },
   f4: { title: 'Do reviewers catch the scientific flaws we measure?', tag: 'Scientific Slop Index · Question 4', body: () => {
     const D = window.Q4 || {}, B = t => h('b', { text: t });
     const pct = x => x == null ? '–' : Math.round(x * 100) + '%', pct1 = x => x == null ? '–' : (x * 100).toFixed(1) + '%';
