@@ -223,9 +223,8 @@ const QPOST = {
     h('p', {}, 'The v1 benchmark could not answer this. Each AI paper was paired with one accepted human paper, so the AI-vs-human gap and the bad-vs-good writing gap were one and the same number. Here we add a third paper to pull them apart. What we found:'),
     h('ol', { class: 'qa-ol' },
       h('li', {}, B('Rejected-for-writing papers and accepted papers get similar slop scores; AI papers get higher ones. '), 'Experiment 1 shows this item by item; Experiment 2 checks it against the definition of "badly written", topic closeness, length, and the two sources of AI papers.'),
-      h('li', {}, B('Between 2021 and late 2024, stock phrasing in human papers rose, '), 'even though the human side stops at 2024 (Experiment 3).'),
-      h('li', {}, B('Among the rejected papers, slop varies with the overall rating, not with the presentation score '), '(Experiment 4). The nine items rarely show up together in one paper (Experiment 5).'),
-      h('li', {}, B('The reviewers of the Agents4Science AI papers, three AI reviewers and one human, gave scores that do not track slop '), '(Experiment 6). Shorter AI papers are sloppier (Experiment 7).')),
+      h('li', {}, B('Among the rejected papers, slop varies with the overall rating, not with the presentation score '), '(Experiment 4). The nine items rarely show up together in one paper (Experiment 5).')),
+
 
     h('h4', { text: 'Is slop just bad writing?' }),
     exp(1, 'Does a badly written paper score like an AI paper?'),
