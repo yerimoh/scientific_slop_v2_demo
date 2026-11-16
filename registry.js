@@ -81,10 +81,11 @@ const PIC = {
   '4-4': () => row([E.card('§3 · Method', inner.chip('destroys saliency', C.struct)), E.eq(), E.card('§4 · Experiments', inner.chip('destroys saliency', C.struct))]),
   '4-5': () => row([E.card('Figure 1', inner.bars(), { lines: false }), E.miss(C.art), E.ask(['results, in a method figure?'])]),
   '5-5': () => row([E.card('§1 Introduction', inner.chip('fundamental', C.arg)), E.eq(), E.card('§6 Conclusion', inner.chip('fundamental', C.arg))]),
+  '3-2': () => row([E.card('borrowed parts', inner.chip('all from LAVE', C.arg, { outline: true })), E.miss(C.arg, { solid: true }), E.ask(['a second source?'])]),
   '1-3': () => row([E.card('§4 Results', inner.text(['median 1.0', 'signature per task']), { lines: false }), E.miss(C.art), E.ask(['one signature?'])]),
 };
 // what the pattern looks like, one line under each scene
-const CAP = { '5-5': 'set phrases where the reasons go', '2-5': 'the abstract again, at the end', '1-2': 'one setting tried, cost left out', '1-4': 'cited, related to nothing', '2-3': 'used later, never pointed back to', '4-1': 'nicer words, nothing new', '4-2': 'a result in a term not yet explained', '4-4': 'the same sentence, another section', '4-5': 'results and a key inside the diagram', '1-3': 'numbers only, not one case' };
+const CAP = { '3-2': 'every borrowed part, from one paper', '5-5': 'set phrases where the reasons go', '2-5': 'the abstract again, at the end', '1-2': 'one setting tried, cost left out', '1-4': 'cited, related to nothing', '2-3': 'used later, never pointed back to', '4-1': 'nicer words, nothing new', '4-2': 'a result in a term not yet explained', '4-4': 'the same sentence, another section', '4-5': 'results and a key inside the diagram', '1-3': 'numbers only, not one case' };
 // hero: a paper spine with the five kinds of broken connection
 function heroSvg() {
   const secs = [['Abstract', 4], ['Introduction', 42], ['Method', 80], ['Experiments', 118], ['Conclusion', 156]];
@@ -157,6 +158,12 @@ const ITEMS = [
     judge: ['Applies to papers with a result table in the main text.', 'Search the whole paper, appendix included, for one shown case: a prompt, input or output in a box or code block; a caption announcing an example, a case or a failure; a long quotation outside the related work.', 'One case anywhere closes the gap.'],
     not: ['A paper with no result table (theory, position).', 'A case shown only in the appendix still counts as shown.'],
     fix: ['Show a real case from the experiment records (an input, the output, a failure) and point to it where the result is interpreted. If none was kept, say so there.', 'Not a fix: an invented example presented as an observation.'] },
+  { id: '3-2', area: 3, name: 'Single-Source Method', what: 'Every part the method takes from earlier work comes from one paper. The rest is what the paper adds on top of it.',
+    ex: { spec: 'We keep the encoder, the loss and the schedule of Method A [3] and add a weighting step.', specnote: 'Everything the method borrows is from [3]. The other references are cited, and the method takes nothing from them.', src: '', pre: '', mark: '', post: '', note: '' },
+    judge: ['List the parts the method is made of.', 'For each part, find where it comes from: built in this paper, or taken from a named earlier work.', 'Count the earlier works that at least one part comes from. One or none is slop.'],
+    not: ['A work that is cited or compared against, when no part of the method comes from it.', 'A method built from parts of two or more earlier works.'],
+    fix: ['This is about how the method was built, so rewording does not change it. Name the paper the method extends and say exactly what is changed.', 'Not a fix: citing more papers that the method takes nothing from.'],
+    borders: [['1-4', 'a similar method cited, the difference never stated'], ['1-2', 'a claim larger than the evidence']] },
   { id: '5-5', area: 5, name: 'Formulaic Reasoning', what: 'The paper fills the steps of its argument with set phrases. Why the problem matters, how the method differs, what a finding means: each step gets a phrase such as “plays a crucial role”, “a fundamental challenge”, “rather than” or “broader implications”, and the reason is not there.',
     ex: { spec: 'Token weighting is a critical component of retrieval, and we present the first systematic study of it.', specnote: 'The conclusion says it again: a fundamental limitation, a systematic study. The words carry the claim; the reasons are not there.', src: '', pre: '', mark: '', post: '', note: '' },
     judge: ['Read the abstract, introduction, method and conclusion.', 'Mark the sentences that fill a step of the argument with a set phrase: “plays a crucial role”, “a fundamental challenge”, “rather than”, “broader implications”, or a stock word such as systematic or rigorous.', 'Score each section by its share of such sentences and average the sections.'],
@@ -205,6 +212,10 @@ const DEF = {
     q: [{ pre: 'Among tasks with failures, ', mark: 'the median number of unique execution signatures is 1.0', post: ', validating ESR’s premise that failure modes cluster strongly.', src: 'AI paper · SciSlopBench FA0163 · §3 Experiments, Analysis' },
         { pre: '', mark: 'An example of Self-Debugging prompting for text-to-SQL generation.', post: ' The SQL query, explanation and feedback are all predicted by the model.', src: 'Human pair · Self-Debug (Chen et al., 2023) · figure caption, §4' }],
     note: 'The method is built on execution signatures and a failure bank. The paper reports counts of both and never prints one signature, one failing test or one program. Its human pair, which is also its baseline, prints the full prompt, the model’s query and its feedback.' },
+  '3-2': { what: 'Every part the method takes from earlier work comes from one paper. The rest is what the paper adds on top of it.',
+    q: [{ pre: 'We propose Progress-Guarded LAVE (PG-LAVE), which ', mark: 'adds a lightweight stall guard', post: ' that monitors lexer progress---the production of non-ignored terminals---and triggers early rejection when progress stalls.', src: 'AI paper · SciSlopBench FA0142 · §1 Introduction' },
+        { pre: 'Next, we consider a variant of the Wasserstein dependency measure that only depends on the last state, ', mark: 'similarly to VIC', post: ' […].', src: 'Human paper · METRA (Park et al., ICLR 2024) · §4 Method' }],
+    note: 'The AI paper has six parts. Three come from LAVE (its lookahead check, kept as is; the stall guard and a larger attempt budget, both changes to it) and three are new. No part comes from any other work. METRA also has six parts, and they come from five lines of work: skill discovery, the Wasserstein dependency measure, Kantorovich–Rubinstein duality, VIC, and temporal distance.' },
   '5-5': { what: 'The paper fills the steps of its argument with set phrases. Why the problem matters, how the method differs, what a finding means: each step gets a phrase such as “plays a crucial role”, “a fundamental challenge”, “rather than” or “broader implications”, and the reason is not there.',
     q: [{ pre: 'We identify a ', mark: 'fundamental security vulnerability', post: ' in online LLM log parsers that use self-generated ICL: the monotonically growing demo pool creates a persistent attack surface.', src: 'AI paper · SciSlopBench FA0221 · §1 Introduction' },
         { pre: 'We identified a ', mark: 'fundamental security vulnerability', post: ' in online LLM log parsers that use self-generated in-context learning.', src: 'Same paper · Conclusion' }],
@@ -286,6 +297,7 @@ const PAGE = {
     { h: '2  Related Work', p: ['Method A [3] uses contrastive pairs. ', M('1-4'), ' ', G('g14', 'B alone; ours vs B never said')], lines: 1 },
     { p: ['Prior studies established that update rule A converges under adaptive step sizes [12].'], lines: 1 },
     { h: '3  Method', p: [A('g42', 'Anchor drift is the share of queries whose top passage changes across languages.'), ' We then project to the shared space. ', A('gloss', 'We add an alignment term: L = L_task + λ·L_align (Eq. 2).')], lines: 1 },
+    { p: [M('3-2'), ' ', G('g32', 'all of it from [3]')], lines: 1 },
     { fig: true, cap: [M('4-5'), ' Overview of the method. The diagram also carries an “Ours” tag, an accuracy and a ✓.'] },
   ],
   right: [
@@ -310,24 +322,25 @@ const FAIL = {
   '4-4': { to: 'g44', label: 'the same sentence as in §1', eq: true, from: '§1 Introduction', at: '§4.2 Results' },
   '4-5': { to: 'gfig', label: '“Ours”, a result and a ✓ inside the method figure' },
   '1-3': { to: 'g13', label: 'counts only; no example anywhere, appendix included' },
+  '3-2': { to: 'g32', label: 'every borrowed part is from [3]; nothing from another work' },
   '5-5': { to: 'g55', label: '“fundamental” again, still no reason' },
 };
 const PLANES = { structure: { title: 'Structure', q: 'Do the sections build on one another?' }, argument: { title: 'Argument', q: 'Are the claims and citations argued?' }, artifacts: { title: 'Artifacts', q: 'Can the method and the evidence be inspected?' } };
 // within each area, the broadest definition first (Yerim 11-07)
-const ORDER = ['2-3', '4-4', '2-5', '1-2', '1-4', '4-1', '5-5', '1-3', '4-5', '4-2'];
+const ORDER = ['2-3', '4-4', '2-5', '1-2', '1-4', '4-1', '5-5', '3-2', '1-3', '4-5', '4-2'];
 ITEMS.sort((a, b) => ORDER.indexOf(a.id) - ORDER.indexOf(b.id));
 const PLANE_OF = { '2-3': 'structure', '2-5': 'structure', '4-1': 'argument', '4-4': 'structure',
-  '1-2': 'argument', '1-4': 'argument', '5-5': 'argument',
+  '1-2': 'argument', '1-4': 'argument', '5-5': 'argument', '3-2': 'argument',
   '1-3': 'artifacts', '4-2': 'artifacts', '4-5': 'artifacts' };
 const PLANE_C = { structure: '#7E4E66', argument: '#E4959E', artifacts: '#56717B' };   // site planes: structure/artifacts in their deep shade so structure and argument separate
-// the page groups the ten items by the index's three planes; the 1-5 area numbers stay in the item ids
+// the page groups the eleven items by the index's three planes; the 1-5 area numbers stay in the item ids
 const GROUPS = [
   { n: 1, key: 'structure', cls: 'p-structure', title: 'Structure', q: 'Do the sections build on one another?' },
   { n: 2, key: 'argument', cls: 'p-argument', title: 'Argument', q: 'Are the claims and citations argued?' },
   { n: 3, key: 'artifacts', cls: 'p-artifacts', title: 'Artifacts', q: 'Can the method and the evidence be inspected?' },
 ];
 for (const it of ITEMS) { it.plane = PLANE_OF[it.id]; it.ar = GROUPS.find(g => g.key === it.plane); it.g = it.ar.n; }
-const SHORT = { '5-5': 'Set phrases fill the argument where the reasons should be.', '1-2': 'The paper claims more than its experiments can show.', '1-4': 'Cites a method much like its own, never says how it differs.',
+const SHORT = { '3-2': 'Everything the method borrows comes from one paper.', '5-5': 'Set phrases fill the argument where the reasons should be.', '1-2': 'The paper claims more than its experiments can show.', '1-4': 'Cites a method much like its own, never says how it differs.',
   '2-3': 'Set up in one section, never pointed back to.',
   '2-5': 'The conclusion only repeats the abstract.', '4-1': 'Says what was already shown in nicer words, and tells nothing new.', '4-2': 'A result given in a term the paper has not explained yet.', '4-4': 'The same sentence in two sections.', '4-5': 'The method figure carries what belongs in the text.', '1-3': 'Results, but not one concrete case shown.' };
 for (const it of ITEMS) it.short = SHORT[it.id];
@@ -431,8 +444,8 @@ function bullets(cls, label, arr) { return h('div', { class: 'dl ' + cls }, h('s
 // Flow animation over a real run. measure/<id>.json (built by v2/slop_v2/build_measure_json.py) holds one paper's units in a
 // common shape: s1 the unit, s2 the question the model answers, s3 what was found + the judge's answer, s4 the verdict.
 // MEASURE[id] gives the four box titles, the "how?" bullets per box and one closing line. Keep the wording label-short.
-const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code', H45 = 'Haiku 4.5';
-const MV = '1107ten55c';   // bump with the run data so browsers do not keep an old measure/*.json
+const Q = 'Qwen', CD = 'code', QC = 'Qwen + code', QV = 'Qwen-VL', H = 'Haiku', HC = 'Haiku + code', H45 = 'Haiku 4.5', SN = 'Sonnet';
+const MV = '1117eleven32';   // bump with the run data so browsers do not keep an old measure/*.json
 const MEASURE = {
 
   '1-2b': { unit: 'paper', units: 'papers', breadth: true,
@@ -525,6 +538,14 @@ const MEASURE = {
       [{ p: 'Search the main paper and appendix for actual inputs, outputs, successes, or failures.' }, { ul: [['Inputs', 'prompts or inputs given to the method'], ['Outputs', 'what the method generated'], ['Cases', 'a success or failure case, a qualitative example, a case study']] }, { s: 'Analysis text or a table of aggregate scores does not count.' }],
       [{ p: 'At least one actual example → PASS' }, { p: 'Numbers only → FAIL' }]],
     how: [], line: 'Does the paper only say 87.6%, or does it also show what the model actually produced?' },
+  '3-2': { unit: 'paper', units: 'papers', paper: true,
+    stages: [['List the parts of the method', '', SN], ['Find where each part comes from', '', SN], ['Score', '', CD]],
+    ask: ['What do we evaluate?', 'Is the method put together from several earlier works, or from a single paper?'],
+    doc: [
+      [{ p: 'Read the abstract, introduction, method and experiments.' }, { p: 'List the parts the method is made of.' }, { s: 'A paper usually has six or seven.' }],
+      [{ p: 'For each part, find where it comes from.' }, { ul: [['New', 'built in this paper'], ['Changed', 'taken from a named earlier work and modified'], ['Kept', 'taken from a named earlier work as it is']] }, { s: 'A work the paper only cites or compares against is not a source.' }],
+      [{ p: 'Count the earlier works that at least one part comes from.' }, { p: '0 or 1 → FAIL' }, { p: '2 or more → PASS' }]],
+    how: [], line: 'List the parts of the method, trace each to its source, and count the sources.' },
   '5-5': { unit: 'paper', units: 'papers', paper: true,
     stages: [['Take the reasoning sections', '', CD], ['Mark set phrases', '', CD], ['Score', '', CD]],
     ask: ['What do we evaluate?', 'Does the paper fill its argument (why it matters, how it differs, what it means) with set phrases instead of reasons?'],
@@ -657,6 +678,10 @@ The abstract and the conclusion are not checked. Rewording the same content is n
 Find one real case in the experiment records behind the main result: an input, the output, a failure.
 Show it verbatim (a box or a listing) with where it came from, and point to it where the result is interpreted.
 If the records hold no case, do not invent one. Say there that no individual case was kept or inspected.`,
+  '3-2': `# Fix · Single-Source Method (3-2)
+List the parts of the method. For each, write where it comes from: built here, or taken from a named earlier work.
+If every borrowed part comes from one paper, this is about how the method was built, and rewording will not change it. Name that paper where the method is introduced and state exactly what is changed.
+Do not add citations to works the method takes nothing from.`,
   '5-5': `# Fix · Formulaic Reasoning (5-5)
 Find the sentences in the abstract, introduction, method and conclusion that fill a step of the argument with a set phrase (plays a crucial role, a fundamental challenge, rather than, broader implications) or a stock word (systematic, rigorous, reveals).
 For each, write the reason the phrase stands in for: what fails without this, what the study covers, what the finding rules out. Keep the phrase only if the reason is next to it.
@@ -896,12 +921,13 @@ function showFix(id) { const box = $('#sp-body .sp-fix'); if (box) { box.hidden 
 const clip = (t, n) => (t = String(t || '').replace(/\s+/g, ' ').trim()).length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t;
 const cap1 = t => t.charAt(0).toUpperCase() + t.slice(1);
 function srcParts(src) { const m = String(src || '').split(' · '); return [h('span', { class: 'snip-who', text: m[0] || '' }), h('span', { text: m.slice(1).join(' · ') })]; }
-// six v1 measures → ten slops, drawn as a hand-ruled tree; the caption under the page says what the chosen slop is
-const TREE = [['Argument graph', ['1-2']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4', '2-5']], ['Figure exposition', ['4-5']], ['Evidence gap', ['1-3']], [null, ['4-1', '4-2', '5-5']]];
+// six v1 measures → eleven slops, drawn as a hand-ruled tree; the caption under the page says what the chosen slop is
+const TREE = [['Argument graph', ['1-2']], ['Citation isolation', ['1-4']], ['Cross-section references', ['2-3']], ['Macro redundancy', ['4-4', '2-5']], ['Figure exposition', ['4-5']], ['Evidence gap', ['1-3']], [null, ['4-1', '4-2', '5-5', '3-2']]];
 // results so far, on the 123 AI / human pairs; an item stays blank until its measure is final
 // 11-06: columns as in v1 Table 2 (PairAcc, AUROC, TPR at 5% FPR), from each item's saved per-paper scores (v2/verification/table_site_rows_1106.py)
 // 5-5: FARS pairs of the held-out half (72), phrase/word list picked on the other half (v2/slop_v2/build_site_formulaic.py)
-const RESULTS = { '5-5': { pa: '0.89', auc: '0.89', tpr: '' }, '4-2': { pa: '0.65', auc: '0.64', tpr: '0.31' }, '1-4': { pa: '0.85', auc: '0.87', tpr: '0.59' }, '1-2': { pa: '0.88', auc: '0.88', tpr: '0.50' }, '2-3': { pa: '0.88', auc: '0.88', tpr: '0.00' }, '4-1': { pa: '0.82', auc: '0.82', tpr: '0.34' }, '4-4': { pa: '0.91', auc: '0.90', tpr: '0.29' }, '2-5': { pa: '0.91', auc: '0.90', tpr: '0.76' }, '1-3': { pa: '0.76', auc: '0.75', tpr: '0.00' }, '4-5': { pa: '0.91', auc: '0.90', tpr: '0.54' } };
+// 3-2: 117 pairs from both sources (FARS 60, Agents4Science 57), v2/verification/idea_graph_1116/eval_graph_full.py
+const RESULTS = { '3-2': { pa: '0.69', auc: '0.68', tpr: '' }, '5-5': { pa: '0.89', auc: '0.89', tpr: '' }, '4-2': { pa: '0.65', auc: '0.64', tpr: '0.31' }, '1-4': { pa: '0.85', auc: '0.87', tpr: '0.59' }, '1-2': { pa: '0.88', auc: '0.88', tpr: '0.50' }, '2-3': { pa: '0.88', auc: '0.88', tpr: '0.00' }, '4-1': { pa: '0.82', auc: '0.82', tpr: '0.34' }, '4-4': { pa: '0.91', auc: '0.90', tpr: '0.29' }, '2-5': { pa: '0.91', auc: '0.90', tpr: '0.76' }, '1-3': { pa: '0.76', auc: '0.75', tpr: '0.00' }, '4-5': { pa: '0.91', auc: '0.90', tpr: '0.54' } };
 $('#sm-res').replaceChildren(h('table', { class: 'res-tbl' },
   h('thead', {}, h('tr', {}, ...['Slop', 'PairAcc', 'AUROC'].map(t => h('th', { text: t })))),
   h('tbody', {}, ...GROUPS.flatMap(g => [h('tr', { class: 'res-g ' + g.cls }, h('td', { colspan: 3, text: g.title })),
@@ -1386,7 +1412,7 @@ function measureSteps(it) {
   const docBody = bs => bs.map(b => b.p ? h('p', { class: 'dc-p', text: b.p }) : b.ul ? h('ul', { class: 'dc-ul' }, ...b.ul.map(([l, t]) => h('li', {}, h('b', { text: l + ': ' }), t)))
     : b.list ? h('div', { class: 'dc-g' }, h('span', { class: 'dc-l', text: b.l }), h('ul', {}, ...b.list.map(t => h('li', { text: t }))))
     : b.l ? h('div', { class: 'dc-g' }, h('span', { class: 'dc-l', text: b.l }), h('p', { text: b.t })) : b.s ? h('p', { class: 'dc-s', text: b.s }) : null);
-  const DOCW = { code: ['rule', 'Rule'], 'code+reader': ['rule', 'Rule + one reader'], 'Qwen-VL': ['llm', 'VLM (Qwen2.5-VL-32B)'], 'Haiku 4.5': ['llm', 'LLM (Haiku 4.5)'] };
+  const DOCW = { code: ['rule', 'Rule'], 'code+reader': ['rule', 'Rule + one reader'], 'Qwen-VL': ['llm', 'VLM (Qwen2.5-VL-32B)'], 'Haiku 4.5': ['llm', 'LLM (Haiku 4.5)'], 'Sonnet': ['llm', 'LLM (Sonnet)'] };
   const docWho = w => { const [c, t] = DOCW[w] || ['llm', 'LLM (Haiku)']; return h('span', { class: 'dc-who ' + c, text: t }); };
   const whoTag = w => doc ? (w === 'paper' ? null : docWho(w)) : (m.tags && w !== 'paper') ? h('span', { class: 'dc-who ' + (w === 'code' ? 'rule' : 'llm'), text: w === 'code' ? 'Rule' : 'LLM (' + w + ')' }) : (plain || w === 'paper') ? null : h('span', { class: 'rs-who ' + (w === 'code' ? 'rule' : 'model'), text: w === 'code' ? 'rule' : w.includes('code') ? 'model + rule' : 'model' });
   const ex = m.stages.map(() => h('div', { class: 'rs-ex' }, h('span', { class: 'rs-wait', text: '…' })));

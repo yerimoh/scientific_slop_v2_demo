@@ -1,0 +1,180 @@
+{
+ "meta": {
+  "item": "3-2",
+  "paper": "FA0142",
+  "side": "AI paper",
+  "title": "Progress-Guarded LAVE",
+  "n_runs": 1,
+  "pre": {},
+  "default": "FA0142",
+  "rate": {
+   "ai": "40%",
+   "hu": "19%",
+   "n_ai": 118,
+   "n_hu": 129,
+   "lead": "On 247 sampled papers from both AI sources, ",
+   "what": "build the method from one earlier work or none"
+  },
+  "source": "v2/verification/idea_graph_1116 (runs/ideagraph_full_*, eval_graph_full.py)"
+ },
+ "units": [
+  {
+   "id": "FA0142",
+   "sec": "AI paper",
+   "text": "AI paper · FA0142 · Progress-Guarded LAVE",
+   "runs": [],
+   "final": "FAIL",
+   "final_reason": "1 source",
+   "s2": "",
+   "found": [],
+   "found_note": "",
+   "judge_line": "",
+   "steps": [
+    [
+     {
+      "chips": {
+       "label": "6 parts",
+       "items": [
+        {
+         "t": "lookahead check"
+        },
+        {
+         "t": "stall guard"
+        },
+        {
+         "t": "larger attempt budget"
+        },
+        {
+         "t": "lexer progress"
+        },
+        {
+         "t": "stall counter"
+        },
+        {
+         "t": "ignored-only test"
+        }
+       ]
+      }
+     }
+    ],
+    [
+     {
+      "kv": [
+       [
+        "lookahead check",
+        "LAVE, kept"
+       ],
+       [
+        "stall guard",
+        "LAVE, changed"
+       ],
+       [
+        "larger attempt budget",
+        "LAVE, changed"
+       ],
+       [
+        "lexer progress",
+        "new"
+       ],
+       [
+        "stall counter",
+        "new"
+       ],
+       [
+        "ignored-only test",
+        "new"
+       ]
+      ]
+     }
+    ],
+    [
+     {
+      "verdict": {
+       "score": "1 source: LAVE",
+       "v": "FAIL"
+      }
+     }
+    ]
+   ]
+  },
+  {
+   "id": "2310.08887",
+   "sec": "Human paper",
+   "text": "Human paper · METRA (Park et al., ICLR 2024)",
+   "runs": [],
+   "final": "PASS",
+   "final_reason": "5 sources",
+   "s2": "",
+   "found": [],
+   "found_note": "",
+   "judge_line": "",
+   "steps": [
+    [
+     {
+      "chips": {
+       "label": "6 parts",
+       "items": [
+        {
+         "t": "skill-conditioned policy"
+        },
+        {
+         "t": "Wasserstein objective"
+        },
+        {
+         "t": "tractable dual form"
+        },
+        {
+         "t": "last-state decomposition"
+        },
+        {
+         "t": "temporal-distance metric"
+        },
+        {
+         "t": "1-Lipschitz constraint"
+        }
+       ]
+      }
+     }
+    ],
+    [
+     {
+      "kv": [
+       [
+        "skill-conditioned policy",
+        "skill discovery, changed"
+       ],
+       [
+        "Wasserstein objective",
+        "skill discovery + Wasserstein dependency measure"
+       ],
+       [
+        "tractable dual form",
+        "Kantorovich–Rubinstein duality"
+       ],
+       [
+        "last-state decomposition",
+        "VIC"
+       ],
+       [
+        "temporal-distance metric",
+        "temporal distance"
+       ],
+       [
+        "1-Lipschitz constraint",
+        "new"
+       ]
+      ]
+     }
+    ],
+    [
+     {
+      "verdict": {
+       "score": "5 sources",
+       "v": "PASS"
+      }
+     }
+    ]
+   ]
+  }
+ ]
+}
