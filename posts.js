@@ -296,10 +296,6 @@ const QPOST = {
 
     mean_(B('At Agents4Science, papers with more slop did not get worse reviews.'), ' If AI reviewers do not react to slop, a review process that relies on them will let it through. This is an early result: the human reviewer scored only 46 papers, and these are different papers from Experiment 3.'),
 
-    exp(6, 'Are shorter AI papers sloppier?'),
-    why('A short paper has less room for repetition and filler, so it might score cleaner. Or, with little to say, it might fill the room it has.'),
-    res(B('Shorter AI papers score higher.'), ` The shortest quarter of AI papers averages ${f2(Q1.length.ai_quartiles[0].mean_index)}, the longest quarter ${f2(Q1.length.ai_quartiles[3].mean_index)} (ρ = ${f2(Q1.length.AI.rho_index)}). Human papers show almost no such pattern (ρ = ${f2(Q1.length.HG.rho_index)} and ${f2(Q1.length.HP.rho_index)}).`),
-    mean_(B('In AI papers, slop is thickest where there is least content.'), ' Our measures are rates, so this is not because short papers have fewer sentences to count. And since human papers show no such pattern, length does not explain why AI papers score higher in Experiment 1.'),
     h('h4', { text: 'What comes next' }),
     h('ul', { class: 'qa-ul' },
       h('li', { text: 'Finish Unexplained Terms on the rejected papers and run the figure item, 4-5 Unclear Figures (the figures are downloaded; the vision pass is not).' }),
