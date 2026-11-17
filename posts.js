@@ -326,11 +326,12 @@ const QPOST = {
       h('div', {}, h('h3', { text: 'Authors' }), h('p', { text: 'Yerim Oh, Young-Jun Lee, Jaewoo Ahn, Seungone Kim, Jinu Lee, Jinheon Baek, Gunhee Kim, Dongyeop Kang' })),
       h('div', {}, h('h3', { text: 'Published' }), h('p', { text: 'November 17, 2026' })),
       h('div', {}, h('h3', { text: 'Data' }), h('p', {}, `${Q.n.ai} AI + ${Q.n.hu_unique} human papers · ${R.length} AI reviewers · `, h('a', { href: 'https://huggingface.co/datasets/yerim0210/Scientific_Slop', target: '_blank', rel: 'noopener', text: 'SciSlopBench' }))));
-    const zr = R.map(r => r.z), fars_close = R.filter(r => r.z.human - r.z.fars < .5).length;
+    const NUM = n => ['no', 'one', 'two', 'three', 'four', 'five'][n] || String(n), CAP = t => t[0].toUpperCase() + t.slice(1);
+    const rev = R.filter(r => r.z.fars > r.z.a4s), nRev = CAP(NUM(rev.length)), notRev = R.filter(r => r.z.fars <= r.z.a4s);
     const tldr = h('div', { class: 'tldr' }, h('span', { class: 'tldr-l', text: 'TL;DR' }),
       h('p', {}, `We gave the same ${Q.n.ai + Q.n.hu_unique} papers, ${Q.n.ai} written by AI systems and ${Q.n.hu_unique} written by people, to ${['no', 'one', 'two', 'three', 'four', 'five'][R.length] || R.length} well-known AI reviewers: ${listNames}. Then we compared their scores with our slop index.`),
       h('p', {}, B('AI reviewers do not lower their score when a paper has more slop.'), ' Human reviewers do. On the same human papers, ICLR reviewers gave lower ratings to sloppier papers; the AI reviewers did not.'),
-      h('p', {}, B('The AI papers with the most slop get scores close to human papers.'), ' AI reviewers mark down AI papers from Agents4Science, but they rate FARS papers, which have the most slop, almost like accepted human papers.'));
+      h('p', {}, B('The AI papers with the most slop are not the ones AI reviewers mark down.'), ` ${nRev} of the ${NUM(R.length)} reviewers rate FARS papers, which have the most slop, above Agents4Science papers and close to accepted human papers.`));
     // Figure 1: the setup sketch — two papers in, AI reviewers and human reviewers out
     const qSetup = () => sFig('0 0 640 250', `
       ${sPaper(30, 40, 100, 120)}${sBadge(30, 40, 'ai')}${sLoop(80, 80, 40, 8, .2)}${sSquig(44, 116, 132, .5)}
@@ -380,12 +381,12 @@ const QPOST = {
       h('h4', { text: 'Do AI reviewers see the slop?' }),
       exp(1, 'Do AI reviewers score AI papers lower than human papers?'),
       why('A reviewer that notices slop should give AI papers lower scores, and the lowest to the AI papers with the most slop. FARS papers have the highest slop index (', f2(Q.slop_means.fars), '), then Agents4Science papers (', f2(Q.slop_means.a4s), '), then the human papers (', f2(Q.slop_means.human), ').'),
-      res(B(`All ${R.length === 4 ? 'four' : R.length === 3 ? 'three' : R.length} rate the human papers highest on average`), ', and the human paper of a pair wins ', R.map(r => `${pct(r.pair_hu_higher.all)} (${r.name})`).join(', '), ' of the time. ', B('The order of the two AI sources is reversed'), ' (Figure 2). Agents4Science papers get the lowest scores. FARS papers, which have the most slop, score close to the human papers.'),
+      res(B(`All ${R.length === 4 ? 'four' : R.length === 3 ? 'three' : R.length} rate the human papers highest on average`), ', and the human paper of a pair wins ', R.map(r => `${pct(r.pair_hu_higher.all)} (${r.name})`).join(', '), ' of the time. ', B(`For ${NUM(rev.length)} of the ${NUM(R.length)}, the order of the two AI sources is reversed`), ' (Figure 2): Agents4Science papers get the lowest scores, and FARS papers, which have the most slop, score close to the human papers.', notRev.length ? ` ${notRev.map(r => r.name).join(' and ')} rates the two AI sources about the same.` : ''),
       qfig(2, fig2, 'Average score of each group, in standard deviations from the reviewer’s average. Hollow: human papers. Red: FARS AI papers. Grey: Agents4Science AI papers. Hover a dot for the value.',
         h('div', { class: 'qf-leg' }, h('span', {}, h('i', { class: 'qf-key hg' }), 'human papers'), h('span', {}, h('i', { class: 'qf-key ai' }), 'FARS AI papers'), h('span', {}, h('i', { class: 'qf-key hp' }), 'Agents4Science AI papers'))),
       qTable(['Reviewer', 'human paper wins: all pairs', 'FARS pairs', 'Agents4Science pairs'], R.map(r => [r.name, pct(r.pair_hu_higher.all), pct(r.pair_hu_higher.fars), pct(r.pair_hu_higher.a4s)])),
       h('p', { class: 'qa-cap', text: 'How often the human paper of a pair gets the higher score. Ties count as no win, so the rows do not add up to 100% against the AI paper.' }),
-      mean_(B('AI reviewers tell the two AI sources apart, but not by their slop.'), ' The group with the most slop is the one they rate closest to accepted human papers. Length does not explain it either: FARS papers are the shortest of the three groups.'),
+      mean_(B('AI reviewers rate AI papers lower, but not in proportion to their slop.'), ' For most of them the group with the most slop is the one rated closest to accepted human papers. Length does not explain it: FARS papers are the shortest of the three groups.'),
 
       exp(2, 'Does a paper with more slop get a lower score?'),
       why('Experiment 1 compares groups. The direct test is within a group: among papers of the same kind, does a sloppier one get a lower score? We ask this of every AI reviewer and of the human reviewers we have.'),
@@ -411,6 +412,7 @@ const QPOST = {
       h('h4', { text: 'Fine print' }),
       h('ul', { class: 'qa-ul small' },
         by.stanford && h('li', { text: 'The Stanford Agentic Reviewer has no public code or API. We use a reconstruction of its documented pipeline (search queries, arXiv retrieval, related-work summary, ICLR-form review) on Qwen2.5-32B. Search results with the paper’s own title are removed, since the human papers are on arXiv.' }),
+        by.stanford && h('li', { text: `The Stanford reconstruction tries the first 60,000, then 30,000, then 16,000 characters of the paper until the model returns a valid review. Most AI papers were reviewed in full; most human papers, which are about twice as long, at 16,000 characters. ${383 - by.stanford.n_hu} human and ${390 - by.stanford.n_ai} AI paper failed at all three lengths and are left out.` }),
         h('li', { text: 'CycleReviewer and the AI Scientist reviewer (on Qwen2.5-32B) are the scores released with SciSlopBench. OpenReviewer' + (by.stanford ? ' and the Stanford reconstruction were' : ' was') + ' run for this page on the same LaTeX text. OpenReviewer used its released prompt, temperature 0; 12 reviews that looped were rerun at temperature 0.7.' }),
         h('li', { text: 'The ICLR human papers are all accepted papers, so their ratings span a narrow range. That makes a negative ρ harder to find, not easier.' }),
         h('li', { text: 'Agents4Science sent papers to a human reviewer only when its AI reviewers averaged 4 or more. On those 79 papers the AI reviewers score one point higher than the human reviewer, but the selection inflates that gap, so we do not use it.' }),
